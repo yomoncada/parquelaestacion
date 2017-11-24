@@ -1,0 +1,247 @@
+/* Cubic Bezier Transition */
+/***
+Anout Us Page
+***/
+/* BEGIN HEADER */
+.about-header {
+  height: 400px;
+  background-image: url("../img/header-overlay.jpg");
+  background-position: bottom;
+  background-size: cover;
+  text-align: center;
+  margin: 0;
+  padding: 115px 20px;
+}
+
+.about-header h1 {
+  color: #fff;
+  font-size: 4em;
+  font-weight: 600;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2); 
+}
+
+.about-header h3 {
+  color: #fff;
+  font-size: 1.5em;
+  font-weight: 400;
+  line-height: 1.25em;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2) }
+
+@media (max-width: 768px) {
+  .about-header h1 {
+    font-size: 3em;
+  }
+
+  .about-header h3 {
+    font-size: 1.25em;
+  }
+}
+
+@media (max-width: 425px) {
+  .about-header {
+    padding: 125px 20px;
+  }
+
+  .about-header h1 {
+    font-size: 2em;
+  }
+
+  .about-header h3 {
+    font-size: 1em;
+  }
+}
+
+/* END HEADER */
+/* BEGIN CARD */
+.card-icon {
+  width: 100%;
+  text-align: center;
+  overflow: hidden; }
+
+.card-icon i {
+  font-size: 50px;
+  border: 1px solid #ecf0f4;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  padding: 47px 30px;
+  margin: 30px 0 30px 0; }
+
+.card-title {
+  text-align: center; }
+
+.card-title a {
+  font-size: 18px;
+  font-weight: 600;
+  color: #373d43; }
+
+.card-title a:hover {
+  color: #36d7b7; }
+
+.card-desc {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 30px; }
+
+.card-desc span {
+  font-size: 25px;
+  font-weight: 400;
+}
+
+/* END CARD */
+/* BEGIN LINKS BLOCK */
+.about-links-cont {
+  background-color: #fff;
+  margin: 0 -20px; }
+
+.about-links-cont .about-links {
+  padding: 70px 0 70px 70px; }
+
+.about-links-cont .about-image {
+  padding-left: 110px; }
+
+.about-links-item h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #373d43; }
+
+.about-links-item ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none; }
+
+.about-links-item ul li {
+  padding-top: 5px; }
+
+.about-links-item ul li a {
+  font-size: 14px;
+  font-weight: 400;
+  color: #4a8fba; }
+
+.about-image {
+  background-repeat: no-repeat;
+  background-size: cover; }
+
+/* END LINKS BLOCK */
+/* BEGIN MEMBERS SUCCESS STORIES */
+.stories-header {
+  text-align: center; }
+
+.stories-header h1 {
+  color: #373d43;
+  font-size: 35px;
+  font-weight: 600; }
+
+.stories-header h2 {
+  color: #808a94;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 20px; }
+
+.stories-cont .photo {
+  width: 100%; }
+
+.stories-cont .photo img {
+  margin: 30px auto;
+  width: 130px;
+  height: 130px;
+  -webkit-border-radius: 50% !important;
+  -moz-border-radius: 50% !important;
+  border-radius: 50% !important; }
+
+.stories-cont .title {
+  text-align: center; }
+
+.stories-cont .title span {
+  font-size: 18px;
+  font-weight: 600;
+  color: #373d43; }
+
+.stories-cont .desc {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 30px; }
+
+.stories-cont .desc span {
+  font-size: 14px;
+  font-weight: 400;
+  color: #808a94; }
+
+.stories-footer {
+  text-align: center; }
+
+/* END MEMBERS SUCCESS STORIES */
+/* BEGIN ABOUt AND VIDEO */
+.about-text {
+  height: auto;
+  padding: 0 !important; }
+  .about-text > h4 {
+    background-color: #36d7b7;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    padding: 1em 20px;
+    margin: 0; }
+    .about-text > h4 > i {
+      font-size: 24px !important;
+      color: #fff; }
+  .about-text > p {
+    color: #808a94; }
+  .about-text ul,
+  .about-text > p,
+  .about-text .about-quote {
+    padding-left: 20px;
+    padding-right: 20px; }
+  .about-text li {
+    margin-bottom: 0.5em; }
+  .about-text .about-quote > h3 {
+    border-left: 3px solid;
+    border-color: #ccc;
+    padding-left: 1em;
+    font-style: italic;
+    line-height: 1.3em; }
+  .about-text .about-quote > .about-author {
+    text-align: right; }
+
+.about-image {
+  height: 545px; }
+
+.about-links-item {
+  margin-bottom: 2em; }
+
+.list-count {
+  font-weight: 600;
+  font-size: 18px;
+  margin-top: 15px;
+  width: 100px !important;
+}
+
+.list-header {
+  margin: 0 0 0 0 !important;
+  padding: 0.25em 0px; 
+}
+
+.list-container {
+  background: #fff;
+}
+
+.park-info-container {
+  padding: 20px !important;
+  background: white;
+  margin-bottom: 20px !important;
+}
+
+.park-info-description {
+  margin: 0px !important;
+}
+
+
+/* END ABOUt AND VIDEO */
+/* BEGIN RESPONSIVE */
+@media (max-width: 600px) {
+  .about-image {
+    margin: 0 -20px; } }
+
+/* END RESPONSIVE */
