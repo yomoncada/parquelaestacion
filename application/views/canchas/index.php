@@ -56,21 +56,57 @@
                                 </div>
                                 <div class="tools"> </div>
                             </div>
-                            <div class="portlet-body">
-                                <table id="canchas" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Número</th>
-                                            <th>Nombre</th>
-                                            <th>Área</th>
-                                            <th>Capacidad</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                            <div class="tabbable-line tabbable-full-width">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#tab_1_1" data-toggle="tab"> Activas </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab_1_2" data-toggle="tab"> Inactivas </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_1_1">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <table id="canchas_activas" class="table table-hover table-bordered small">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Número</th>
+                                                            <th>Nombre</th>
+                                                            <th>Área</th>
+                                                            <th>Capacidad</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_1_2">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <table id="canchas_inactivas" class="table table-hover table-bordered small">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Número</th>
+                                                            <th>Nombre</th>
+                                                            <th>Área</th>
+                                                            <th>Capacidad</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

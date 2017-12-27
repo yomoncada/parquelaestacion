@@ -255,7 +255,7 @@
                                         <span class="help-block fecha"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">Hora <span class="required">*</span></label>
+                                        <label class="control-label">Hora <span class="required">*</span></label></label>
                                         <div class="input-group">
                                             <span class="input-group-btn">
                                                 <button class="btn btn-icon-only green-turquoise" type="button">
@@ -269,8 +269,8 @@
                                     <div class="form-actions" style="text-align: right;">
                                         <div class="row">
                                             <div class="col-xs-12">
-                                                <button type="button" class="btn btn-default"> Cancelar </button>
-                                                <button id="btnSave_ref" type="button" class="btn green-turquoise" onclick="process('')" style="margin-left:0.35em;"> Procesar</button>
+                                                <a href="<?echo site_url('reforestacion');?>" class="btn btn-default"> Cancelar </a>
+                                                <button id="btnSave_ref" type="button" class="btn green-turquoise" onclick="process()" style="margin-left:0.35em;"> Procesar</button>
                                             </div>
                                         </div>
                                     </div>
@@ -295,20 +295,58 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="empleados" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Cédula</th>
-                                            <th>Nombre</th>
-                                            <th>Cargo</th>
-                                            <th>Turno</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="tabbable-line tabbable-full-width">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1_1" data-toggle="tab"> Activos </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_1_2" data-toggle="tab"> Inactivos </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1_1">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="empleados_activos" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Cédula</th>
+                                                                <th>Nombre</th>
+                                                                <th>Cargo</th>
+                                                                <th>Turno</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_1_2">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="empleados_inactivos" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Cédula</th>
+                                                                <th>Nombre</th>
+                                                                <th>Cargo</th>
+                                                                <th>Turno</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
@@ -433,19 +471,56 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="areas" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Código</th>
-                                            <th>Nombre</th>
-                                            <th>Ubicación</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="tabbable-line tabbable-full-width">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1_3" data-toggle="tab"> Activas </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_1_4" data-toggle="tab"> Inactivas </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1_3">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="areas_activas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre</th>
+                                                                <th>Ubicación</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_1_4">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="areas_inactivas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre</th>
+                                                                <th>Ubicación</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
@@ -461,7 +536,7 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
                                 <div class="caption font-dark">
                                     <i id="icon" class="icon-plus font-dark"></i>
-                                     <span class="caption-subject bold uppercase area-modal-title">Título</span>
+                                    <span class="caption-subject bold uppercase area-modal-title">Título</span>
                                 </div>
                             </div>
                             <div class="modal-body">
@@ -543,20 +618,58 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="especies" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Código</th>
-                                            <th>Nombre</th>
-                                            <th>Tipo</th>
-                                            <th>Poblacion</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="tabbable-line tabbable-full-width">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1_5" data-toggle="tab"> Activas </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_1_6" data-toggle="tab"> Inactivas </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1_5">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="especies_activas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre Común</th>
+                                                                <th>Tipo</th>
+                                                                <th>Población</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_1_6">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="especies_inactivas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre Común</th>
+                                                                <th>Tipo</th>
+                                                                <th>Población</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
@@ -572,7 +685,7 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
                                 <div class="caption font-dark">
                                     <i id="icon" class="icon-plus font-dark"></i>
-                                     <span class="caption-subject bold uppercase especie-modal-title">Título</span>
+                                    <span class="caption-subject bold uppercase especie-modal-title">Título</span>
                                 </div>
                             </div>
                             <div class="modal-body">
@@ -683,21 +796,60 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="implementos" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Código</th>
-                                            <th>Nombre</th>
-                                            <th>Categoría</th>
-                                            <th>Stock</th>
-                                            <th>Poblacion</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="tabbable-line tabbable-full-width">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1_7" data-toggle="tab"> Activos </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_1_8" data-toggle="tab"> Inactivos </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1_7">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="implementos_activos" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre</th>
+                                                                <th>Categoría</th>
+                                                                <th>Stock</th>
+                                                                <th>Unidad</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_1_8">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="implementos_inactivos" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre</th>
+                                                                <th>Categoría</th>
+                                                                <th>Stock</th>
+                                                                <th>Unidad</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
@@ -827,18 +979,54 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="actividades" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Acción</th>
-                                            <th>Tipo</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="tabbable-line tabbable-full-width">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1_9" data-toggle="tab"> Activas </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_1_10" data-toggle="tab"> Inactivas </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1_9">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="actividades_activas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Acción</th>
+                                                                <th>Tipo</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_1_10">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="actividades_inactivas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Acción</th>
+                                                                <th>Tipo</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
@@ -872,9 +1060,7 @@
                                         <label>Tipo <span class="required">*</span></label>
                                         <select class="form-control" name="tipo">
                                             <option value="">--- Elige un categoría ---</option>
-                                            <option>Censo</option>
-                                            <option>Mantenimiento</option>
-                                            <option>Reforestación</option>
+                                            <option>reforestacion</option>
                                         </select>
                                     </div>
                                 </form>
@@ -902,7 +1088,6 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Acción</th>
-                                            <th>Encargado</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>

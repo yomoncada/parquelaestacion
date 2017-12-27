@@ -144,8 +144,15 @@
                                                 <div class="mt-head-icon">
                                                     <i class="icon-bulb"></i>
                                                 </div>
-                                                <div class="mt-head-desc" style="margin-top: 1em;"> Especies</div>
-                                                <h3 id="count_especies" class="mt-head-date"> 0 </h3>
+                                                <?if($censo['estado'] == 'Pendiente')
+                                                {?>
+                                                    <div class="mt-head-desc" style="margin-top: 1em;"> Especies</div>
+                                                    <h3 id="count_especies" class="mt-head-date"> 0 </h3>
+                                                <?}
+                                                else{?>
+                                                    <div class="mt-head-desc" style="margin-top: 1em;"> Especies Censadas</div>
+                                                    <h3 id="count_especies_censadas" class="mt-head-date"> 0 </h3>
+                                                <?}?>
                                             </div>
                                             <div class="mt-body-actions-icons">
                                                 <div class="btn-group btn-group btn-group-justified">
@@ -156,25 +163,35 @@
                                                             <i class="icon-plus"></i>
                                                         </span>
                                                     </a>
-                                                <?}?>
-                                                <?if($censo['estado'] == 'En progreso')
-                                                {?>
-                                                    <a data-toggle="modal" href="#lista_especies" class="btn btn-link" title="Controlar">
+                                                    <a data-toggle="modal" href="#lista_especies_asignadas" class="btn btn-link" title="Listar">
                                                         <span class="mt-icon">
-                                                            <i class="icon-note"></i>
+                                                            <i class="icon-list"></i>
                                                         </span>
                                                     </a>
                                                 <?}?>
-                                                <a data-toggle="modal" href="#lista_especies_asignadas" class="btn btn-link" title="Listar">
+                                                <?if($censo['estado'] == 'En progreso')
+                                                {?>
+                                                    <a data-toggle="modal" href="#lista_especies_asignadas" class="btn btn-link" title="Agregar">
+                                                        <span class="mt-icon">
+                                                            <i class="icon-plus"></i>
+                                                        </span>
+                                                    </a>
+                                                    <a data-toggle="modal" href="#lista_especies_censadas" class="btn btn-link" title="Listar">
                                                     <span class="mt-icon">
                                                         <i class="icon-list"></i>
                                                     </span>
-                                                </a>
-                                                <?if($censo['estado'] == 'Pendiente')
-                                                {?>
-                                                    <a href="javascript:;" class="btn btn-link" onclick="clear_especies()" title="Reiniciar">
+                                                    <a href="javascript:;" class="btn btn-link" onclick="clear_especies_censadas()" title="Reiniciar">
                                                         <span class="mt-icon">
                                                             <i class="icon-reload"></i>
+                                                        </span>
+                                                    </a>
+                                                </a>
+                                                <?}?>
+                                                <?if($censo['estado'] == 'Finalizado')
+                                                {?>
+                                                    <a data-toggle="modal" href="#lista_especies_censadas" class="btn btn-link" title="Listar">
+                                                        <span class="mt-icon">
+                                                            <i class="icon-list"></i>
                                                         </span>
                                                     </a>
                                                 <?}?>
@@ -201,11 +218,11 @@
                                                         </span>
                                                     </a>
                                                 <?}?>
-                                                    <a data-toggle="modal" href="#lista_implementos_asignados" class="btn btn-link" title="Listar">
-                                                        <span class="mt-icon">
-                                                            <i class="icon-list"></i>
-                                                        </span>
-                                                    </a>
+                                                <a data-toggle="modal" href="#lista_implementos_asignados" class="btn btn-link" title="Listar">
+                                                    <span class="mt-icon">
+                                                        <i class="icon-list"></i>
+                                                    </span>
+                                                </a>
                                                 <?if($censo['estado'] == 'Pendiente')
                                                 {?>
                                                     <a href="javascript:;" class="btn btn-link" onclick="clear_implementos()" title="Reiniciar">
@@ -240,8 +257,15 @@
                                                 <div class="mt-head-icon">
                                                     <i class="icon-check"></i>
                                                 </div>
-                                                <div class="mt-head-desc" style="margin-top: 1em;">Actividades</div>
-                                                <h3 id="count_actividades" class="mt-head-date"> 0 </h3>
+                                                <?if($censo['estado'] == 'Pendiente')
+                                                {?>
+                                                    <div class="mt-head-desc" style="margin-top: 1em;"> Actividades</div>
+                                                    <h3 id="count_actividades" class="mt-head-date"> 0 </h3>
+                                                <?}
+                                                else{?>
+                                                    <div class="mt-head-desc" style="margin-top: 1em;"> Actividades Realizadas</div>
+                                                    <h3 id="count_actividades_realizadas" class="mt-head-date"> 0 </h3>
+                                                <?}?>
                                             </div>
                                             <div class="mt-body-actions-icons">
                                                 <div class="btn-group btn-group btn-group-justified">
@@ -252,25 +276,35 @@
                                                             <i class="icon-plus"></i>
                                                         </span>
                                                     </a>
-                                                <?}?>
-                                                <?if($censo['estado'] == 'En progreso')
-                                                {?>
-                                                    <a data-toggle="modal" href="#lista_especies" class="btn btn-link" title="Controlar">
+                                                    <a data-toggle="modal" href="#lista_actividades_asignadas" class="btn btn-link" title="Listar">
                                                         <span class="mt-icon">
-                                                            <i class="icon-note"></i>
+                                                            <i class="icon-list"></i>
                                                         </span>
                                                     </a>
                                                 <?}?>
-                                                <a data-toggle="modal" href="#lista_actividades_asignadas" class="btn btn-link" title="Listar">
+                                                <?if($censo['estado'] == 'En progreso')
+                                                {?>
+                                                    <a data-toggle="modal" href="#lista_actividades_asignadas" class="btn btn-link" title="Agregar">
+                                                        <span class="mt-icon">
+                                                            <i class="icon-plus"></i>
+                                                        </span>
+                                                    </a>
+                                                    <a data-toggle="modal" href="#lista_actividades_realizadas" class="btn btn-link" title="Listar">
                                                     <span class="mt-icon">
                                                         <i class="icon-list"></i>
                                                     </span>
-                                                </a>
-                                                <?if($censo['estado'] == 'Pendiente')
-                                                {?>
-                                                    <a href="javascript:;" class="btn btn-link" onclick="clear_actividades()" title="Reiniciar">
+                                                    <a href="javascript:;" class="btn btn-link" onclick="clear_actividades_realizadas()" title="Reiniciar">
                                                         <span class="mt-icon">
                                                             <i class="icon-reload"></i>
+                                                        </span>
+                                                    </a>
+                                                </a>
+                                                <?}?>
+                                                <?if($censo['estado'] == 'Finalizado')
+                                                {?>
+                                                    <a data-toggle="modal" href="#lista_actividades_realizadas" class="btn btn-link" title="Listar">
+                                                        <span class="mt-icon">
+                                                            <i class="icon-list"></i>
                                                         </span>
                                                     </a>
                                                 <?}?>
@@ -331,6 +365,7 @@
                                                 </span>
                                                 <input type="text" name="fecha" value="<?echo $censo['fecha_asig'];?>" class="form-control" disabled>
                                             </div>
+                                            <span class="help-block fecha"></span>
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Hora</label>
@@ -342,6 +377,7 @@
                                                 </span>
                                                 <input type="text" name="hora" value="<?echo $censo['hora_asig'];?>" class="form-control timepicker timepicker-no-seconds" disabled>
                                             </div>
+                                            <span class="help-block hora"></span>
                                         </div>
                                     <?}?>
                                     <div class="form-actions" style="text-align: right;">
@@ -354,8 +390,8 @@
                                                 <?}
                                                 if($censo['estado'] == "En progreso")
                                                 {?>
-                                                    <a href="<?echo site_url('censo');?>" class="btn btn-default"> Regresar </a>
-                                                    <a href="javascript:;" class="btn green-turquoise"> Finalizar </a>
+                                                    <a href="<?echo site_url('censo');?>" class="btn btn-default"> Cancelar </a>
+                                                    <a href="javascript:;" class="btn green-turquoise" onclick="end(<?echo $censo['id_cen'];?>)"> Finalizar </a>
                                                 <?}?>
                                                 <?if($censo['estado'] == "Finalizado")
                                                 {?>
@@ -386,23 +422,58 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="empleados" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Cédula</th>
-                                            <th>Nombre</th>
-                                            <th>Cargo</th>
-                                            <th>Turno</th>
-                                            <?if($censo['estado'] == 'Pendiente')
-                                            {?>
-                                                <th>Acciones</th>
-                                            <?}?>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="tabbable-line tabbable-full-width">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1_1" data-toggle="tab"> Activos </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_1_2" data-toggle="tab"> Inactivos </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1_1">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="empleados_activos" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Cédula</th>
+                                                                <th>Nombre</th>
+                                                                <th>Cargo</th>
+                                                                <th>Turno</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_1_2">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="empleados_inactivos" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Cédula</th>
+                                                                <th>Nombre</th>
+                                                                <th>Cargo</th>
+                                                                <th>Turno</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
@@ -530,22 +601,56 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="areas" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Código</th>
-                                            <th>Nombre</th>
-                                            <th>Ubicación</th>
-                                           	<?if($censo['estado'] == 'Pendiente')
-                                            {?>
-                                            	<th>Acciones</th>
-                                            <?}?>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="tabbable-line tabbable-full-width">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1_3" data-toggle="tab"> Activas </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_1_4" data-toggle="tab"> Inactivas </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1_3">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="areas_activas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre</th>
+                                                                <th>Ubicación</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_1_4">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="areas_inactivas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre</th>
+                                                                <th>Ubicación</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
@@ -646,23 +751,58 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="especies" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Código</th>
-                                            <th>Nombre</th>
-                                            <th>Tipo</th>
-                                            <th>Poblacion</th>
-                                            <?if($censo['estado'] == 'Pendiente')
-                                            {?>
-                                            	<th>Acciones</th>
-                                            <?}?>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="tabbable-line tabbable-full-width">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1_5" data-toggle="tab"> Activas </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_1_6" data-toggle="tab"> Inactivas </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1_5">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="especies_activas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre Común</th>
+                                                                <th>Tipo</th>
+                                                                <th>Población</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_1_6">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="especies_inactivas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre Común</th>
+                                                                <th>Tipo</th>
+                                                                <th>Población</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
@@ -748,8 +888,16 @@
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                                 <div class="caption font-dark">
-                                    <i class="icon-list font-dark"></i>
-                                    <span class="caption-subject bold uppercase">Listado de Especies Asignados</span>
+                                    <?if($censo['estado'] == 'En progreso')
+                                    {?>
+                                        <i class="icon-plus font-dark"></i>
+                                        <span class="caption-subject bold uppercase">Listado de Especies Asignadas</span>
+                                    <?}
+                                    else
+                                    {?>
+                                        <i class="icon-list font-dark"></i>
+                                        <span class="caption-subject bold uppercase">Listado de Especies Asignadas</span>
+                                    <?}?>
                                 </div>
                             </div>
                             <div class="modal-body">
@@ -759,9 +907,44 @@
                                             <th>#</th>
                                             <th>Código</th>
                                             <th>Nombre</th>
-                                            <?if($censo['estado'] == 'Pendiente')
+                                            <?if($censo['estado'] == 'Pendiente' || $censo['estado'] == 'En progreso')
                                             {?>
                                             	<th>Acciones</th>
+                                            <?}?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
+                                <button type="button" class="btn green-turquoise" data-dismiss="modal"> Guardar </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade bs-modal-md" id="lista_especies_censadas" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <div class="caption font-dark">
+                                    <i class="icon-list font-dark"></i>
+                                    <span class="caption-subject bold uppercase">Listado de Especies Censadas</span>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                                <table id="especies_censadas" class="table table-hover table-bordered small">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Código</th>
+                                            <th>Nombre</th>
+                                            <th>Población</th>
+                                            <?if($censo['estado'] == 'En progreso')
+                                            {?>
+                                                <th>Acciones</th>
                                             <?}?>
                                         </tr>
                                     </thead>
@@ -792,24 +975,60 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="implementos" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Código</th>
-                                            <th>Nombre</th>
-                                            <th>Categoría</th>
-                                            <th>Stock</th>
-                                            <th>Poblacion</th>
-                                            <?if($censo['estado'] == 'Pendiente')
-                                            {?>
-                                            	<th>Acciones</th>
-                                            <?}?>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="tabbable-line tabbable-full-width">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1_7" data-toggle="tab"> Activos </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_1_8" data-toggle="tab"> Inactivos </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1_7">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="implementos_activos" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre</th>
+                                                                <th>Categoría</th>
+                                                                <th>Stock</th>
+                                                                <th>Unidad</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_1_8">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="implementos_inactivos" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Código</th>
+                                                                <th>Nombre</th>
+                                                                <th>Categoría</th>
+                                                                <th>Stock</th>
+                                                                <th>Unidad</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
@@ -942,21 +1161,54 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="actividades" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Acción</th>
-                                            <th>Tipo</th>
-                                            <?if($censo['estado'] == 'Pendiente')
-                                            {?>
-                                                <th>Acciones</th>
-                                            <?}?>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="tabbable-line tabbable-full-width">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1_9" data-toggle="tab"> Activas </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_1_10" data-toggle="tab"> Inactivas </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1_9">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="actividades_activas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Acción</th>
+                                                                <th>Tipo</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_1_10">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="actividades_inactivas" class="table table-hover table-bordered small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Acción</th>
+                                                                <th>Tipo</th>
+                                                                <th>Acciones</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
@@ -1004,14 +1256,57 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal2 fade" id="actividad-empleado-modal" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                                <div class="caption font-dark">
+                                    <i id="icon" class="icon-plus font-dark"></i>
+                                    <span class="caption-subject bold uppercase actividad-empleado-modal-title">Título</span>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                                <form action="#" id="actividad-empleado_form">
+                                    <input type="hidden" value="" name="id_act" autocomplete="off"/>
+                                    <div class="form-group">
+                                        <span class="required"> * (Campos Requeridos) </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Empleado <span class="required">*</span></label>
+                                        <select class="form-control" name="empleado_actividad">
+                                            <option value="">--- Elige un empleado ---</option>
+                                            <?foreach ($empleados as $empleado):?>
+                                            <option value="<?echo $empleado->empleado;?>"><?echo $empleado->nombre;?></option>
+                                            <?endforeach;?>
+                                        </select>
+                                        <span class="help-block"></span>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                <button type="button" onclick="assign_actividad_realizada()" class="btn green-turquoise">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="modal fade bs-modal-md" id="lista_actividades_asignadas" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
                     <div class="modal-dialog modal-md">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                                 <div class="caption font-dark">
-                                    <i class="icon-list font-dark"></i>
-                                    <span class="caption-subject bold uppercase">Listado de Actividades Asignadas</span>
+                                    <?if($censo['estado'] == 'En progreso')
+                                    {?>
+                                        <i class="icon-plus font-dark"></i>
+                                        <span class="caption-subject bold uppercase">Listado de Actividades Asignadas</span>
+                                    <?}
+                                    else
+                                    {?>
+                                        <i class="icon-list font-dark"></i>
+                                        <span class="caption-subject bold uppercase">Listado de Actividades Asignadas</span>
+                                    <?}?>
                                 </div>
                             </div>
                             <div class="modal-body">
@@ -1020,11 +1315,44 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Acción</th>
-                                            <th>Encargado</th>
-                                            <?if($censo['estado'] == 'Pendiente')
+                                            <?if($censo['estado'] == 'Pendiente' || $censo['estado'] == 'En progreso')
                                             {?>
                                             	<th>Acciones</th>
                                            	<?}?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
+                                <button type="button" class="btn green-turquoise" data-dismiss="modal"> Guardar </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade bs-modal-md" id="lista_actividades_realizadas" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <div class="caption font-dark">
+                                    <i class="icon-list font-dark"></i>
+                                    <span class="caption-subject bold uppercase">Listado de Actividades realizadas</span>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                                <table id="actividades_realizadas" class="table table-hover table-bordered small">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Acción</th>
+                                            <th>Encargado</th>
+                                            <?if($censo['estado'] == 'Pendiente' || $censo['estado'] == 'En progreso')
+                                            {?>
+                                                <th>Acciones</th>
+                                            <?}?>
                                         </tr>
                                     </thead>
                                     <tbody>

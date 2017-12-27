@@ -10,7 +10,7 @@ class Cargo extends CI_Controller
 
 	public function index()
 	{
-		if($this->session->userdata('is_logued_in') === TRUE)
+		if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('cat_access') == 1)
 		{
 			$data = array(
 	    		'controller' => 'cargos',
@@ -31,9 +31,9 @@ class Cargo extends CI_Controller
 		}
 	}
 	
-	public function list_cargos()
+	public function list_cargos_activos()
 	{
-		$list = $this->cargo->get_datatables();
+		$list = $this->cargo->get_datatables_activos();
 		$data = array();
 		$no = $_POST['start'];
 		$i = 1;
@@ -47,8 +47,8 @@ class Cargo extends CI_Controller
 			$row[] = '<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_cargo('."'".$cargo->id_car."'".')">
 						<i class="icon-pencil"></i>
 					  </a>
-					  <a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_cargo('."'".$cargo->id_car."'".')">
-						<i class="icon-trash"></i>
+					  <a class="btn btn-link" href="javascript:void(0)" title="Desctivar" onclick="desactivate_cargo('."'".$cargo->id_car."'".')">
+						<i class="icon-ban"></i>
 					  </a>';
 			$data[] = $row;
 			$i++;
@@ -57,7 +57,43 @@ class Cargo extends CI_Controller
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->cargo->count_all(),
-			"recordsFiltered" => $this->cargo->count_filtered(),
+			"recordsFiltered" => $this->cargo->count_filtered_activos(),
+			"data" => $data
+		);
+		echo json_encode($output);
+	}
+
+	public function list_cargos_inactivos()
+	{
+		$list = $this->cargo->get_datatables_inactivos();
+		$data = array();
+		$no = $_POST['start'];
+		$i = 1;
+		foreach ($list as $cargo)
+		{
+			$no++;
+			$row = array();
+			$row[] = $i;
+			$row[] = $cargo->cargo;
+			$row[] = $cargo->descripcion;
+			if($this->session->userdata('nivel') == 1)
+			{	
+				$row[] = '<a class="btn btn-link" href="javascript:void(0)" title="Activar" onclick="activate_cargo('."'".$cargo->id_car."'".')">
+						<i class="icon-check"></i>
+					  </a>';
+			}
+			else
+			{
+				$row[] = 'No puedes realizar ninguna acción.';
+			}
+			$data[] = $row;
+			$i++;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->cargo->count_all(),
+			"recordsFiltered" => $this->cargo->count_filtered_inactivos(),
 			"data" => $data
 		);
 		echo json_encode($output);
@@ -161,19 +197,35 @@ class Cargo extends CI_Controller
 		echo json_encode(array("status" => TRUE));
 	}
 
-	public function delete_cargo($id_car)
+	public function activate_cargo($id_car)
 	{
 		$query = $this->cargo->get_by_id($id_car);
 		$cargo = $query['cargo'];
 
 		$bitacora = array(
 			'tipo' => 'Cargo',
-			'movimiento' => 'Se ha eliminado el cargo '.$cargo.'.',
+			'movimiento' => 'Se ha activado el cargo '.$cargo.'.',
 			'usuario' => $this->session->userdata('id_usuario')
 		);		
 
 		$this->bitacora->set($bitacora);
-		$this->cargo->delete_by_id($id_car);
+		$this->cargo->activate_by_id($id_car);
+		echo json_encode(array("status" => TRUE));
+	}
+
+	public function desactivate_cargo($id_car)
+	{
+		$query = $this->cargo->get_by_id($id_car);
+		$cargo = $query['cargo'];
+
+		$bitacora = array(
+			'tipo' => 'Cargo',
+			'movimiento' => 'Se ha desactivado el cargo '.$cargo.'.',
+			'usuario' => $this->session->userdata('id_usuario')
+		);		
+
+		$this->bitacora->set($bitacora);
+		$this->cargo->desactivate_by_id($id_car);
 		echo json_encode(array("status" => TRUE));
 	}
 

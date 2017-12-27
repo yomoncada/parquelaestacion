@@ -1,14 +1,33 @@
 var save_method;
-var actividades;
+var actividades_activas;
+var actividades_inactivas;
 
 $(document).ready(function (){
-    actividades = $('#actividades').DataTable({ 
+    actividades_activas = $('#actividades_activas').DataTable({ 
         "processing": true,
         "serverSide": true,
         "order": [],
 
         "ajax":{
-            "url": "http://localhost/parque/index.php/actividad/list_actividades",
+            "url": "http://localhost/parque/index.php/actividad/list_actividades_activas",
+            "type": "POST"
+        },
+
+        "columnDefs": [
+        { 
+            "targets": [ -1 ],
+            "orderable": false,
+        },
+        ],
+    });
+
+    actividades_inactivas = $('#actividades_inactivas').DataTable({ 
+        "processing": true,
+        "serverSide": true,
+        "order": [],
+
+        "ajax":{
+            "url": "http://localhost/parque/index.php/actividad/list_actividades_inactivas",
             "type": "POST"
         },
 
@@ -195,10 +214,10 @@ function save_actividad(){
     });
 }
 
-function delete_actividad(id_act){  
+function activate_actividad(id_act){  
     swal({
         title: "Advertencia",
-        text: "¿Deseas eliminar este actividad?",
+        text: "¿Deseas activar este actividad?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#f8ac59",
@@ -206,7 +225,7 @@ function delete_actividad(id_act){
         cancelButtonText: "No"
     }).then(function (){
         $.ajax({
-            url : "http://localhost/parque/index.php/actividad/delete_actividad/" + id_act,
+            url : "http://localhost/parque/index.php/actividad/activate_actividad/" + id_act,
             type: "POST",
             dataType: "JSON",
             success: function (data){
@@ -221,16 +240,53 @@ function delete_actividad(id_act){
                 });
             }
         });
-        swal("Éxito", "¡El actividad fue eliminada!", "success");
+        swal("Éxito", "¡El actividad fue activada!", "success");
     }, function (dismiss){
         // dismiss can be 'cancel', 'overlay',
         // 'close', and 'timer'
         if(dismiss === 'cancel'){
-            swal("Aviso", "¡La eliminación fue cancelada!", "info");
+            swal("Aviso", "¡La activación fue cancelada!", "info");
+        }
+    })
+}
+
+function desactivate_actividad(id_act){  
+    swal({
+        title: "Advertencia",
+        text: "¿Deseas desactivar este actividad?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#f8ac59",
+        confirmButtonText: "Sí",
+        cancelButtonText: "No"
+    }).then(function (){
+        $.ajax({
+            url : "http://localhost/parque/index.php/actividad/desactivate_actividad/" + id_act,
+            type: "POST",
+            dataType: "JSON",
+            success: function (data){
+                $('#actividad-modal').modal('hide');
+                reload_actividades();
+            },
+            error: function (jqXHR, textStatus, errorThrown){
+                swal({
+                    title: "Error",
+                    text: "¡Ha ocurrido un error!",
+                    type: "error"
+                });
+            }
+        });
+        swal("Éxito", "¡El actividad fue desactivada!", "success");
+    }, function (dismiss){
+        // dismiss can be 'cancel', 'overlay',
+        // 'close', and 'timer'
+        if(dismiss === 'cancel'){
+            swal("Aviso", "¡La desactivación fue cancelada!", "info");
         }
     })
 }
 
 function reload_actividades(){
-    actividades.ajax.reload(null,false);
+    actividades_activas.ajax.reload(null,false);
+    actividades_inactivas.ajax.reload(null,false);
 }

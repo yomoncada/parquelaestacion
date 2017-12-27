@@ -11,16 +11,54 @@ $(document).ready(function (){
 	count_empleados();
 	count_areas();
 	count_especies();
+	count_especies_censadas();
 	count_implementos();
 	count_actividades();
+	count_actividades_realizadas();
 
-	reforestaciones = $('#reforestaciones').DataTable({ 
+	reforestaciones_pendientes = $('#reforestaciones_pendientes').DataTable({ 
 		"processing": true,
 		"serverSide": true,
 		"order": [],
 
 		"ajax":{
-			"url": "http://localhost/parque/index.php/reforestacion/list_reforestaciones",
+			"url": "http://localhost/parque/index.php/reforestacion/list_reforestaciones_pendientes",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
+	reforestaciones_en_progresos = $('#reforestaciones_en_progresos').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/reforestacion/list_reforestaciones_en_progresos",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
+	reforestaciones_finalizados = $('#reforestaciones_finalizados').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/reforestacion/list_reforestaciones_finalizados",
 			"type": "POST"
 		},
 
@@ -86,6 +124,24 @@ $(document).ready(function (){
 		],
 	});
 
+	especies_reforestadas = $('#especies_reforestadas').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/reforestacion/list_especies_censadas",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
 	implementos_asignados = $('#implementos_asignados').DataTable({ 
 		"processing": true,
 		"serverSide": true,
@@ -121,12 +177,30 @@ $(document).ready(function (){
 		},
 		],
 	});
+
+	actividades_realizadas = $('#actividades_realizadas').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/reforestacion/list_actividades_realizadas",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
 });
 
 function process(){
 	$('.form-group').removeClass('has-error');
     $('.help-block').empty();
-
+    
     var swalx;
 
     $.ajax({
@@ -138,7 +212,7 @@ function process(){
             if(data.status == true){
             	swal({
 	                title: "Éxito",
-	                text: "¡Reforestación procesada!",
+	                text: "¡Reforestacion procesado!",
 	                type: "success"
 	            });
 
@@ -161,7 +235,7 @@ function process(){
 				$('#reforestacion_form')[0].reset();
 				location.href ="http://localhost/parque/index.php/reforestacion";
             }
-			else
+            else
             {
             	if(data.reason == "carros")
                 {
@@ -177,7 +251,7 @@ function process(){
 
 	            if(data.reason == "areas")
 	            {
-	            	data.message = "¡No has asignado ninguna area!";
+	            	data.message = "¡No has asignado ningún area!";
 	            	swalx = 1;
 	            }
 
@@ -207,7 +281,7 @@ function process(){
 		            });
 	            }
 
-                if(data.inputerror){
+                if(data.inputerror |= false){
 	                for(var i = 0; i < data.inputerror.length; i++){
 	                    $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error');
 	                    $('.'+data.inputerror[i]).text(data.error_string[i]);
@@ -266,7 +340,7 @@ function update(id_ref){
     $('.help-block').empty();
 
     var swalx;
-    
+
     $.ajax({
         url : "http://localhost/parque/index.php/reforestacion/update/" + id_ref,
         type: "POST",
@@ -276,7 +350,7 @@ function update(id_ref){
             if(data.status == true){
             	swal({
 	                title: "Éxito",
-	                text: "¡Reforestación actualizada!",
+	                text: "¡Reforestacion actualizado!",
 	                type: "success"
 	            });
 
@@ -299,7 +373,7 @@ function update(id_ref){
 				$('#reforestacion_form')[0].reset();
 				location.href ="http://localhost/parque/index.php/reforestacion";
             }
-			else
+            else
             {
             	if(data.reason == "carros")
                 {
@@ -315,7 +389,7 @@ function update(id_ref){
 
 	            if(data.reason == "areas")
 	            {
-	            	data.message = "¡No has asignado ninguna area!";
+	            	data.message = "¡No has asignado ningún area!";
 	            	swalx = 1;
 	            }
 
@@ -364,6 +438,113 @@ function update(id_ref){
     });
 }
 
+
+function end(id_ref){
+    $('.form-group').removeClass('has-error');
+    $('.help-block').empty();
+
+    var swalx;
+
+    $.ajax({
+        url : "http://localhost/parque/index.php/reforestacion/end/" + id_ref,
+        type: "POST",
+        data: $('#reforestacion_form').serialize(),
+        dataType: "JSON",
+        success: function (data){
+            if(data.status == true){
+            	swal({
+	                title: "Éxito",
+	                text: "¡Reforestacion finalizado!",
+	                type: "success"
+	            });
+
+            	count_empleados();
+				count_areas();
+				count_especies();
+				count_especies_censadas();
+				count_implementos();
+				count_actividades();
+				count_actividades_realizadas();
+				reload_empleados();
+				reload_areas();
+				reload_especies();
+				reload_implementos();
+				reload_actividades();
+				reload_empleados_asignados();
+				reload_areas_asignadas();
+				reload_especies_asignadas();
+				reload_especies_censadas();
+				reload_implementos_asignados();
+				reload_actividades_asignadas();
+				reload_actividades_realizadas();
+
+				$('#reforestacion_form')[0].reset();
+				location.href ="http://localhost/parque/index.php/reforestacion";
+            }
+            else
+            {
+            	if(data.reason == "carros")
+                {
+	            	data.message = "¡No has asignado ningún elemento!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "empleados")
+	            {
+	            	data.message = "¡No has asignado ningún empleado!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "areas")
+	            {
+	            	data.message = "¡No has asignado ningún area!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "especies")
+	            {
+	            	data.message = "¡No has asignado ninguna especie!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "implementos")
+	            {
+	            	data.message = "¡No has asignado ningún implemento!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "actividades")
+	            {
+	            	data.message = "¡No has asignado ninguna actividad!";
+	            	swalx = 1;
+	            }
+
+	            if(swalx == 1){
+	            	swal({
+		                title: "Error",
+		                text: data.message,
+		                type: "error"
+		            });
+	            }
+
+                if(data.inputerror){
+	                for(var i = 0; i < data.inputerror.length; i++){
+	                    $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error');
+	                    $('.'+data.inputerror[i]).text(data.error_string[i]);
+	                    $('.'+data.inputerror[i]).css('color','red');
+	            	}
+	            }
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown){
+            swal({
+                title: "Error",
+                text: "¡Ha ocurrido un error!",
+                type: "error"
+            });
+        }
+    });
+}
 
 function count_empleados(){
 	$.ajax({
@@ -698,6 +879,125 @@ function reload_especies_asignadas(){
 	especies_asignadas.ajax.reload(null,false);
 }
 
+function count_especies_censadas(){
+	$.ajax({
+		url : "http://localhost/parque/index.php/reforestacion/count_especies_censadas",
+		type: "GET",
+		dataType: "JSON",
+		success: function (data){
+			$('#count_especies_censadas').text(data.count_especies_censadas);
+		},
+		error: function (jqXHR, textStatus, errorThrown){
+			swal({
+				title: "Error",
+				text: "¡Ha ocurrido un error!",
+				type: "error"
+			});
+		}
+	});
+}
+function assign_especie_reforestada(id_esp){
+	swal({
+	  	title: '¿Cuántas especies se reforestaron?',
+	  	type: 'question',
+	  	input: 'number',
+		inputValue: 0,
+	  	showCancelButton: true,
+	}).then(function (result){
+	  	$.ajax({
+			url : "http://localhost/parque/index.php/reforestacion/assign_especie_reforestada/" + id_esp,
+			type: "GET",
+			data: {'cantidad':result},
+			dataType: "JSON",
+			success: function (data){
+				swal({
+					title: data.title,
+					text: data.text,
+					type: data.type
+			});
+				reload_especies_censadas();
+				count_especies_censadas();
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+				swal({
+					title: "Error",
+					text: "¡Ha ocurrido un error!",
+					type: "error"
+				});
+			}
+		});
+	})
+}
+
+function deny_especie_reforestada(rowid){  
+	swal({
+		title: "Advertencia",
+		text: "¿Deseas denegar esta especie?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#f8ac59",
+		confirmButtonText: "Sí",
+		cancelButtonText: "No"
+	}).then(function (){
+		$.ajax({
+			url : "http://localhost/parque/index.php/reforestacion/deny_especie_reforestada/" + rowid,
+			type: "GET",
+			dataType: "JSON",
+			success: function (data){
+				swal({
+					title: data.title,
+					text: data.text,
+					type: data.type
+				});
+				reload_especies_censadas();
+				count_especies_censadas();
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+				swal({
+					title: "Error",
+					text: "¡Ha ocurrido un error!",
+					type: "error"
+				});
+			}
+		});
+		swal("Éxito", "¡La especie fue denegada!", "success");
+	}, function (dismiss){
+        // dismiss can be 'cancel', 'overlay',
+        // 'close', and 'timer'
+        if (dismiss === 'cancel') {
+        	swal("Aviso", "¡La eliminación fue cancelada!", "info");
+        }
+    })
+}
+
+function clear_especies_censadas(){
+	$.ajax({
+		url : "http://localhost/parque/index.php/reforestacion/clear_especies_censadas",
+		type: "GET",
+		dataType: "JSON",
+		success: function (data){
+			swal({
+				title: data.title,
+				text: data.text,
+				type: data.type
+			});
+			reload_especies_censadas();
+			count_especies_censadas();
+		},
+		error: function (jqXHR, textStatus, errorThrown){
+			swal({
+				title: "Error",
+				text: "¡Ha ocurrido un error!",
+				type: "error"
+			});
+		}
+	});
+}
+
+function reload_especies_censadas(){
+	especies_reforestadas.ajax.reload(null,false);
+}
+
 function count_implementos(){
 	$.ajax({
 		url : "http://localhost/parque/index.php/reforestacion/count_implementos",
@@ -722,11 +1022,11 @@ function assign_implemento(id_imp, stock){
 	  	type: 'question',
 	  	input: 'range',
 	  	inputAttributes: {
-		    min: 1,
+		    min: 0,
 		    max: stock,
 		    step: 1
 	 	},
-		inputValue: 1,
+		inputValue: 0,
 	  	showCancelButton: true,
 	}).then(function (result){
 	  	$.ajax({
@@ -841,43 +1141,36 @@ function count_actividades(){
 	});
 }
 
+function assign_actividad_empleado(id_act){
+    $('#actividad-empleado_form')[0].reset();
+    $('#actividad-empleado-modal').modal('show');
+    $('[name="id_act"]').val(id_act);
+    $('.actividad-empleado-modal-title').text('Asignar actividad al empleado');
+    $('#icon').addClass('icon-plus');
+}
+
 function assign_actividad(id_act){
-	swal({
-	  	title: '¿Quién se encargará de esta actividad?',
-  		input: 'select',
-  		inputOptions: {
-    		'Esmeralda Navarro': 'Esmeralda Navarro',
-    		'Luciano Moncada': 'Luciano Moncada',
-    		'Yonathan Moncada': 'Yonathan Moncada'
-		},
-		type: "question",
-		inputPlaceholder: 'Selecciona un empleado',
-		inputValue: false,
-  		showCancelButton: true,
-		}).then(function (result){
-	  	$.ajax({
-			url : "http://localhost/parque/index.php/reforestacion/assign_actividad/" + id_act,
-			type: "GET",
-			data: {'encargado':result},
-			dataType: "JSON",
-			success: function (data){
-				swal({
-					title: data.title,
-					text: data.text,
-					type: data.type
+	$.ajax({
+		url : "http://localhost/parque/index.php/reforestacion/assign_actividad/" + id_act,
+		type: "GET",
+		dataType: "JSON",
+		success: function (data){
+			swal({
+				title: data.title,
+				text: data.text,
+				type: data.type
 			});
-				reload_actividades_asignadas();
-				count_actividades();
-			},
-			error: function (jqXHR, textStatus, errorThrown){
-				swal({
-					title: "Error",
-					text: "¡Ha ocurrido un error!",
-					type: "error"
-				});
-			}
-		});
-	})
+			reload_actividades_asignadas();
+			count_actividades();
+		},
+		error: function (jqXHR, textStatus, errorThrown){
+			swal({
+				title: "Error",
+				text: "¡Ha ocurrido un error!",
+				type: "error"
+			});
+		}
+	});
 }
 
 function deny_actividad(rowid){  
@@ -947,4 +1240,117 @@ function clear_actividades(){
 
 function reload_actividades_asignadas(){
 	actividades_asignadas.ajax.reload(null,false);
+}
+
+function count_actividades_realizadas(){
+	$.ajax({
+		url : "http://localhost/parque/index.php/reforestacion/count_actividades_realizadas",
+		type: "GET",
+		dataType: "JSON",
+		success: function (data){
+			$('#count_actividades_realizadas').text(data.count_actividades_realizadas);
+		},
+		error: function (jqXHR, textStatus, errorThrown){
+			swal({
+				title: "Error",
+				text: "¡Ha ocurrido un error!",
+				type: "error"
+			});
+		}
+	});
+}
+
+function assign_actividad_realizada(){
+	$.ajax({
+		url : "http://localhost/parque/index.php/reforestacion/assign_actividad_realizada",
+		type: "POST",
+        data: $('#actividad-empleado_form').serialize(),
+		dataType: "JSON",
+		success: function (data){
+			swal({
+				title: data.title,
+				text: data.text,
+				type: data.type
+			});
+    		$('#actividad-empleado-modal').modal('hide');
+			reload_actividades_realizadas();
+			count_actividades_realizadas();
+		},
+		error: function (jqXHR, textStatus, errorThrown){
+			swal({
+				title: "Error",
+				text: "¡Ha ocurrido un error!",
+				type: "error"
+			});
+		}
+	});
+}
+
+function deny_actividad_realizada(rowid){  
+	swal({
+		title: "Advertencia",
+		text: "¿Deseas denegar esta actividad?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#f8ac59",
+		confirmButtonText: "Sí",
+		cancelButtonText: "No"
+	}).then(function (){
+		$.ajax({
+			url : "http://localhost/parque/index.php/reforestacion/deny_actividad_realizada/" + rowid,
+			type: "GET",
+			dataType: "JSON",
+			success: function (data){
+				swal({
+					title: data.title,
+					text: data.text,
+					type: data.type
+				});
+				reload_actividades_realizadas();
+				count_actividades_realizadas();
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+				swal({
+					title: "Error",
+					text: "¡Ha ocurrido un error!",
+					type: "error"
+				});
+			}
+		});
+		swal("Éxito", "¡La actividad fue denegada!", "success");
+	}, function (dismiss){
+        // dismiss can be 'cancel', 'overlay',
+        // 'close', and 'timer'
+        if (dismiss === 'cancel') {
+        	swal("Aviso", "¡La eliminación fue cancelada!", "info");
+        }
+    })
+}
+
+function clear_actividades_realizadas(){
+	$.ajax({
+		url : "http://localhost/parque/index.php/reforestacion/clear_actividades_realizadas",
+		type: "GET",
+		dataType: "JSON",
+		success: function (data){
+			swal({
+				title: data.title,
+				text: data.text,
+				type: data.type
+			});
+			reload_actividades_realizadas();
+			count_actividades_realizadas();
+		},
+		error: function (jqXHR, textStatus, errorThrown){
+			swal({
+				title: "Error",
+				text: "¡Ha ocurrido un error!",
+				type: "error"
+			});
+		}
+	});
+}
+
+function reload_actividades_realizadas(){
+	actividades_realizadas.ajax.reload(null,false);
 }

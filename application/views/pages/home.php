@@ -69,7 +69,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <i class="icon-note font-green theme-font"></i>
                                 </div>
                                 <div class="card-title">
-                                    <?if($this->session->userdata('nivel') == 'Administrador(a)'){?>
+                                    <?if($this->session->userdata('nivel') == 1){?>
                                     <a href="<?echo site_url('censo');?>"> Censos </a>
                                     <?}
                                     else{?>
@@ -88,7 +88,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <i class="icon-heart font-blue theme-font"></i>
                                 </div>
                                 <div class="card-title">
-                                    <?if($this->session->userdata('nivel') == 'Administrador(a)'){?>
+                                    <?if($this->session->userdata('nivel') == 1){?>
                                     <a href="<?echo site_url('donacion');?>"> Donaciones </a>
                                     <?}
                                     else{?>
@@ -107,7 +107,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <i class="icon-wrench font-blue-madison theme-font"></i>
                                 </div>
                                 <div class="card-title">
-                                    <?if($this->session->userdata('nivel') == 'Administrador(a)'){?>
+                                    <?if($this->session->userdata('nivel') == 1){?>
                                     <a href="<?echo site_url('mantenimiento');?>"> Mantenimientos </a>
                                     <?}
                                     else{?>
@@ -127,7 +127,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <i class="icon-drop theme-font" style="color: #3d556d;"></i>
                                 </div>
                                 <div class="card-title">
-                                    <?if($this->session->userdata('nivel') == 'Administrador(a)'){?>
+                                    <?if($this->session->userdata('nivel') == 1){?>
                                     <a href="<?echo site_url('reforestacion');?>"> Reforestaciones </a>
                                     <?}
                                     else{?>

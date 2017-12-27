@@ -56,21 +56,57 @@
                                 </div>
                                 <div class="tools"> </div>
                             </div>
-                            <div class="portlet-body">
-                                <table id="beneficiarios" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Cédula</th>
-                                            <th>Nombre</th>
-                                            <th>Teléfono</th>
-                                            <th>Dirección</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                            <div class="tabbable-line tabbable-full-width">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#tab_1_1" data-toggle="tab"> Activos </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab_1_2" data-toggle="tab"> Inactivos </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_1_1">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <table id="beneficiarios_activos" class="table table-hover table-bordered small">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Cédula</th>
+                                                            <th>Nombre</th>
+                                                            <th>Teléfono</th>
+                                                            <th>Dirección</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_1_2">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <table id="beneficiarios_inactivos" class="table table-hover table-bordered small">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Cédula</th>
+                                                            <th>Nombre</th>
+                                                            <th>Teléfono</th>
+                                                            <th>Dirección</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

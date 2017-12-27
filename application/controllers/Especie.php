@@ -12,7 +12,7 @@ class Especie extends CI_Controller
 
 	public function index()
 	{
-		if($this->session->userdata('is_logued_in') === TRUE)
+		if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('esp_access') == 1)
 		{
 			$data = array(
 	    		'controller' => 'especies',
@@ -33,9 +33,9 @@ class Especie extends CI_Controller
 		}
 	}
 
-	public function list_especies()
+	public function list_especies_activas()
 	{
-		$list = $this->especie->get_datatables();
+		$list = $this->especie->get_datatables_activas();
 		$data = array();
 		$no = $_POST['start'];
 		$i = 1;
@@ -55,9 +55,6 @@ class Especie extends CI_Controller
 					</a>
 					<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_especie('."'".$especie->id_esp."'".')">
 						<i class="icon-pencil"></i>
-					</a>
-					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_especie('."'".$especie->id_esp."'".')">
-						<i class="icon-trash"></i>
 					</a>';
 			}
 			else{
@@ -65,8 +62,8 @@ class Especie extends CI_Controller
 					'<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_especie('."'".$especie->id_esp."'".')">
 						<i class="icon-pencil"></i>
 					</a>
-					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_especie('."'".$especie->id_esp."'".')">
-						<i class="icon-trash"></i>
+					<a class="btn btn-link" href="javascript:void(0)" title="Desactivar" onclick="desactivate_especie('."'".$especie->id_esp."'".')">
+						<i class="icon-ban"></i>
 					</a>';
 			}
 			$data[] = $row;
@@ -76,7 +73,46 @@ class Especie extends CI_Controller
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->especie->count_all(),
-			"recordsFiltered" => $this->especie->count_filtered(),
+			"recordsFiltered" => $this->especie->count_filtered_activas(),
+			"data" => $data
+		);
+		echo json_encode($output);
+	}
+
+	public function list_especies_inactivas()
+	{
+		$list = $this->especie->get_datatables_inactivas();
+		$data = array();
+		$no = $_POST['start'];
+		$i = 1;
+		foreach ($list as $especie)
+		{
+			$no++;
+			$row = array();
+			$row[] = $i;
+			$row[] = $especie->codigo;
+			$row[] = $especie->nom_cmn;
+			$row[] = $especie->tipo;
+			$row[] = $especie->poblacion;
+			if($this->session->userdata('nivel') == 1)
+			{
+				$row[] =
+					'<a class="btn btn-link" href="javascript:void(0)" title="Activar" onclick="activate_especie('."'".$especie->id_esp."'".')">
+						<i class="icon-check"></i>
+					</a>';
+			}
+			else
+			{
+				$row[] = 'No puedes realizar ninguna acción.';
+			}
+			$data[] = $row;
+			$i++;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->especie->count_all(),
+			"recordsFiltered" => $this->especie->count_filtered_inactivas(),
 			"data" => $data
 		);
 		echo json_encode($output);
@@ -325,19 +361,35 @@ class Especie extends CI_Controller
 		echo json_encode(array("status" => TRUE));
 	}
 
-	public function delete_especie($id_esp)
+	public function activate_especie($id_esp)
 	{
 		$query = $this->especie->get_by_id($id_esp);
 		$especie = $query['nom_cmn'];
 
 		$bitacora = array(
 			'tipo' => 'Especie',
-			'movimiento' => 'Se ha eliminado el especie '.$especie.'.',
+			'movimiento' => 'Se ha activado el especie '.$especie.'.',
 			'usuario' => $this->session->userdata('id_usuario')
 		);		
 
 		$this->bitacora->set($bitacora);
-		$this->especie->delete_by_id($id_esp);
+		$this->especie->activate_by_id($id_esp);
+		echo json_encode(array("status" => TRUE));
+	}
+
+	public function desactivate_especie($id_esp)
+	{
+		$query = $this->especie->get_by_id($id_esp);
+		$especie = $query['nom_cmn'];
+
+		$bitacora = array(
+			'tipo' => 'Especie',
+			'movimiento' => 'Se ha desactivado el especie '.$especie.'.',
+			'usuario' => $this->session->userdata('id_usuario')
+		);		
+
+		$this->bitacora->set($bitacora);
+		$this->especie->desactivate_by_id($id_esp);
 		echo json_encode(array("status" => TRUE));
 	}
 

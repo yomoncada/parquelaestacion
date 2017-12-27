@@ -1,14 +1,33 @@
 var save_method;
-var donantes;
+var donantes_activos;
+var donantes_inactivos;
 
 $(document).ready(function(){
-	donantes = $('#donantes').DataTable({ 
+	donantes_activos = $('#donantes_activos').DataTable({ 
 		"processing": true,
 		"serverSide": true,
 		"order": [],
 
 		"ajax":{
-			"url": "http://localhost/parque/index.php/donante/list_donantes",
+			"url": "http://localhost/parque/index.php/donante/list_donantes_activos",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
+	donantes_inactivos = $('#donantes_inactivos').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/donante/list_donantes_inactivos",
 			"type": "POST"
 		},
 
@@ -207,10 +226,10 @@ function save_donante(){
 	});
 }
 
-function delete_donante(id_don){  
+function activate_donante(id_don){  
 	swal({
 		title: "Advertencia",
-		text: "¿Deseas eliminar este donante?",
+		text: "¿Deseas activar este donante?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#f8ac59",
@@ -218,7 +237,7 @@ function delete_donante(id_don){
 		cancelButtonText: "No"
 	}).then(function (){
 		$.ajax({
-			url : "http://localhost/parque/index.php/donante/delete_donante/" + id_don,
+			url : "http://localhost/parque/index.php/donante/activate_donante/" + id_don,
 			type: "POST",
 			dataType: "JSON",
 			success: function(data){
@@ -233,16 +252,53 @@ function delete_donante(id_don){
 				});
 			}
 		});
-		swal("Éxito", "¡El donante fue eliminado!", "success");
+		swal("Éxito", "¡El donante fue activado!", "success");
 	}, function (dismiss){
         // dismiss can be 'cancel', 'overlay',
         // 'close', and 'timer'
         if (dismiss === 'cancel') {
-        	swal("Aviso", "¡La eliminación fue cancelada!", "info");
+        	swal("Aviso", "¡La activación fue cancelada!", "info");
+        }
+    })
+}
+
+function desactivate_donante(id_don){  
+	swal({
+		title: "Advertencia",
+		text: "¿Deseas desactivar este donante?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#f8ac59",
+		confirmButtonText: "Sí",
+		cancelButtonText: "No"
+	}).then(function (){
+		$.ajax({
+			url : "http://localhost/parque/index.php/donante/desactivate_donante/" + id_don,
+			type: "POST",
+			dataType: "JSON",
+			success: function(data){
+				$('#donante-modal').modal('hide');
+				reload_donantes();
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+				swal({
+					title: "Error",
+					text: "¡Ha ocurrido un error!",
+					type: "error"
+				});
+			}
+		});
+		swal("Éxito", "¡El donante fue desactivado!", "success");
+	}, function (dismiss){
+        // dismiss can be 'cancel', 'overlay',
+        // 'close', and 'timer'
+        if (dismiss === 'cancel') {
+        	swal("Aviso", "¡La desactivación fue cancelada!", "info");
         }
     })
 }
 
 function reload_donantes(){
-	donantes.ajax.reload(null,false);
+	donantes_activos.ajax.reload(null,false);
+	donantes_inactivos.ajax.reload(null,false);
 }

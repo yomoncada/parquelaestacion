@@ -21,6 +21,7 @@ class Sistema extends CI_Controller
 		$this->load->model('especie_model','especie');
 		$this->load->model('implemento_model','implemento');
 		$this->load->model('mantenimiento_model','mantenimiento');
+		$this->load->model('nivel_model','nivel');
 		$this->load->model('reforestacion_model','reforestacion');
 		$this->load->model('usuario_model','usuario');
 	}
@@ -53,14 +54,35 @@ class Sistema extends CI_Controller
 
 			if($validacion > 0)
 			{
-				$datos = $this->usuario->get($usuario,$contrasena);
+				$usuarioo = $this->usuario->get($usuario,$contrasena);
+				$nivel = $this->nivel->get_by_id($usuarioo->nivel);
 
 				$data = array(
 					'is_logued_in' 	=> 		TRUE,
-					'id_usuario' 	=> 		$datos->id_usu,
-					'nivel'		=>		$datos->nivel,
-					'usuario' 		=> 		$datos->usuario,
-					'avatar' => $datos->avatar
+					'id_usuario' 	=> 		$usuarioo->id_usu,
+					'nivel'		=>		$usuarioo->nivel,
+					'usuario' 		=> 		$usuarioo->usuario,
+					'avatar' => $usuarioo->avatar,
+					'esp_access' => $nivel->esp_access,
+					'are_access' => $nivel->are_access,
+					'cab_access' => $nivel->cab_access,
+					'can_access' => $nivel->can_access,
+					'edi_access' => $nivel->edi_access,
+					'cat_access' => $nivel->cat_access,
+					'imp_access' => $nivel->imp_access,
+					'ben_access' => $nivel->ben_access,
+					'car_access' => $nivel->car_access,
+					'don_access' => $nivel->don_access,
+					'emp_access' => $nivel->emp_access,
+					'cen_access' => $nivel->cen_access,
+					'dnc_access' => $nivel->dnc_access,
+					'man_access' => $nivel->man_access,
+					'ref_access' => $nivel->ref_access,
+					'ser_access' => $nivel->ser_access,
+					'bd_access' => $nivel->bd_access,
+					'bit_access' => $nivel->bit_access,
+					'usu_access' => $nivel->usu_access,
+					'niv_access' => $nivel->niv_access
 				);
 				$this->session->set_userdata($data);
 
@@ -71,11 +93,18 @@ class Sistema extends CI_Controller
 		        );		
 
       			$this->bitacora->set($bitacora);
-				echo json_encode(array("status" => TRUE));
+				$data = array(
+					'status' => TRUE
+				);
+				echo json_encode($data);
 			}
 			else
 			{
-				echo json_encode(array("empty" => FALSE));
+				$data = array(
+					'status' => FALSE,
+					'swalx' => 1
+				);
+				echo json_encode($data);
 			}
 		}
 	}
@@ -115,6 +144,8 @@ class Sistema extends CI_Controller
 		          'mantenimientos' => $this->mantenimiento->count_all(),
 		          'reforestaciones' => $this->reforestacion->count_all()
 	        	);
+
+                $this->session->unset_userdata('proceso');
 
 		        $this->load->view('templates/links');
 		        $this->load->view('templates/header');

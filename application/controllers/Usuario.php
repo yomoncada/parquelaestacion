@@ -12,7 +12,7 @@ class Usuario extends CI_Controller
 	
 	public function index()
 	{
-		if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('nivel') === 'Administrador(a)')
+		if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('usu_access') == 1)
 		{
 			$data = array(
 	    		'controller' => 'usuarios',
@@ -31,9 +31,9 @@ class Usuario extends CI_Controller
 	    }
 	}
 
-	public function list_usuarios()
+	public function list_usuarios_activos()
 	{
-		$list = $this->usuario->get_datatables();
+		$list = $this->usuario->get_datatables_activos();
 		$data = array();
 		$no = $_POST['start'];
 		$i = 1;
@@ -50,8 +50,8 @@ class Usuario extends CI_Controller
 						<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_usuario('."'".$usuario->id_usu."'".')">
 							<i class="icon-pencil"></i>
 					  	</a>
-					  	<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_usuario('."'".$usuario->id_usu."'".')">
-							<i class="icon-trash"></i>
+					  	<a class="btn btn-link" href="javascript:void(0)" title="Desactivar" onclick="desactivate_usuario('."'".$usuario->id_usu."'".')">
+							<i class="icon-ban"></i>
 					  	</a>';
 			$data[] = $row;
 			$i++;
@@ -60,7 +60,44 @@ class Usuario extends CI_Controller
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->usuario->count_all(),
-			"recordsFiltered" => $this->usuario->count_filtered(),
+			"recordsFiltered" => $this->usuario->count_filtered_activos(),
+			"data" => $data
+		);
+		echo json_encode($output);
+	}
+
+	public function list_usuarios_inactivos()
+	{
+		$list = $this->usuario->get_datatables_inactivos();
+		$data = array();
+		$no = $_POST['start'];
+		$i = 1;
+		foreach ($list as $usuario)
+		{
+			$no++;
+			$row = array();
+			$row[] = $i;
+			$row[] = $usuario->usuario;
+			$row[] = $usuario->nivel;
+			if($this->session->userdata('nivel') == 1)
+			{
+				$row[] =
+					'<a class="btn btn-link" href="javascript:void(0)" title="Activar" onclick="activate_usuario('."'".$usuario->id_usu."'".')">
+						<i class="icon-check"></i>
+					</a>';
+			}
+			else
+			{
+				$row[] = 'No puedes realizar ninguna acción.';
+			}
+			$data[] = $row;
+			$i++;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->usuario->count_all(),
+			"recordsFiltered" => $this->usuario->count_filtered_inactivos(),
 			"data" => $data
 		);
 		echo json_encode($output);
@@ -181,19 +218,35 @@ class Usuario extends CI_Controller
 		}
 	}
 
-	public function delete_usuario($id_usu)
+	public function activate_usuario($id_usu)
 	{
 		$query = $this->usuario->get_by_id($id_usu);
 		$usuario = $query['usuario'];
 
 		$bitacora = array(
 			'tipo' => 'Usuario',
-			'movimiento' => 'Se ha eliminado la usuario <a href="http://localhost/parque/index.php/perfil/view/'.$usuario.'">'.$usuario.'</a>',
+			'movimiento' => 'Se ha activado la usuario <a href="http://localhost/parque/index.php/perfil/view/'.$usuario.'">'.$usuario.'</a>',
 			'usuario' => $this->session->userdata('id_usuario')
 		);		
 
 		$this->bitacora->set($bitacora);
-		$this->usuario->delete_by_id($id_usu);
+		$this->usuario->activate_by_id($id_usu);
+		echo json_encode(array("status" => TRUE));
+	}
+
+	public function desactivate_usuario($id_usu)
+	{
+		$query = $this->usuario->get_by_id($id_usu);
+		$usuario = $query['usuario'];
+
+		$bitacora = array(
+			'tipo' => 'Usuario',
+			'movimiento' => 'Se ha desactivado la usuario <a href="http://localhost/parque/index.php/perfil/view/'.$usuario.'">'.$usuario.'</a>',
+			'usuario' => $this->session->userdata('id_usuario')
+		);		
+
+		$this->bitacora->set($bitacora);
+		$this->usuario->desactivate_by_id($id_usu);
 		echo json_encode(array("status" => TRUE));
 	}
 

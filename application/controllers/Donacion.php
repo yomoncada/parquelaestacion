@@ -53,7 +53,7 @@ class Donacion extends CI_Controller
 
     public function index()
     {
-        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('nivel') === 'Administrador(a)')
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('dnc_access') == 1)
         {
             $this->cart_donantes->destroy();
             $this->cart_implementos->destroy();
@@ -87,7 +87,7 @@ class Donacion extends CI_Controller
 
     public function create()
     {
-        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('nivel') === 'Administrador(a)')
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('dnc_access') == 1)
         {
             if($this->session->userdata('proceso') != "donacion")
             {
@@ -124,7 +124,7 @@ class Donacion extends CI_Controller
 
     public function control($id_dnc = NULL)
     {
-        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('nivel') === 'Administrador(a)')
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('dnc_access') == 1)
         {
             if($this->session->userdata('proceso') != "donacion_control" || $id_dnc != $this->session->userdata('numero'))
             {
@@ -484,24 +484,34 @@ class Donacion extends CI_Controller
     public function assign_implemento($id_imp)
     {
         $cantidad = $this->input->get('cantidad');
+        if($cantidad > 0)
+        {
+            $implemento = $this->implemento->get_by_id($id_imp);
+            $implementos = array(
+                'id' => $id_imp,
+                'codigo' => $implemento['codigo'],
+                'nombre' => $implemento['nombre'],
+                'unidad' => $implemento['unidad'],
+                'cantidad' => $cantidad
+            );
 
-        $implemento = $this->implemento->get_by_id($id_imp);
-        $implementos = array(
-            'id' => $id_imp,
-            'codigo' => $implemento['codigo'],
-            'nombre' => $implemento['nombre'],
-            'unidad' => $implemento['unidad'],
-            'cantidad' => $cantidad
-        );
+            $this->cart_implementos->insert($implementos);
 
-        $this->cart_implementos->insert($implementos);
-
-        if($this->cart_implementos->insert($implementos) === md5($id_imp))
+            if($this->cart_implementos->insert($implementos) === md5($id_imp))
+            {
+                $data = array(
+                    'title' => 'Éxito',
+                    'text' => '¡El implemento fue asignado!',
+                    'type' => 'success',
+                );
+            }
+        }
+        else
         {
             $data = array(
-                'title' => 'Éxito',
-                'text' => '¡El implemento fue asignado!',
-                'type' => 'success',
+                'title' => 'Error',
+                'text' => '¡No has asignado ningún implemento!',
+                'type' => 'error',
             );
         }
         echo json_encode($data);

@@ -1,15 +1,34 @@
 var save_method;
-var especies;
+var especies_activas;
+var especies_inactivas;
 
 $(document).ready(function ()
 {
-    especies = $('#especies').DataTable({ 
+    especies_activas = $('#especies_activas').DataTable({ 
         "processing": true,
         "serverSide": true,
         "order": [],
 
         "ajax":{
-            "url": "http://localhost/parque/index.php/especie/list_especies",
+            "url": "http://localhost/parque/index.php/especie/list_especies_activas",
+            "type": "POST"
+        },
+
+        "columnDefs": [
+        { 
+            "targets": [ -1 ],
+            "orderable": false,
+        },
+        ],
+    });
+
+    especies_inactivas = $('#especies_inactivas').DataTable({ 
+        "processing": true,
+        "serverSide": true,
+        "order": [],
+
+        "ajax":{
+            "url": "http://localhost/parque/index.php/especie/list_especies_inactivas",
             "type": "POST"
         },
 
@@ -328,10 +347,10 @@ function save_especie(){
     });
 }
 
-function delete_especie(id_esp){  
+function activate_especie(id_esp){  
     swal({
         title: "Advertencia",
-        text: "¿Deseas eliminar este especie?",
+        text: "¿Deseas activar este especie?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#f8ac59",
@@ -339,7 +358,7 @@ function delete_especie(id_esp){
         cancelButtonText: "No"
     }).then(function (){
         $.ajax({
-            url : "http://localhost/parque/index.php/especie/delete_especie/" + id_esp,
+            url : "http://localhost/parque/index.php/especie/activate_especie/" + id_esp,
             type: "POST",
             dataType: "JSON",
             success: function (data)
@@ -356,16 +375,55 @@ function delete_especie(id_esp){
                 });
             }
         });
-        swal("Éxito", "¡La especie fue eliminada!", "success");
+        swal("Éxito", "¡La especie fue activada!", "success");
     }, function (dismiss){
         // dismiss can be 'cancel', 'overlay',
         // 'close', and 'timer'
         if(dismiss === 'cancel'){
-            swal("Aviso", "¡La eliminación fue cancelada!", "info");
+            swal("Aviso", "¡La activación fue cancelada!", "info");
+        }
+    })
+}
+
+function desactivate_especie(id_esp){  
+    swal({
+        title: "Advertencia",
+        text: "¿Deseas desactivar este especie?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#f8ac59",
+        confirmButtonText: "Sí",
+        cancelButtonText: "No"
+    }).then(function (){
+        $.ajax({
+            url : "http://localhost/parque/index.php/especie/desactivate_especie/" + id_esp,
+            type: "POST",
+            dataType: "JSON",
+            success: function (data)
+            {
+                $('#especie-modal').modal('hide');
+                reload_especies();
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                swal({
+                    title: "Error",
+                    text: "¡Ha ocurrido un error!",
+                    type: "error"
+                });
+            }
+        });
+        swal("Éxito", "¡La especie fue desactivada!", "success");
+    }, function (dismiss){
+        // dismiss can be 'cancel', 'overlay',
+        // 'close', and 'timer'
+        if(dismiss === 'cancel'){
+            swal("Aviso", "¡La desactivación fue cancelada!", "info");
         }
     })
 }
 
 function reload_especies(){
-    especies.ajax.reload(null,false);
+    especies_activas.ajax.reload(null,false);
+    especies_inactivas.ajax.reload(null,false);
 }

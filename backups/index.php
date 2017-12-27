@@ -103,14 +103,14 @@ if($tables['er'] =='') $html .= '
                     </div>
                     <ul class="nav nav-tabs">
                         <li class="active">
-                            <a href="#tab_1_1" data-toggle="tab" id="tab_frm_cht" class="tabvi">'. $bk->langTxt('msg_show_tables') .'<i class="icon-drawer"></i> Respaldo</a>
+                            <a data-toggle="tab" id="tab_frm_cht" class="tabvi">'. $bk->langTxt('msg_show_tables') .'<i class="icon-drawer"></i> Respaldo</a>
                         </li>
                         <li>
-                            <a href="#tab_1_2" data-toggle="tab" id="tab_frm_zip">'. $bk->langTxt('msg_show_files') .'<i class="icon-reload"></i> Restauración</a>
+                            <a data-toggle="tab" id="tab_frm_zip">'. $bk->langTxt('msg_show_files') .'<i class="icon-reload"></i> Restauración</a>
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane active" id="tab_1_1">
+                        <div class="tab-pane active">
                             <div class="row">
                                 '. $tables['f'] . $bk->getListZip($dir).'   
                             </div>

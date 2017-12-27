@@ -28,6 +28,7 @@ $route['perfil/view/(:any)'] = 'perfil/view/$1';
 $route['mantenimiento'] = 'mantenimiento';
 $route['mantenimiento/control/(:any)'] = 'mantenimiento/control/$1';
 $route['mantenimiento/new'] = 'mantenimiento/create';
+$route['nivel'] = 'nivel';
 $route['reforestacion'] = 'reforestacion';
 $route['downloads'] = 'reporte';
 $route['reforestacion/control/(:any)'] = 'reforestacion/control/$1';

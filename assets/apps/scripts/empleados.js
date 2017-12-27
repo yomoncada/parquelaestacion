@@ -1,14 +1,33 @@
 var save_method;
-var empleados;
+var empleados_activos;
+var empleados_inactivos;
 
 $(document).ready(function (){
-	empleados = $('#empleados').DataTable({ 
+	empleados_activos = $('#empleados_activos').DataTable({ 
 		"processing": true,
 		"serverSide": true,
 		"order": [],
 
 		"ajax":{
-			"url": "http://localhost/parque/index.php/empleado/list_empleados",
+			"url": "http://localhost/parque/index.php/empleado/list_empleados_activos",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
+	empleados_inactivos = $('#empleados_inactivos').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/empleado/list_empleados_inactivos",
 			"type": "POST"
 		},
 
@@ -239,10 +258,10 @@ function save_empleado(){
 	});
 }
 
-function delete_empleado(id_emp){  
+function activate_empleado(id_emp){  
 	swal({
 		title: "Advertencia",
-		text: "¿Deseas eliminar este empleado?",
+		text: "¿Deseas activar este empleado?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#f8ac59",
@@ -250,7 +269,7 @@ function delete_empleado(id_emp){
 		cancelButtonText: "No"
 	}).then(function (){
 		$.ajax({
-			url : "http://localhost/parque/index.php/empleado/delete_empleado/" + id_emp,
+			url : "http://localhost/parque/index.php/empleado/activate_empleado/" + id_emp,
 			type: "POST",
 			dataType: "JSON",
 			success: function (data){
@@ -265,16 +284,53 @@ function delete_empleado(id_emp){
 				});
 			}
 		});
-		swal("Éxito", "¡El empleado fue eliminado!", "success");
+		swal("Éxito", "¡El empleado fue activado!", "success");
 	}, function (dismiss){
         // dismiss can be 'cancel', 'overlay',
         // 'close', and 'timer'
         if(dismiss === 'cancel'){
-          	swal("Aviso", "¡La eliminación fue cancelada!", "info");
+          	swal("Aviso", "¡La activación fue cancelada!", "info");
+        }
+    })
+}
+
+function desactivate_empleado(id_emp){  
+	swal({
+		title: "Advertencia",
+		text: "¿Deseas desactivar este empleado?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#f8ac59",
+		confirmButtonText: "Sí",
+		cancelButtonText: "No"
+	}).then(function (){
+		$.ajax({
+			url : "http://localhost/parque/index.php/empleado/desactivate_empleado/" + id_emp,
+			type: "POST",
+			dataType: "JSON",
+			success: function (data){
+				$('#empleado-modal').modal('hide');
+				reload_empleados();
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+				swal({
+					title: "Error",
+					text: "¡Ha ocurrido un error!",
+					type: "error"
+				});
+			}
+		});
+		swal("Éxito", "¡El empleado fue desactivado!", "success");
+	}, function (dismiss){
+        // dismiss can be 'cancel', 'overlay',
+        // 'close', and 'timer'
+        if(dismiss === 'cancel'){
+          	swal("Aviso", "¡La desactivación fue cancelada!", "info");
         }
     })
 }
 
 function reload_empleados(){
-	empleados.ajax.reload(null,false);
+	empleados_activos.ajax.reload(null,false);
+	empleados_inactivos.ajax.reload(null,false);
 }

@@ -16,19 +16,22 @@ function validate_usuario(){
             if(data.status == true){
                 location.href = "http://localhost/parque/index.php/home";
             }
-            if (data.empty == false){
-                swal({
-                    title: "Error",
-                    text: "¡El usuario y/o la contraseña son incorrectos!.",
-                    type: "error"
-                }); 
-            }
-            
-            if(data.inputerror)
+            else
             {
-                for(var i = 0; i < data.inputerror.length; i++){
-                    $('[name="'+data.inputerror[i]+'"]').parent().addClass('has-error');
-                    $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]);
+                if(data.inputerror)
+                {
+                    for(var i = 0; i < data.inputerror.length; i++){
+                        $('[name="'+data.inputerror[i]+'"]').parent().addClass('has-error');
+                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]);
+                    }
+                }
+                else if(data.swalx == 1)
+                {
+                    swal({
+                        title: "Error",
+                        text: "¡Los datos ingresados son incorrectos!",
+                        type: "error"
+                    });
                 }
             }
         },

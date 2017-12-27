@@ -11,7 +11,7 @@ class Bitacora extends CI_Controller {
 
 	public function index()
 	{
-		if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('nivel') === 'Administrador(a)')
+		if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('bd_access') == 1)
 		{
 			$data = array(
 	    		'controller' => 'bitacoras',

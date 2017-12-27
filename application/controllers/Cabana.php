@@ -13,7 +13,7 @@ class Cabana extends CI_Controller
 
 	public function index()
 	{
-		if($this->session->userdata('is_logued_in') === TRUE)
+		if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('cab_access') == 1)
 		{
 			$data = array(
 	    		'controller' => 'cabanas',
@@ -35,9 +35,9 @@ class Cabana extends CI_Controller
 		}
 	}
 	
-	public function list_cabanas()
+	public function list_cabanas_activas()
 	{
-		$list = $this->cabana->get_datatables();
+		$list = $this->cabana->get_datatables_activas();
 		$data = array();
 		$no = $_POST['start'];
 		$i = 1;
@@ -57,8 +57,8 @@ class Cabana extends CI_Controller
 					<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_cabana('."'".$cabana->id_cab."'".')">
 						<i class="icon-pencil"></i>
 					</a>
-					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_cabana('."'".$cabana->id_cab."'".')">
-						<i class="icon-trash"></i>
+					<a class="btn btn-link" href="javascript:void(0)" title="Desactivar" onclick="desactivate_cabana('."'".$cabana->id_cab."'".')">
+						<i class="icon-ban"></i>
 					</a>';
 			}
 			else{
@@ -66,8 +66,8 @@ class Cabana extends CI_Controller
 					'<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_cabana('."'".$cabana->id_cab."'".')">
 						<i class="icon-pencil"></i>
 					</a>
-					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_cabana('."'".$cabana->id_cab."'".')">
-						<i class="icon-trash"></i>
+					<a class="btn btn-link" href="javascript:void(0)" title="Desactivar" onclick="desactivate_cabana('."'".$cabana->id_cab."'".')">
+						<i class="icon-ban"></i>
 					</a>';
 			}
 			$data[] = $row;
@@ -77,7 +77,59 @@ class Cabana extends CI_Controller
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->cabana->count_all(),
-			"recordsFiltered" => $this->cabana->count_filtered(),
+			"recordsFiltered" => $this->cabana->count_filtered_activas(),
+			"data" => $data
+		);
+		echo json_encode($output);
+	}
+
+	public function list_cabanas_inactivas()
+	{
+		$list = $this->cabana->get_datatables_inactivas();
+		$data = array();
+		$no = $_POST['start'];
+		$i = 1;
+		foreach ($list as $cabana)
+		{
+			$no++;
+			$row = array();
+			$row[] = $i;
+			$row[] = $cabana->numero;
+			$row[] = $cabana->area;
+			$row[] = $cabana->capacidad;
+			if($this->session->userdata('proceso') == "servicio" || $this->session->userdata('proceso') == "servicio_control"){
+				$row[] =
+					'<a class="btn btn-link" href="javascript:void(0)" title="Agregar" onclick="assign_cabana('."'".$cabana->id_cab."'".')">
+						<i class="icon-plus"></i>
+					</a>
+					<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_cabana('."'".$cabana->id_cab."'".')">
+						<i class="icon-pencil"></i>
+					</a>
+					<a class="btn btn-link" href="javascript:void(0)" title="Activar" onclick="activate_cabana('."'".$cabana->id_cab."'".')">
+						<i class="icon-check"></i>
+					</a>';
+			}
+			else{
+				if($this->session->userdata('nivel') == 1)
+				{
+					$row[] =
+						'<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="activate_cabana('."'".$cabana->id_cab."'".')">
+							<i class="icon-check"></i>
+						</a>';
+				}
+				else
+				{
+					$row[] = 'No puedes realizar ninguna acción.';
+				}
+			}
+			$data[] = $row;
+			$i++;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->cabana->count_all(),
+			"recordsFiltered" => $this->cabana->count_filtered_inactivas(),
 			"data" => $data
 		);
 		echo json_encode($output);
@@ -184,19 +236,35 @@ class Cabana extends CI_Controller
 		echo json_encode(array("status" => TRUE));
 	}
 
-	public function delete_cabana($id_cab)
+	public function activate_cabana($id_cab)
 	{
 		$query = $this->cabana->get_by_id($id_cab);
 		$cabana = $query['numero'];
 
 		$bitacora = array(
 			'tipo' => 'Cabaña',
-			'movimiento' => 'Se ha eliminado la cabaña número '.$cabana.'.',
+			'movimiento' => 'Se ha activado la cabaña número '.$cabana.'.',
 			'usuario' => $this->session->userdata('id_usuario')
 		);		
 
 		$this->bitacora->set($bitacora);
-		$this->cabana->delete_by_id($id_cab);
+		$this->cabana->activate_by_id($id_cab);
+		echo json_encode(array("status" => TRUE));
+	}
+
+	public function desactivate_cabana($id_cab)
+	{
+		$query = $this->cabana->get_by_id($id_cab);
+		$cabana = $query['numero'];
+
+		$bitacora = array(
+			'tipo' => 'Cabaña',
+			'movimiento' => 'Se ha desactivado la cabaña número '.$cabana.'.',
+			'usuario' => $this->session->userdata('id_usuario')
+		);		
+
+		$this->bitacora->set($bitacora);
+		$this->cabana->desactivate_by_id($id_cab);
 		echo json_encode(array("status" => TRUE));
 	}
 

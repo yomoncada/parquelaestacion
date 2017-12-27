@@ -2,13 +2,31 @@ var save_method;
 var usuarios;
 
 $(document).ready(function (){
-    usuarios = $('#usuarios').DataTable({ 
+    usuarios_activos = $('#usuarios_activos').DataTable({ 
         "processing": true,
         "serverSide": true,
         "order": [],
 
         "ajax":{
-            "url": "http://localhost/parque/index.php/usuario/list_usuarios",
+            "url": "http://localhost/parque/index.php/usuario/list_usuarios_activos",
+            "type": "POST"
+        },
+
+        "columnDefs": [
+        { 
+            "targets": [ -1 ],
+            "orderable": false,
+        },
+        ],
+    });
+
+    usuarios_inactivos = $('#usuarios_inactivos').DataTable({ 
+        "processing": true,
+        "serverSide": true,
+        "order": [],
+
+        "ajax":{
+            "url": "http://localhost/parque/index.php/usuario/list_usuarios_inactivos",
             "type": "POST"
         },
 
@@ -323,10 +341,10 @@ function save_usuario(){
 
 
 
-function delete_usuario(id_usu){  
+function activate_usuario(id_usu){  
     swal({
         title: "Advertencia",
-        text: "¿Deseas eliminar este usuario?",
+        text: "¿Deseas activar este usuario?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#f8ac59",
@@ -334,7 +352,7 @@ function delete_usuario(id_usu){
         cancelButtonText: "No"
     }).then(function (){
         $.ajax({
-            url : "http://localhost/parque/index.php/usuario/delete_usuario/" + id_usu,
+            url : "http://localhost/parque/index.php/usuario/activate_usuario/" + id_usu,
             type: "POST",
             dataType: "JSON",
             success: function (data)
@@ -351,16 +369,55 @@ function delete_usuario(id_usu){
               });
             }
         });
-        swal("Éxito", "¡El usuario fue eliminado!", "success");
+        swal("Éxito", "¡El usuario fue activado!", "success");
     }, function (dismiss){
         // dismiss can be 'cancel', 'overlay',
         // 'close', and 'timer'
         if(dismiss === 'cancel'){
-            swal("Aviso", "¡La eliminación fue cancelada!", "info");
+            swal("Aviso", "¡La activación fue cancelada!", "info");
+        }
+    })
+}
+
+function desactivate_usuario(id_usu){  
+    swal({
+        title: "Advertencia",
+        text: "¿Deseas desactivar este usuario?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#f8ac59",
+        confirmButtonText: "Sí",
+        cancelButtonText: "No"
+    }).then(function (){
+        $.ajax({
+            url : "http://localhost/parque/index.php/usuario/desactivate_usuario/" + id_usu,
+            type: "POST",
+            dataType: "JSON",
+            success: function (data)
+            {
+                $('#usuario-modal').modal('hide');
+                reload_usuarios();
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                swal({
+                  title: "Error",
+                  text: "¡Ha ocurrido un error!",
+                  type: "error"
+              });
+            }
+        });
+        swal("Éxito", "¡El usuario fue desactivado!", "success");
+    }, function (dismiss){
+        // dismiss can be 'cancel', 'overlay',
+        // 'close', and 'timer'
+        if(dismiss === 'cancel'){
+            swal("Aviso", "¡La desactivación fue cancelada!", "info");
         }
     })
 }
 
 function reload_usuarios(){
-    usuarios.ajax.reload(null,false);
+    usuarios_activos.ajax.reload(null,false);
+    usuarios_inactivos.ajax.reload(null,false);
 }

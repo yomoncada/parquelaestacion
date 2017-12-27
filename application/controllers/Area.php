@@ -12,7 +12,7 @@ class Area extends CI_Controller
 
 	public function index()
 	{
-		if($this->session->userdata('is_logued_in') === TRUE)
+		if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('are_access') == 1)
 		{
 			$data = array(
 	    		'controller' => 'areas',
@@ -33,9 +33,9 @@ class Area extends CI_Controller
 		}
 	}
 	
-	public function list_areas()
+	public function list_areas_activas()
 	{
-		$list = $this->area->get_datatables();
+		$list = $this->area->get_datatables_activas();
 		$data = array();
 		$no = $_POST['start'];
 		$i = 1;
@@ -54,9 +54,6 @@ class Area extends CI_Controller
 					</a>
 					<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_area('."'".$area->id_are."'".')">
 						<i class="icon-pencil"></i>
-					</a>
-					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_area('."'".$area->id_are."'".')">
-						<i class="icon-trash"></i>
 					</a>';
 			}
 			else{
@@ -64,8 +61,8 @@ class Area extends CI_Controller
 					'<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_area('."'".$area->id_are."'".')">
 						<i class="icon-pencil"></i>
 					</a>
-					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_area('."'".$area->id_are."'".')">
-						<i class="icon-trash"></i>
+					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="desactivate_area('."'".$area->id_are."'".')">
+						<i class="icon-ban"></i>
 					</a>';
 			}
 			$data[] = $row;
@@ -75,7 +72,45 @@ class Area extends CI_Controller
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->area->count_all(),
-			"recordsFiltered" => $this->area->count_filtered(),
+			"recordsFiltered" => $this->area->count_filtered_activas(),
+			"data" => $data
+		);
+		echo json_encode($output);
+	}
+
+	public function list_areas_inactivas()
+	{
+		$list = $this->area->get_datatables_inactivas();
+		$data = array();
+		$no = $_POST['start'];
+		$i = 1;
+		foreach ($list as $area)
+		{
+			$no++;
+			$row = array();
+			$row[] = $i;
+			$row[] = $area->codigo;
+			$row[] = $area->area;
+			$row[] = $area->ubicacion;
+			if($this->session->userdata('nivel') == 1)
+			{
+				$row[] =
+					'<a class="btn btn-link" href="javascript:void(0)" title="Activar" onclick="activate_area('."'".$area->id_are."'".')">
+						<i class="icon-check"></i>
+					</a>';
+			}
+			else
+			{
+				$row[] = 'No puedes realizar ninguna acción.';
+			}
+			$data[] = $row;
+			$i++;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->area->count_all(),
+			"recordsFiltered" => $this->area->count_filtered_inactivas(),
 			"data" => $data
 		);
 		echo json_encode($output);
@@ -178,19 +213,35 @@ class Area extends CI_Controller
 		echo json_encode(array("status" => TRUE));
 	}
 
-	public function delete_area($id_are)
+	public function activate_area($id_are)
 	{
 		$query = $this->area->get_by_id($id_are);
 		$area = $query['area'];
 
 		$bitacora = array(
 			'tipo' => 'Area',
-			'movimiento' => 'Se ha eliminado el area '.$area.'.',
+			'movimiento' => 'Se ha activado el area '.$area.'.',
 			'usuario' => $this->session->userdata('id_usuario')
 		);		
 
 		$this->bitacora->set($bitacora);
-		$this->area->delete_by_id($id_are);
+		$this->area->activate_by_id($id_are);
+		echo json_encode(array("status" => TRUE));
+	}
+
+	public function desactivate_area($id_are)
+	{
+		$query = $this->area->get_by_id($id_are);
+		$area = $query['area'];
+
+		$bitacora = array(
+			'tipo' => 'Area',
+			'movimiento' => 'Se ha desactivado el area '.$area.'.',
+			'usuario' => $this->session->userdata('id_usuario')
+		);		
+
+		$this->bitacora->set($bitacora);
+		$this->area->desactivate_by_id($id_are);
 		echo json_encode(array("status" => TRUE));
 	}
 

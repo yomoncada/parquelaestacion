@@ -1,14 +1,33 @@
 var save_method;
-var beneficiarios;
+var beneficiarios_activos;
+var beneficiarios_inactivos;
 
 $(document).ready(function (){
-	beneficiarios = $('#beneficiarios').DataTable({ 
+	beneficiarios_activos = $('#beneficiarios_activos').DataTable({ 
 		"processing": true,
 		"serverSide": true,
 		"order": [],
 
 		"ajax":{
-			"url": "http://localhost/parque/index.php/beneficiario/list_beneficiarios",
+			"url": "http://localhost/parque/index.php/beneficiario/list_beneficiarios_activos",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
+	beneficiarios_inactivos = $('#beneficiarios_inactivos').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/beneficiario/list_beneficiarios_inactivos",
 			"type": "POST"
 		},
 
@@ -209,10 +228,10 @@ function save_beneficiario(){
 	});
 }
 
-function delete_beneficiario(id_ben){  
+function activate_beneficiario(id_ben){  
 	swal({
 		title: "Advertencia",
-		text: "¿Deseas eliminar este beneficiario?",
+		text: "¿Deseas activar este beneficiario?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#f8ac59",
@@ -220,7 +239,7 @@ function delete_beneficiario(id_ben){
 		cancelButtonText: "No"
 	}).then(function (){
 		$.ajax({
-			url : "http://localhost/parque/index.php/beneficiario/delete_beneficiario/" + id_ben,
+			url : "http://localhost/parque/index.php/beneficiario/activate_beneficiario/" + id_ben,
 			type: "POST",
 			dataType: "JSON",
 			success: function (data){
@@ -235,16 +254,53 @@ function delete_beneficiario(id_ben){
 				});
 			}
 		});
-		swal("Éxito", "¡El beneficiario fue eliminado!", "success");
+		swal("Éxito", "¡El beneficiario fue activado!", "success");
 	}, function (dismiss){
        	// dismiss can be 'cancel', 'overlay',
         // 'close', and 'timer'
         if(dismiss === 'cancel'){
-            swal("Aviso", "¡La eliminación fue cancelada!", "info");
+            swal("Aviso", "¡La activación fue cancelada!", "info");
+        }
+    })
+}
+
+function desactivate_beneficiario(id_ben){  
+	swal({
+		title: "Advertencia",
+		text: "¿Deseas desactivar este beneficiario?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#f8ac59",
+		confirmButtonText: "Sí",
+		cancelButtonText: "No"
+	}).then(function (){
+		$.ajax({
+			url : "http://localhost/parque/index.php/beneficiario/desactivate_beneficiario/" + id_ben,
+			type: "POST",
+			dataType: "JSON",
+			success: function (data){
+				$('#beneficiario-modal').modal('hide');
+				reload_beneficiarios();
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+				swal({
+					title: "Error",
+					text: "¡Ha ocurrido un error!",
+					type: "error"
+				});
+			}
+		});
+		swal("Éxito", "¡El beneficiario fue desactivado!", "success");
+	}, function (dismiss){
+       	// dismiss can be 'cancel', 'overlay',
+        // 'close', and 'timer'
+        if(dismiss === 'cancel'){
+            swal("Aviso", "¡La desactivación fue cancelada!", "info");
         }
     })
 }
 
 function reload_beneficiarios(){
-	beneficiarios.ajax.reload(null,false);
+	beneficiarios_activos.ajax.reload(null,false);
+	beneficiarios_inactivos.ajax.reload(null,false);
 }

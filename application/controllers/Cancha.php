@@ -13,7 +13,7 @@ class Cancha extends CI_Controller
 
 	public function index()
 	{
-		if($this->session->userdata('is_logued_in') === TRUE)
+		if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('can_access') == 1)
 		{
 			$data = array(
 	    		'controller' => 'canchas',
@@ -35,9 +35,9 @@ class Cancha extends CI_Controller
 		}
 	}
 	
-	public function list_canchas()
+	public function list_canchas_activas()
 	{
-		$list = $this->cancha->get_datatables();
+		$list = $this->cancha->get_datatables_activas();
 		$data = array();
 		$no = $_POST['start'];
 		$i = 1;
@@ -58,8 +58,8 @@ class Cancha extends CI_Controller
 					<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_cancha('."'".$cancha->id_can."'".')">
 						<i class="icon-pencil"></i>
 					</a>
-					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_cancha('."'".$cancha->id_can."'".')">
-						<i class="icon-trash"></i>
+					<a class="btn btn-link" href="javascript:void(0)" title="Desactivar" onclick="desactivate_cancha('."'".$cancha->id_can."'".')">
+						<i class="icon-ban"></i>
 					</a>';
 			}
 			else{
@@ -67,8 +67,8 @@ class Cancha extends CI_Controller
 					'<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_cancha('."'".$cancha->id_can."'".')">
 						<i class="icon-pencil"></i>
 					</a>
-					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_cancha('."'".$cancha->id_can."'".')">
-						<i class="icon-trash"></i>
+					<a class="btn btn-link" href="javascript:void(0)" title="Desactivar" onclick="desactivate_cancha('."'".$cancha->id_can."'".')">
+						<i class="icon-ban"></i>
 					</a>';
 			}
 			$data[] = $row;
@@ -78,7 +78,60 @@ class Cancha extends CI_Controller
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->cancha->count_all(),
-			"recordsFiltered" => $this->cancha->count_filtered(),
+			"recordsFiltered" => $this->cancha->count_filtered_activas(),
+			"data" => $data
+		);
+		echo json_encode($output);
+	}
+
+	public function list_canchas_inactivas()
+	{
+		$list = $this->cancha->get_datatables_inactivas();
+		$data = array();
+		$no = $_POST['start'];
+		$i = 1;
+		foreach ($list as $cancha)
+		{
+			$no++;
+			$row = array();
+			$row[] = $i;
+			$row[] = $cancha->numero;
+			$row[] = $cancha->nombre;
+			$row[] = $cancha->area;
+			$row[] = $cancha->capacidad;
+			if($this->session->userdata('proceso') == "servicio" || $this->session->userdata('proceso') == "servicio_control"){
+				$row[] =
+					'<a class="btn btn-link" href="javascript:void(0)" title="Agregar" onclick="assign_cancha('."'".$cancha->id_can."'".')">
+						<i class="icon-plus"></i>
+					</a>
+					<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_cancha('."'".$cancha->id_can."'".')">
+						<i class="icon-pencil"></i>
+					</a>
+					<a class="btn btn-link" href="javascript:void(0)" title="Activar" onclick="activate_cancha('."'".$cancha->id_can."'".')">
+						<i class="icon-check"></i>
+					</a>';
+			}
+			else{
+				if($this->session->userdata('nivel') == 1)
+				{
+					$row[] =
+						'<a class="btn btn-link" href="javascript:void(0)" title="Activar" onclick="activate_cancha('."'".$cancha->id_can."'".')">
+							<i class="icon-check"></i>
+						</a>';
+				}
+				else
+				{
+					$row[] = 'No puedes realizar ninguna acción.';
+				}
+			}
+			$data[] = $row;
+			$i++;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->cancha->count_all(),
+			"recordsFiltered" => $this->cancha->count_filtered_inactivas(),
 			"data" => $data
 		);
 		echo json_encode($output);
@@ -187,19 +240,35 @@ class Cancha extends CI_Controller
 		echo json_encode(array("status" => TRUE));
 	}
 
-	public function delete_cancha($id_can)
+	public function activate_cancha($id_can)
 	{
 		$query = $this->cancha->get_by_id($id_can);
 		$cancha = $query['numero'];
 
 		$bitacora = array(
 			'tipo' => 'Cancha',
-			'movimiento' => 'Se ha eliminado el cancha número '.$cancha.'.',
+			'movimiento' => 'Se ha activado la cancha número '.$cancha.'.',
 			'usuario' => $this->session->userdata('id_usuario')
 		);		
 
 		$this->bitacora->set($bitacora);
-		$this->cancha->delete_by_id($id_can);
+		$this->cancha->activate_by_id($id_can);
+		echo json_encode(array("status" => TRUE));
+	}
+
+	public function desactivate_cancha($id_can)
+	{
+		$query = $this->cancha->get_by_id($id_can);
+		$cancha = $query['numero'];
+
+		$bitacora = array(
+			'tipo' => 'Cancha',
+			'movimiento' => 'Se ha desactivado la cancha número '.$cancha.'.',
+			'usuario' => $this->session->userdata('id_usuario')
+		);		
+
+		$this->bitacora->set($bitacora);
+		$this->cancha->desactivate_by_id($id_can);
 		echo json_encode(array("status" => TRUE));
 	}
 

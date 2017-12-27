@@ -13,7 +13,7 @@ class Cabana_model extends CI_Model {
 		parent::__construct();
 	}
 
-	private function _get_datatables_query()
+	private function _get_datatables_query_activas()
 	{
 		$this->db->select('cab.id_cab, cab.numero, are.area, cab.capacidad, cab.estado');
     	$this->db->from('cabanas cab');
@@ -54,18 +54,75 @@ class Cabana_model extends CI_Model {
 		}
 	}
 
-	function get_datatables()
+	private function _get_datatables_query_inactivas()
 	{
-		$this->_get_datatables_query();
+		$this->db->select('cab.id_cab, cab.numero, are.area, cab.capacidad, cab.estado');
+    	$this->db->from('cabanas cab');
+	    $this->db->join('areas are','cab.area = are.id_are');
+		$this->db->where('cab.estado','Inactiva');
+
+		$i = 0;
+
+		foreach ($this->column_search as $item)
+		{
+			if($_POST['search']['value'])
+			{
+				
+				if($i===0)
+				{
+					$this->db->group_start();
+					$this->db->like($item, $_POST['search']['value']);
+				}
+				else
+				{
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+
+				if(count($this->column_search) - 1 == $i)
+					$this->db->group_end();
+				}
+				$i++;
+			}
+
+		if(isset($_POST['order']))
+		{
+			$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} 
+		else if(isset($this->order))
+		{
+			$order = $this->order;
+			$this->db->order_by(key($order), $order[key($order)]);
+		}
+	}
+
+	function get_datatables_activas()
+	{
+		$this->_get_datatables_query_activas();
 		if($_POST['length'] != -1)
 			$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
 		return $query->result();
 	}
 
-	function count_filtered()
+	function get_datatables_inactivas()
 	{
-		$this->_get_datatables_query();
+		$this->_get_datatables_query_inactivas();
+		if($_POST['length'] != -1)
+			$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function count_filtered_activas()
+	{
+		$this->_get_datatables_query_activas();
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	function count_filtered_inactivas()
+	{
+		$this->_get_datatables_query_inactivas();
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
@@ -104,7 +161,14 @@ class Cabana_model extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
-	public function delete_by_id($id_cab)
+	public function activate_by_id($id_cab)
+	{
+		$this->db->set('estado','Activa');
+	    $this->db->where('id_cab', $id_cab);
+	    $this->db->update($this->table);
+	}
+
+	public function desactivate_by_id($id_cab)
 	{
 		$this->db->set('estado','Inactiva');
 	    $this->db->where('id_cab', $id_cab);

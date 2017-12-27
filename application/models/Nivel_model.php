@@ -1,24 +1,23 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Cancha_model extends CI_Model {
+class Nivel_model extends CI_Model {
 
-	var $table = 'canchas';
-	var $column_order = array('can.numero','can.nombre','are.area','can.capacidad','can.disponibilidad',null);
-	var $column_search = array('can.numero','can.nombre','are.area','can.capacidad','can.disponibilidad');
-	var $order = array('numero' => 'asc');
+	var $table = 'niveles';
+	var $column_order = array('id_niv','nivel',null);
+	var $column_search = array('id_niv','nivel');
+	var $order = array('id_niv' => 'asc');
 
 	public function __construct()
 	{
 		parent::__construct();
 	}
 
-	private function _get_datatables_query_activas()
+	private function _get_datatables_query_activos()
 	{
-		$this->db->select('can.id_can, can.numero, can.nombre, are.area, can.capacidad, can.disponibilidad');
-    	$this->db->from('canchas can');
-	    $this->db->join('areas are','can.area = are.id_are');
-		$this->db->where('can.estado','Activa');
+		
+		$this->db->from($this->table);
+		$this->db->where('estado','Activo');
 
 		$i = 0;
 
@@ -54,12 +53,11 @@ class Cancha_model extends CI_Model {
 		}
 	}
 
-	private function _get_datatables_query_inactivas()
+	private function _get_datatables_query_inactivos()
 	{
-		$this->db->select('can.id_can, can.numero, can.nombre, are.area, can.capacidad, can.disponibilidad');
-    	$this->db->from('canchas can');
-	    $this->db->join('areas are','can.area = are.id_are');
-		$this->db->where('can.estado','Inactiva');
+		
+		$this->db->from($this->table);
+		$this->db->where('estado','Inactivo');
 
 		$i = 0;
 
@@ -95,34 +93,42 @@ class Cancha_model extends CI_Model {
 		}
 	}
 
-	function get_datatables_activas()
+	function get_datatables_activos()
 	{
-		$this->_get_datatables_query_activas();
+		$this->_get_datatables_query_activos();
 		if($_POST['length'] != -1)
 			$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
 		return $query->result();
 	}
 
-	function get_datatables_inactivas()
+	function get_datatables_inactivos()
 	{
-		$this->_get_datatables_query_inactivas();
+		$this->_get_datatables_query_inactivos();
 		if($_POST['length'] != -1)
 			$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
 		return $query->result();
 	}
 
-	function count_filtered_activas()
+	function get_all()
 	{
-		$this->_get_datatables_query_activas();
+		$this->db->where('estado','Activo');
+		$this->db->order_by('nivel','asc');
+		$query = $this->db->get('niveles');
+      	return $query->result_array();
+	}
+
+	function count_filtered_activos()
+	{
+		$this->_get_datatables_query_activos();
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
 
-	function count_filtered_inactivas()
+	function count_filtered_inactivos()
 	{
-		$this->_get_datatables_query_inactivas();
+		$this->_get_datatables_query_inactivos();
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
@@ -133,18 +139,18 @@ class Cancha_model extends CI_Model {
 		return $this->db->count_all_results();
 	}
 
-	public function get_by_id($id_can)
+	public function get_by_id($id_niv)
 	{
-		$this->db->from('canchas');
-		$this->db->where('id_can',$id_can);
-		$query = $this->db->get();
-		return $query->row_array();
+		$this->db->from('niveles');
+		$this->db->where('id_niv',$id_niv);
+		$query = $this->db->get()
+;		return $query->row();
 	}
 
-	public function validate_by_numero($numero)
+	public function validate_by_nombre($nivel)
 	{
 		$this->db->from($this->table);
-		$this->db->where('numero',$numero);
+		$this->db->where('nivel',$nivel);
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
@@ -161,17 +167,17 @@ class Cancha_model extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
-	public function activate_by_id($id_can)
+	public function activate_by_id($id_niv)
 	{
-		$this->db->set('estado','Activa');
-	    $this->db->where('id_can', $id_can);
+		$this->db->set('estado','Activo');
+	    $this->db->where('id_niv', $id_niv);
 	    $this->db->update($this->table);
 	}
 
-	public function desactivate_by_id($id_can)
+	public function desactivate_by_id($id_niv)
 	{
-		$this->db->set('estado','Inactiva');
-	    $this->db->where('id_can', $id_can);
+		$this->db->set('estado','Inactivo');
+	    $this->db->where('id_niv', $id_niv);
 	    $this->db->update($this->table);
 	}
 }

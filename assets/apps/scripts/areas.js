@@ -1,14 +1,33 @@
 var save_method;
-var areas;
+var areas_activas;
+var areas_inactivas;
 
 $(document).ready(function (){
-    areas = $('#areas').DataTable({ 
+    areas_activas = $('#areas_activas').DataTable({ 
         "processing": true,
         "serverSide": true,
         "order": [],
 
         "ajax":{
-            "url": "http://localhost/parque/index.php/area/list_areas",
+            "url": "http://localhost/parque/index.php/area/list_areas_activas",
+            "type": "POST"
+        },
+
+        "columnDefs": [
+        { 
+            "targets": [ -1 ],
+            "orderable": false,
+        },
+        ],
+    });
+
+    areas_inactivas = $('#areas_inactivas').DataTable({ 
+        "processing": true,
+        "serverSide": true,
+        "order": [],
+
+        "ajax":{
+            "url": "http://localhost/parque/index.php/area/list_areas_inactivas",
             "type": "POST"
         },
 
@@ -205,10 +224,10 @@ function save_area(){
     });
 }
 
-function delete_area(id_are){  
+function activate_area(id_are){  
     swal({
         title: "Advertencia",
-        text: "¿Deseas eliminar este area?",
+        text: "¿Deseas activar esta area?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#f8ac59",
@@ -216,7 +235,7 @@ function delete_area(id_are){
         cancelButtonText: "No"
     }).then(function (){
         $.ajax({
-            url : "http://localhost/parque/index.php/area/delete_area/" + id_are,
+            url : "http://localhost/parque/index.php/area/activate_area/" + id_are,
             type: "POST",
             dataType: "JSON",
             success: function (data){
@@ -231,16 +250,53 @@ function delete_area(id_are){
                 });
             }
         });
-        swal("Éxito", "¡El area fue eliminada!", "success");
+        swal("Éxito", "¡El area fue activada!", "success");
     }, function (dismiss){
         // dismiss can be 'cancel', 'overlay',
         // 'close', and 'timer'
         if(dismiss === 'cancel'){
-            swal("Aviso", "¡La eliminación fue cancelada!", "info");
+            swal("Aviso", "¡La activación fue cancelada!", "info");
+        }
+    })
+}
+
+function desactivate_area(id_are){  
+    swal({
+        title: "Advertencia",
+        text: "¿Deseas desactivar este area?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#f8ac59",
+        confirmButtonText: "Sí",
+        cancelButtonText: "No"
+    }).then(function (){
+        $.ajax({
+            url : "http://localhost/parque/index.php/area/desactivate_area/" + id_are,
+            type: "POST",
+            dataType: "JSON",
+            success: function (data){
+                $('#area-modal').modal('hide');
+                reload_areas();
+            },
+            error: function (jqXHR, textStatus, errorThrown){
+                swal({
+                    title: "Error",
+                    text: "¡Ha ocurrido un error!",
+                    type: "error"
+                });
+            }
+        });
+        swal("Éxito", "¡El area fue desactivada!", "success");
+    }, function (dismiss){
+        // dismiss can be 'cancel', 'overlay',
+        // 'close', and 'timer'
+        if(dismiss === 'cancel'){
+            swal("Aviso", "¡La desactivación fue cancelada!", "info");
         }
     })
 }
 
 function reload_areas(){
-    areas.ajax.reload(null,false);
+    areas_activas.ajax.reload(null,false);
+    areas_inactivas.ajax.reload(null,false);
 }

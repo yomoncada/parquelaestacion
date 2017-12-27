@@ -33,9 +33,9 @@ class Beneficiario extends CI_Controller
 		}
 	}
 	
-	public function list_beneficiarios()
+	public function list_beneficiarios_activos()
 	{
-		$list = $this->beneficiario->get_datatables();
+		$list = $this->beneficiario->get_datatables_activos();
 		$data = array();
 		$no = $_POST['start'];
 		$i = 1;
@@ -56,8 +56,8 @@ class Beneficiario extends CI_Controller
 					<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_beneficiario('."'".$beneficiario->id_ben."'".')">
 						<i class="icon-pencil"></i>
 					</a>
-					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_beneficiario('."'".$beneficiario->id_ben."'".')">
-						<i class="icon-trash"></i>
+					<a class="btn btn-link" href="javascript:void(0)" title="Desactivar" onclick="desactivate_beneficiario('."'".$beneficiario->id_ben."'".')">
+						<i class="icon-ban"></i>
 					</a>';
 			}
 			else{
@@ -65,8 +65,8 @@ class Beneficiario extends CI_Controller
 					'<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_beneficiario('."'".$beneficiario->id_ben."'".')">
 						<i class="icon-pencil"></i>
 					</a>
-					<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_beneficiario('."'".$beneficiario->id_ben."'".')">
-						<i class="icon-trash"></i>
+					<a class="btn btn-link" href="javascript:void(0)" title="Desactivar" onclick="desactivate_beneficiario('."'".$beneficiario->id_ben."'".')">
+						<i class="icon-ban"></i>
 					</a>';
 			}
 			$data[] = $row;
@@ -76,7 +76,60 @@ class Beneficiario extends CI_Controller
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->beneficiario->count_all(),
-			"recordsFiltered" => $this->beneficiario->count_filtered(),
+			"recordsFiltered" => $this->beneficiario->count_filtered_activos(),
+			"data" => $data
+		);
+		echo json_encode($output);
+	}
+
+	public function list_beneficiarios_inactivos()
+	{
+		$list = $this->beneficiario->get_datatables_inactivos();
+		$data = array();
+		$no = $_POST['start'];
+		$i = 1;
+		foreach ($list as $beneficiario)
+		{
+			$no++;
+			$row = array();
+			$row[] = $i;
+			$row[] = $beneficiario->cedula;
+			$row[] = $beneficiario->nombre;
+			$row[] = $beneficiario->telefono;
+			$row[] = $beneficiario->direccion;
+			if($this->session->userdata('proceso') == "servicio" || $this->session->userdata('proceso') == "servicio_control"){
+				$row[] =
+					'<a class="btn btn-link" href="javascript:void(0)" title="Agregar" onclick="assign_beneficiario('."'".$beneficiario->id_ben."'".')">
+						<i class="icon-plus"></i>
+					</a>
+					<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_beneficiario('."'".$beneficiario->id_ben."'".')">
+						<i class="icon-pencil"></i>
+					</a>
+					<a class="btn btn-link" href="javascript:void(0)" title="Activar" onclick="activate_beneficiario('."'".$beneficiario->id_ben."'".')">
+						<i class="icon-check"></i>
+					</a>';
+			}
+			else{
+				if($this->session->userdata('nivel') == 1)
+				{
+					$row[] =
+						'<a class="btn btn-link" href="javascript:void(0)" title="Activar" onclick="activate_beneficiario('."'".$beneficiario->id_ben."'".')">
+							<i class="icon-check"></i>
+						</a>';
+				}
+				else
+				{
+					$row[] = 'No puedes realizar ninguna acción.';
+				}
+			}
+			$data[] = $row;
+			$i++;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->beneficiario->count_all(),
+			"recordsFiltered" => $this->beneficiario->count_filtered_inactivos(),
 			"data" => $data
 		);
 		echo json_encode($output);
@@ -181,19 +234,35 @@ class Beneficiario extends CI_Controller
 		echo json_encode(array("status" => TRUE));
 	}
 
-	public function delete_beneficiario($id_ben)
+	public function activate_beneficiario($id_ben)
 	{
 		$query = $this->beneficiario->get_by_id($id_ben);
 		$beneficiario = $query['nombre'];
 
 		$bitacora = array(
 			'tipo' => 'Beneficiario',
-			'movimiento' => 'Se ha eliminado al beneficiario '.$beneficiario.'.',
+			'movimiento' => 'Se ha activado al beneficiario '.$beneficiario.'.',
 			'usuario' => $this->session->userdata('id_usuario')
 		);		
 
 		$this->bitacora->set($bitacora);
-		$this->beneficiario->delete_by_id($id_ben);
+		$this->beneficiario->activate_by_id($id_ben);
+		echo json_encode(array("status" => TRUE));
+	}
+
+	public function desactivate_beneficiario($id_ben)
+	{
+		$query = $this->beneficiario->get_by_id($id_ben);
+		$beneficiario = $query['nombre'];
+
+		$bitacora = array(
+			'tipo' => 'Beneficiario',
+			'movimiento' => 'Se ha desactivate al beneficiario '.$beneficiario.'.',
+			'usuario' => $this->session->userdata('id_usuario')
+		);		
+
+		$this->bitacora->set($bitacora);
+		$this->beneficiario->desactivate_by_id($id_ben);
 		echo json_encode(array("status" => TRUE));
 	}
 

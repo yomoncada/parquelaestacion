@@ -56,23 +56,86 @@
                                 </div>
                                 <div class="tools"> </div>
                             </div>
-                            <div class="portlet-body">
-                                <table id="reforestaciones" class="table table-hover table-bordered small">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Número</th>
-                                            <th>Responsable</th>
-                                            <th>Fecha Asignada</th>
-                                            <th>Hora Asignada</th>
-                                            <th>Última Modificación</th>
-                                            <th>Estado</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                            <div class="tabbable-line tabbable-full-width">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#tab_1_1" data-toggle="tab"> Pendiente </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab_1_2" data-toggle="tab"> En Progreso </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab_1_3" data-toggle="tab"> Finalizado </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_1_1">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <table id="reforestaciones_pendientes" class="table table-hover table-bordered small">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Número</th>
+                                                            <th>Responsable</th>
+                                                            <th>Fecha Asignada</th>
+                                                            <th>Hora Asignada</th>
+                                                            <th>Última Modificación</th>
+                                                            <th>Estado</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_1_2">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <table id="reforestaciones_en_progresos" class="table table-hover table-bordered small">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Número</th>
+                                                            <th>Responsable</th>
+                                                            <th>Fecha Asignada</th>
+                                                            <th>Hora Asignada</th>
+                                                            <th>Última Modificación</th>
+                                                            <th>Estado</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_1_3">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <table id="reforestaciones_finalizados" class="table table-hover table-bordered small">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Número</th>
+                                                            <th>Responsable</th>
+                                                            <th>Fecha Asignada</th>
+                                                            <th>Hora Asignada</th>
+                                                            <th>Última Modificación</th>
+                                                            <th>Estado</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

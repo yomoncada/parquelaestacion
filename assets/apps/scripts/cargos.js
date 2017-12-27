@@ -1,14 +1,33 @@
 var save_method;
-var cargos;
+var cargos_activos;
+var cargos_inactivos;
 
 $(document).ready(function (){
-    cargos = $('#cargos').DataTable({ 
+    cargos_activos = $('#cargos_activos').DataTable({ 
         "processing": true,
         "serverSide": true,
         "order": [],
 
         "ajax":{
-            "url": "http://localhost/parque/index.php/cargo/list_cargos",
+            "url": "http://localhost/parque/index.php/cargo/list_cargos_activos",
+            "type": "POST"
+        },
+
+        "columnDefs": [
+        { 
+            "targets": [ -1 ],
+            "orderable": false,
+        },
+        ],
+    });
+
+    cargos_inactivos = $('#cargos_inactivos').DataTable({ 
+        "processing": true,
+        "serverSide": true,
+        "order": [],
+
+        "ajax":{
+            "url": "http://localhost/parque/index.php/cargo/list_cargos_inactivos",
             "type": "POST"
         },
 
@@ -201,10 +220,10 @@ function save_cargo(){
     });
 }
 
-function delete_cargo(id_car){  
+function activate_cargo(id_car){  
     swal({
         title: "Advertencia",
-        text: "¿Deseas eliminar este cargo?",
+        text: "¿Deseas activar este cargo?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#f8ac59",
@@ -212,7 +231,7 @@ function delete_cargo(id_car){
         cancelButtonText: "No"
     }).then(function (){
         $.ajax({
-            url : "http://localhost/parque/index.php/cargo/delete_cargo/" + id_car,
+            url : "http://localhost/parque/index.php/cargo/activate_cargo/" + id_car,
             type: "POST",
             dataType: "JSON",
             success: function (data){
@@ -227,16 +246,53 @@ function delete_cargo(id_car){
                 });
             }
         });
-        swal("Éxito", "¡La cargo fue eliminada!", "success");
+        swal("Éxito", "¡El cargo fue activado!", "success");
     }, function (dismiss){
         // dismiss can be 'cancel', 'overlay',
         // 'close', and 'timer'
         if(dismiss === 'cancel'){
-            swal("Aviso", "¡La eliminación fue cancelada!", "info");
+            swal("Aviso", "¡La activación fue cancelada!", "info");
+        }
+    })
+}
+
+function desactivate_cargo(id_car){  
+    swal({
+        title: "Advertencia",
+        text: "¿Deseas desactivar este cargo?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#f8ac59",
+        confirmButtonText: "Sí",
+        cancelButtonText: "No"
+    }).then(function (){
+        $.ajax({
+            url : "http://localhost/parque/index.php/cargo/desactivate_cargo/" + id_car,
+            type: "POST",
+            dataType: "JSON",
+            success: function (data){
+                $('#cargo-modal').modal('hide');
+                reload_cargos();
+            },
+            error: function (jqXHR, textStatus, errorThrown){
+                swal({
+                    title: "Error",
+                    text: "¡Ha ocurrido un error!",
+                    type: "error"
+                });
+            }
+        });
+        swal("Éxito", "¡El cargo fue desactivado!", "success");
+    }, function (dismiss){
+        // dismiss can be 'cancel', 'overlay',
+        // 'close', and 'timer'
+        if(dismiss === 'cancel'){
+            swal("Aviso", "¡La desactivación fue cancelada!", "info");
         }
     })
 }
 
 function reload_cargos(){
-    cargos.ajax.reload(null,false);
+    cargos_activos.ajax.reload(null,false);
+    cargos_inactivos.ajax.reload(null,false);
 }

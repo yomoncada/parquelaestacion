@@ -1,14 +1,33 @@
 var save_method;
-var canchas;
+var canchas_activas;
+var canchas_inactivas;
 
 $(document).ready(function (){
-	canchas = $('#canchas').DataTable({ 
+	canchas_activas = $('#canchas_activas').DataTable({ 
 		"processing": true,
 		"serverSide": true,
 		"order": [],
 
 		"ajax":{
-			"url": "http://localhost/parque/index.php/cancha/list_canchas",
+			"url": "http://localhost/parque/index.php/cancha/list_canchas_activas",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
+	canchas_inactivas = $('#canchas_inactivas').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/cancha/list_canchas_inactivas",
 			"type": "POST"
 		},
 
@@ -209,10 +228,10 @@ function save_cancha(){
 	});
 }
 
-function delete_cancha(id_can){  
+function activate_cancha(id_can){  
 	swal({
 		title: "Advertencia",
-		text: "¿Deseas eliminar este cancha?",
+		text: "¿Deseas activar este cancha?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#f8ac59",
@@ -220,7 +239,7 @@ function delete_cancha(id_can){
 		cancelButtonText: "No"
 	}).then(function (){
 		$.ajax({
-			url : "http://localhost/parque/index.php/cancha/delete_cancha/" + id_can,
+			url : "http://localhost/parque/index.php/cancha/activate_cancha/" + id_can,
 			type: "POST",
 			dataType: "JSON",
 			success: function (data){
@@ -235,16 +254,53 @@ function delete_cancha(id_can){
 				});
 			}
 		});
-		swal("Éxito", "¡La cancha fue eliminada!", "success");
+		swal("Éxito", "¡La cancha fue activada!", "success");
 	}, function (dismiss){
       	// dismiss can be 'cancel', 'overlay',
       	// 'close', and 'timer'
       	if(dismiss === 'cancel'){
-      		swal("Aviso", "¡La eliminación fue cancelada!", "info");
+      		swal("Aviso", "¡La activación fue cancelada!", "info");
+      	}
+    })
+}
+
+function desactivate_cancha(id_can){  
+	swal({
+		title: "Advertencia",
+		text: "¿Deseas desactivar este cancha?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#f8ac59",
+		confirmButtonText: "Sí",
+		cancelButtonText: "No"
+	}).then(function (){
+		$.ajax({
+			url : "http://localhost/parque/index.php/cancha/desactivate_cancha/" + id_can,
+			type: "POST",
+			dataType: "JSON",
+			success: function (data){
+				$('#cancha-modal').modal('hide');
+				reload_canchas();
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+				swal({
+					title: "Error",
+					text: "¡Ha ocurrido un error!",
+					type: "error"
+				});
+			}
+		});
+		swal("Éxito", "¡La cancha fue desactivada!", "success");
+	}, function (dismiss){
+      	// dismiss can be 'cancel', 'overlay',
+      	// 'close', and 'timer'
+      	if(dismiss === 'cancel'){
+      		swal("Aviso", "¡La desáctivación fue cancelada!", "info");
       	}
     })
 }
 
 function reload_canchas(){
-	canchas.ajax.reload(null,false);
+	canchas_activas.ajax.reload(null,false);
+	canchas_inactivas.ajax.reload(null,false);
 }

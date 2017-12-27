@@ -13,11 +13,12 @@ class Mantenimiento_model extends CI_Model {
 		parent::__construct();
 	}
 
-	private function _get_datatables_query()
+	private function _get_datatables_query_pendientes()
 	{
 		$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.estado');
     	$this->db->from('mantenimientos man');
 	    $this->db->join('usuarios usu','man.usuario = usu.id_usu');
+	    $this->db->where('man.estado','Pendiente');
 
 		$i = 0;
 
@@ -53,18 +54,132 @@ class Mantenimiento_model extends CI_Model {
 		}
 	}
 
-	function get_datatables()
+	private function _get_datatables_query_en_progresos()
 	{
-		$this->_get_datatables_query();
+		$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.estado');
+    	$this->db->from('mantenimientos man');
+	    $this->db->join('usuarios usu','man.usuario = usu.id_usu');
+	    $this->db->where('man.estado','En Progreso');
+
+		$i = 0;
+
+		foreach ($this->column_search as $item)
+		{
+			if($_POST['search']['value'])
+			{
+				
+				if($i===0)
+				{
+					$this->db->group_start();
+					$this->db->like($item, $_POST['search']['value']);
+				}
+				else
+				{
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+
+				if(count($this->column_search) - 1 == $i)
+					$this->db->group_end();
+				}
+				$i++;
+			}
+
+		if(isset($_POST['order']))
+		{
+			$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} 
+		else if(isset($this->order))
+		{
+			$order = $this->order;
+			$this->db->order_by(key($order), $order[key($order)]);
+		}
+	}
+
+	private function _get_datatables_query_finalizados()
+	{
+		$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.estado');
+    	$this->db->from('mantenimientos man');
+	    $this->db->join('usuarios usu','man.usuario = usu.id_usu');
+	    $this->db->where('man.estado','Finalizado');
+
+		$i = 0;
+
+		foreach ($this->column_search as $item)
+		{
+			if($_POST['search']['value'])
+			{
+				
+				if($i===0)
+				{
+					$this->db->group_start();
+					$this->db->like($item, $_POST['search']['value']);
+				}
+				else
+				{
+					$this->db->or_like($item, $_POST['search']['value']);
+				}
+
+				if(count($this->column_search) - 1 == $i)
+					$this->db->group_end();
+				}
+				$i++;
+			}
+
+		if(isset($_POST['order']))
+		{
+			$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} 
+		else if(isset($this->order))
+		{
+			$order = $this->order;
+			$this->db->order_by(key($order), $order[key($order)]);
+		}
+	}
+
+	function get_datatables_pendientes()
+	{
+		$this->_get_datatables_query_pendientes();
 		if($_POST['length'] != -1)
 			$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
 		return $query->result();
 	}
 
-	function count_filtered()
+	function get_datatables_en_progresos()
 	{
-		$this->_get_datatables_query();
+		$this->_get_datatables_query_en_progresos();
+		if($_POST['length'] != -1)
+			$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function get_datatables_finalizados()
+	{
+		$this->_get_datatables_query_finalizados();
+		if($_POST['length'] != -1)
+			$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function count_filtered_pendientes()
+	{
+		$this->_get_datatables_query_pendientes();
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	function count_filtered_en_progresos()
+	{
+		$this->_get_datatables_query_en_progresos();
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	function count_filtered_finalizados()
+	{
+		$this->_get_datatables_query_finalizados();
 		$query = $this->db->get();
 		return $query->num_rows();
 	}
@@ -202,6 +317,20 @@ class Mantenimiento_model extends CI_Model {
   	}
 
   	public function discount_implementos($id_imp, $stock)
+  	{
+   		$this->db->set('stock', $stock);
+    	$this->db->where('id_imp', $id_imp);
+    	$this->db->update('implementos');
+  	}
+
+  	public function increment_empleados($id_emp)
+  	{
+   		$this->db->set('disponibilidad', 'Desocupado');
+    	$this->db->where('id_emp', $id_emp);
+    	$this->db->update('empleados');
+  	}
+
+  	public function increment_implementos($id_imp, $stock)
   	{
    		$this->db->set('stock', $stock);
     	$this->db->where('id_imp', $id_imp);

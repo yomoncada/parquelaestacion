@@ -12,7 +12,7 @@ class Categoria extends CI_Controller
 
 	public function index()
 	{
-		if($this->session->userdata('is_logued_in') === TRUE)
+		if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('car_access') == 1)
 		{
 			$data = array(
 	    		'controller' => 'categorias',
@@ -33,9 +33,9 @@ class Categoria extends CI_Controller
 		}
 	}
 	
-	public function list_categorias()
+	public function list_categorias_activas()
 	{
-		$list = $this->categoria->get_datatables();
+		$list = $this->categoria->get_datatables_activas();
 		$data = array();
 		$no = $_POST['start'];
 		$i = 1;
@@ -49,8 +49,8 @@ class Categoria extends CI_Controller
 			$row[] = '<a class="btn btn-link" href="javascript:void(0)" title="Actualizar" onclick="edit_categoria('."'".$categoria->id_cat."'".')">
 						<i class="icon-pencil"></i>
 					  </a>
-					  <a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="delete_categoria('."'".$categoria->id_cat."'".')">
-						<i class="icon-trash"></i>
+					  <a class="btn btn-link" href="javascript:void(0)" title="Desactivar" onclick="desactivate_categoria('."'".$categoria->id_cat."'".')">
+						<i class="icon-ban"></i>
 					  </a>';
 			$data[] = $row;
 			$i++;
@@ -59,7 +59,43 @@ class Categoria extends CI_Controller
 		$output = array(
 			"draw" => $_POST['draw'],
 			"recordsTotal" => $this->categoria->count_all(),
-			"recordsFiltered" => $this->categoria->count_filtered(),
+			"recordsFiltered" => $this->categoria->count_filtered_activas(),
+			"data" => $data
+		);
+		echo json_encode($output);
+	}
+
+	public function list_categorias_inactivas()
+	{
+		$list = $this->categoria->get_datatables_inactivas();
+		$data = array();
+		$no = $_POST['start'];
+		$i = 1;
+		foreach ($list as $categoria)
+		{
+			$no++;
+			$row = array();
+			$row[] = $i;
+			$row[] = $categoria->categoria;
+			$row[] = $categoria->descripcion;
+			if($this->session->userdata('nivel') == 1)
+			{	
+				$row[] = '<a class="btn btn-link" href="javascript:void(0)" title="Activar" onclick="activate_categoria('."'".$categoria->id_cat."'".')">
+						<i class="icon-check"></i>
+					  </a>';
+			}
+			else
+			{
+				$row[] = 'No puedes realizar ninguna acción.';
+			}
+			$data[] = $row;
+			$i++;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->categoria->count_all(),
+			"recordsFiltered" => $this->categoria->count_filtered_inactivas(),
 			"data" => $data
 		);
 		echo json_encode($output);
@@ -163,19 +199,35 @@ class Categoria extends CI_Controller
 		echo json_encode(array("status" => TRUE));
 	}
 
-	public function delete_categoria($id_cat)
+	public function activate_categoria($id_cat)
 	{
 		$query = $this->categoria->get_by_id($id_cat);
 		$categoria = $query['categoria'];
 
 		$bitacora = array(
 			'tipo' => 'Categoría',
-			'movimiento' => 'Se ha eliminado la categoría '.$categoria.'.',
+			'movimiento' => 'Se ha activado la categoría '.$categoria.'.',
 			'usuario' => $this->session->userdata('id_usuario')
 		);		
 
 		$this->bitacora->set($bitacora);
-		$this->categoria->delete_by_id($id_cat);
+		$this->categoria->activate_by_id($id_cat);
+		echo json_encode(array("status" => TRUE));
+	}
+
+	public function desactivate_categoria($id_cat)
+	{
+		$query = $this->categoria->get_by_id($id_cat);
+		$categoria = $query['categoria'];
+
+		$bitacora = array(
+			'tipo' => 'Categoría',
+			'movimiento' => 'Se ha desactivado la categoría '.$categoria.'.',
+			'usuario' => $this->session->userdata('id_usuario')
+		);		
+
+		$this->bitacora->set($bitacora);
+		$this->categoria->desactivate_by_id($id_cat);
 		echo json_encode(array("status" => TRUE));
 	}
 

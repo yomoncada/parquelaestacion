@@ -1,14 +1,33 @@
 var save_method;
-var cabanas;
+var cabanas_activas;
+var cabanas_inactivas;
 
 $(document).ready(function (){
-	cabanas = $('#cabanas').DataTable({ 
+	cabanas_activas = $('#cabanas_activas').DataTable({ 
 		"processing": true,
 		"serverSide": true,
 		"order": [],
 
 		"ajax":{
-			"url": "http://localhost/parque/index.php/cabana/list_cabanas",
+			"url": "http://localhost/parque/index.php/cabana/list_cabanas_activas",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
+	cabanas_inactivas = $('#cabanas_inactivas').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/cabana/list_cabanas_inactivas",
 			"type": "POST"
 		},
 
@@ -206,10 +225,10 @@ function save_cabana(){
 	});
 }
 
-function delete_cabana(id_cab){  
+function activate_cabana(id_cab){  
 	swal({
 		title: "Advertencia",
-		text: "¿Deseas eliminar este cabana?",
+		text: "¿Deseas activar este cabana?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#f8ac59",
@@ -217,7 +236,7 @@ function delete_cabana(id_cab){
 		cancelButtonText: "No"
 	}).then(function (){
 		$.ajax({
-			url : "http://localhost/parque/index.php/cabana/delete_cabana/" + id_cab,
+			url : "http://localhost/parque/index.php/cabana/activate_cabana/" + id_cab,
 			type: "POST",
 			dataType: "JSON",
 			success: function (data){
@@ -232,16 +251,53 @@ function delete_cabana(id_cab){
 				});
 			}
 		});
-		swal("Éxito", "¡El cabana fue eliminada!", "success");
+		swal("Éxito", "¡La cabana fue activada!", "success");
 	}, function (dismiss){
 	    // dismiss can be 'cancel', 'overlay',
 	    // 'close', and 'timer'
 	    if(dismiss === 'cancel'){
-	      	swal("Aviso", "¡La eliminación fue cancelada!", "info");
+	      	swal("Aviso", "¡La activación fue cancelada!", "info");
+	    }
+	})
+}
+
+function desactivate_cabana(id_cab){  
+	swal({
+		title: "Advertencia",
+		text: "¿Deseas desactivar este cabana?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#f8ac59",
+		confirmButtonText: "Sí",
+		cancelButtonText: "No"
+	}).then(function (){
+		$.ajax({
+			url : "http://localhost/parque/index.php/cabana/desactivate_cabana/" + id_cab,
+			type: "POST",
+			dataType: "JSON",
+			success: function (data){
+				$('#cabana-modal').modal('hide');
+				reload_cabanas();
+			},
+			error: function (jqXHR, textStatus, errorThrown){
+				swal({
+					title: "Error",
+					text: "¡Ha ocurrido un error!",
+					type: "error"
+				});
+			}
+		});
+		swal("Éxito", "¡La cabana fue desactivada!", "success");
+	}, function (dismiss){
+	    // dismiss can be 'cancel', 'overlay',
+	    // 'close', and 'timer'
+	    if(dismiss === 'cancel'){
+	      	swal("Aviso", "¡La desactivación fue cancelada!", "info");
 	    }
 	})
 }
 
 function reload_cabanas(){
-cabanas.ajax.reload(null,false);
+	cabanas_activas.ajax.reload(null,false);
+	cabanas_inactivas.ajax.reload(null,false);
 }

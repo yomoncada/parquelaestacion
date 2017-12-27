@@ -221,9 +221,9 @@ function assign_donante(id_dnc){
 
 function deny_donante(rowid){  
 	swal({
-		title: "Error",
+		title: "Advertencia",
 		text: "¿Deseas denegar este donante?",
-		type: "error",
+		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#f8ac59",
 		confirmButtonText: "Sí",
@@ -306,17 +306,17 @@ function count_implementos(){
 	});
 }
 
-function assign_implemento(id_imp, stock){
+function assign_implemento(id_imp, stock, stock_max){
 	swal({
 	  	title: '¿Cuántas unidades se utilizarán?',
 	  	type: 'question',
 	  	input: 'range',
 	  	inputAttributes: {
-		    min: 1,
-		    max: stock,
+		    min: 0,
+		    max: stock_max - stock,
 		    step: 1
 	 	},
-		inputValue: 1,
+		inputValue: 0,
 	  	showCancelButton: true,
 	}).then(function (result){
 	  	$.ajax({
@@ -346,9 +346,9 @@ function assign_implemento(id_imp, stock){
 
 function deny_implemento(rowid){  
 	swal({
-		title: "Error",
-		text: "¿Deseas denegar esta área?",
-		type: "error",
+		title: "Advertencia",
+		text: "¿Deseas denegar este implemento?",
+		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#f8ac59",
 		confirmButtonText: "Sí",
@@ -466,9 +466,9 @@ function assign_fondo(cantidad){
 
 function deny_fondo(rowid){  
 	swal({
-		title: "Error",
-		text: "¿Deseas denegar esta área?",
-		type: "error",
+		title: "Advertencia",
+		text: "¿Deseas denegar este fondo?",
+		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#f8ac59",
 		confirmButtonText: "Sí",

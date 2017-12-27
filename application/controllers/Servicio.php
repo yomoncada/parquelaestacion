@@ -22,9 +22,9 @@ class Servicio extends CI_Controller
         $this->load->model('servicio_model','servicio');
 	}
 
-    public function list_servicios()
+    public function list_servicios_pendientes()
     {
-        $list = $this->servicio->get_datatables();
+        $list = $this->servicio->get_datatables_pendientes();
         $data = array();
         $no = $_POST['start'];
         $i = 1;
@@ -39,35 +39,13 @@ class Servicio extends CI_Controller
             $row[] = $servicio->hora_asig;
             $row[] = $servicio->fecha_act;
             $row[] = $servicio->estado;
-            if($servicio->estado == "Finalizado"){
-                $row[] = 
-                    '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$servicio->id_ser."'".')" title="Ver">
-                        <i class="icon-eye"></i>
-                    </a>
-                    <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
-                        <i class="icon-printer"></i>
-                    </a>';
-            }
-            if($servicio->estado == "En progreso")
-            {
-                $row[] = 
-                    '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$servicio->id_ser."'".')" title="Controlar">
-                        <i class="icon-note"></i>
-                    </a>
-                    <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
-                        <i class="icon-printer"></i>
-                    </a>';
-            }
-            else
-            {
-                $row[] = 
-                    '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$servicio->id_ser."'".')" title="Actualizar">
-                        <i class="icon-pencil"></i>
-                    </a>
-                    <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
-                        <i class="icon-printer"></i>
-                    </a>';
-            }
+            $row[] = 
+                '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$servicio->id_ser."'".')" title="Actualizar">
+                    <i class="icon-pencil"></i>
+                </a>
+                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                    <i class="icon-printer"></i>
+                </a>';
             $data[] = $row;
             $i++;
         }
@@ -75,7 +53,83 @@ class Servicio extends CI_Controller
         $output = array(
             "draw" => $_POST['draw'],
             "recordsTotal" => $this->servicio->count_all(),
-            "recordsFiltered" => $this->servicio->count_filtered(),
+            "recordsFiltered" => $this->servicio->count_filtered_pendientes(),
+            "data" => $data
+        );
+
+        echo json_encode($output);
+    }
+
+    public function list_servicios_en_progresos()
+    {
+        $list = $this->servicio->get_datatables_en_progresos();
+        $data = array();
+        $no = $_POST['start'];
+        $i = 1;
+        foreach ($list as $servicio)
+        {
+            $no++;
+            $row = array();
+            $row[] = $i;
+            $row[] = $servicio->id_ser;
+            $row[] = $servicio->usuario;
+            $row[] = $servicio->fecha_asig;
+            $row[] = $servicio->hora_asig;
+            $row[] = $servicio->fecha_act;
+            $row[] = $servicio->estado;
+            $row[] = 
+                '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$servicio->id_ser."'".')" title="Controlar">
+                    <i class="icon-note"></i>
+                </a>
+                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                    <i class="icon-printer"></i>
+                </a>';
+            $data[] = $row;
+            $i++;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->servicio->count_all(),
+            "recordsFiltered" => $this->servicio->count_filtered_en_progresos(),
+            "data" => $data
+        );
+
+        echo json_encode($output);
+    }
+
+    public function list_servicios_finalizados()
+    {
+        $list = $this->servicio->get_datatables_finalizados();
+        $data = array();
+        $no = $_POST['start'];
+        $i = 1;
+        foreach ($list as $servicio)
+        {
+            $no++;
+            $row = array();
+            $row[] = $i;
+            $row[] = $servicio->id_ser;
+            $row[] = $servicio->usuario;
+            $row[] = $servicio->fecha_asig;
+            $row[] = $servicio->hora_asig;
+            $row[] = $servicio->fecha_act;
+            $row[] = $servicio->estado;
+            $row[] = 
+                '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$servicio->id_ser."'".')" title="Ver">
+                    <i class="icon-eye"></i>
+                </a>
+                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                    <i class="icon-printer"></i>
+                </a>';
+            $data[] = $row;
+            $i++;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->servicio->count_all(),
+            "recordsFiltered" => $this->servicio->count_filtered_finalizados(),
             "data" => $data
         );
 
@@ -84,7 +138,7 @@ class Servicio extends CI_Controller
 
     public function index()
     {
-        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('nivel') === 'Administrador(a)')
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('ser_access') == 1)
         {
             $this->cart_beneficiarios->destroy();
             $this->cart_cabanas->destroy();
@@ -121,7 +175,7 @@ class Servicio extends CI_Controller
 
     public function create()
     {
-        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('nivel') === 'Administrador(a)')
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('ser_access') == 1)
         {
             if($this->session->userdata('proceso') != "servicio")
             {
@@ -162,7 +216,7 @@ class Servicio extends CI_Controller
 
     public function control($id_ser = NULL)
     {
-        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('nivel') === 'Administrador(a)')
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('ser_access') == 1)
         {
             if($this->session->userdata('proceso') != "servicio_control")
             {
@@ -393,13 +447,6 @@ class Servicio extends CI_Controller
                     }
                 }
 
-                if ($this->cart_empleados->contents() != NULL){
-                    foreach ($this->cart_empleados->contents() as $empleado){
-                        $id_emp = $empleado['id'];
-                      $this->servicio->discount_empleados($id_emp);
-                    }
-                }
-
                 if ($this->cart_implementos->contents() != NULL){
                     foreach ($this->cart_implementos->contents() as $implemento){
                         $implementos = array(
@@ -410,20 +457,6 @@ class Servicio extends CI_Controller
                         );    
 
                         $this->servicio->set_implementos($implementos);
-                    }
-                }
-
-                if ($this->cart_implementos->contents() != NULL){
-                    foreach ($this->cart_implementos->contents() as $implemento){
-                        $id_imp = $implemento['id'];
-                        $cantidad = $implemento['cantidad'];
-                        $implemento_act = $this->servicio->get_implemento_by_id($id_imp);
-                        if($implemento_act != false)
-                        {
-                            $actual = $implemento_act->stock;
-                            $descuento = $actual - $cantidad;
-                        }    
-                      $this->servicio->discount_implementos($id_imp,$descuento);
                     }
                 }
 
@@ -604,6 +637,175 @@ class Servicio extends CI_Controller
                   $this->servicio->discount_implementos($id_imp,$descuento);
                 }
             }
+
+            if ($this->cart_invitados->contents() != NULL){
+                foreach ($this->cart_invitados->contents() as $invitado){
+                    $invitados = array(
+                        'cedula'    => $invitado['cedula'],
+                        'nombre'    => $invitado['nombre']
+                    );
+
+                    $this->servicio->set_invitados($invitados);
+                }
+            }
+
+            $bitacora = array(
+                'tipo' => 'servicio',
+                'movimiento' => 'Se ha actualizado el estado del servicio '.$id_ser.'.',
+                'usuario' => $this->session->userdata('id_usuario')
+            );      
+
+            $this->bitacora->set($bitacora);
+
+            $this->cart_beneficiarios->destroy();
+            $this->cart_cabanas->destroy();
+            $this->cart_canchas->destroy();
+            $this->cart_empleados->destroy();
+            $this->cart_implementos->destroy();
+            $this->cart_invitados->destroy();
+
+            echo json_encode(array("status" => true));
+        }
+        else
+        {
+            if($this->cart_beneficiarios->contents() == NULL && $this->cart_cabanas->contents() == NULL && $this->cart_canchas->contents() == NULL && $this->cart_implementos->contents() == NULL && $this->cart_empleados->contents() == NULL && $this->cart_invitados->contents() == NULL)
+            {
+                echo json_encode(array("status" => false, "reason" => "carros"));
+            }
+            else
+            {
+                if($this->cart_beneficiarios->contents() == NULL){
+                echo json_encode(array("status" => false, "reason" => "beneficiarios"));
+                }
+                else if($this->cart_cabanas->contents() == NULL && $this->cart_canchas->contents() == NULL){
+                    echo json_encode(array("status" => false, "reason" => "servicio"));
+                }
+                else if($this->cart_implementos->contents() == NULL){
+                    echo json_encode(array("status" => false, "reason" => "implementos"));
+                }
+                else if($this->cart_empleados->contents() == NULL){
+                    echo json_encode(array("status" => false, "reason" => "empleados"));
+                }
+                else if($this->cart_invitados->contents() == NULL){
+                    echo json_encode(array("status" => false, "reason" => "invitados"));
+                }
+            }
+        }
+    }
+
+    public function end($id_ser = NULL)
+    {
+        if($this->cart_beneficiarios->contents() != NULL && $this->cart_cabanas->contents() != NULL && $this->cart_canchas->contents() == NULL && $this->cart_implementos->contents() != NULL && $this->cart_empleados->contents() != NULL && $this->cart_invitados->contents() != NULL || $this->cart_beneficiarios->contents() != NULL && $this->cart_cabanas->contents() == NULL && $this->cart_canchas->contents() != NULL && $this->cart_implementos->contents() != NULL && $this->cart_empleados->contents() != NULL && $this->cart_invitados->contents() != NULL || $this->cart_beneficiarios->contents() != NULL && $this->cart_cabanas->contents() != NULL && $this->cart_canchas->contents() != NULL && $this->cart_implementos->contents() != NULL && $this->cart_empleados->contents() != NULL && $this->cart_invitados->contents() != NULL)
+        {
+            $this->_validate();
+                        
+            $servicio = array(
+                'usuario' => $this->session->userdata('id_usuario'),
+                'fecha_asig' => $this->input->post('fecha'),
+                'hora_asig' => $this->input->post('hora'),
+                'estado' => 'Finalizado'
+            );
+            
+            $this->servicio->update(array('id_ser' => $id_ser), $servicio);
+
+            $this->cart_beneficiarios->destroy();
+            $this->cart_cabanas->destroy();
+            $this->cart_canchas->destroy();
+            $this->cart_empleados->destroy();
+            $this->cart_implementos->destroy();
+            $this->cart_invitados->destroy();
+
+            if ($this->cart_beneficiarios->contents() != NULL){
+                foreach ($this->cart_beneficiarios->contents() as $beneficiario){
+                    $beneficiarios = array(
+                        'servicio'     => $id_ser,
+                        'beneficiario'   => $beneficiario['id']
+                    );    
+
+                    $this->servicio->set_beneficiarios($beneficiarios);
+                }
+            }
+
+            if ($this->cart_cabanas->contents() != NULL){
+                foreach ($this->cart_cabanas->contents() as $cabana){
+                    $cabanas = array(
+                        'servicio'     => $id_ser,
+                        'cabana'   => $cabana['id']
+                    );    
+
+                    $this->servicio->set_cabanas($cabanas);
+                }
+            }
+
+            if ($this->cart_cabanas->contents() != NULL):
+                foreach ($this->cart_cabanas->contents() as $cabana):
+                    $id_cab = $cabana['id'];
+                  $this->censo->increment_cabanas($id_cab);
+                endforeach;
+            endif;
+
+            if ($this->cart_canchas->contents() != NULL){
+                foreach ($this->cart_canchas->contents() as $cancha){
+                    $canchas = array(
+                        'servicio'     => $id_ser,
+                        'cancha'   => $cancha['id']
+                    );    
+
+                    $this->servicio->set_cabanas($canchas);
+                }
+            }
+
+            if ($this->cart_canchas->contents() != NULL):
+                foreach ($this->cart_canchas->contents() as $cancha):
+                    $id_can = $cancha['id'];
+                  $this->censo->increment_canchas($id_can);
+                endforeach;
+            endif;
+
+            if ($this->cart_empleados->contents() != NULL){
+                foreach ($this->cart_empleados->contents() as $empleado){
+                    $empleados = array(
+                        'servicio'     => $id_ser,
+                        'empleado'   => $empleado['id']
+                    );    
+
+                    $this->servicio->set_empleados($empleados);
+                }
+            }
+
+            if ($this->cart_empleados->contents() != NULL):
+                foreach ($this->cart_empleados->contents() as $empleado):
+                    $id_emp = $empleado['id'];
+                  $this->censo->increment_empleados($id_emp);
+                endforeach;
+            endif;
+
+            if ($this->cart_implementos->contents() != NULL){
+                foreach ($this->cart_implementos->contents() as $implemento){
+                    $implementos = array(
+                        'servicio'     => $id_ser,
+                        'implemento'   => $implemento['id'],
+                        'cantidad'   => $implemento['cantidad'],
+                        'unidad'   => $implemento['unidad']
+                    );    
+
+                    $this->servicio->set_implementos($implementos);
+                }
+            }
+
+            if ($this->cart_implementos->contents() != NULL):
+                foreach ($this->cart_implementos->contents() as $implemento):
+                    $id_imp = $implemento['id'];
+                    $cantidad = $implemento['cantidad'];
+                    $implemento_act = $this->censo->get_implemento_by_id($id_imp);
+                    if($implemento_act != false)
+                    {
+                        $actual = $implemento_act->stock;
+                        $incremento = $actual + $cantidad;
+                    }    
+                  $this->censo->increment_implementos($id_imp,$incremento);
+                endforeach;
+            endif;
 
             if ($this->cart_invitados->contents() != NULL){
                 foreach ($this->cart_invitados->contents() as $invitado){
@@ -1218,24 +1420,34 @@ class Servicio extends CI_Controller
     public function assign_implemento($id_imp)
     {
         $cantidad = $this->input->get('cantidad');
+        if($cantidad > 0)
+        {
+            $implemento = $this->implemento->get_by_id($id_imp);
+            $implementos = array(
+                'id' => $id_imp,
+                'codigo' => $implemento['codigo'],
+                'nombre' => $implemento['nombre'],
+                'unidad' => $implemento['unidad'],
+                'cantidad' => $cantidad
+            );
 
-        $implemento = $this->implemento->get_by_id($id_imp);
-        $implementos = array(
-            'id' => $id_imp,
-            'codigo' => $implemento['codigo'],
-            'nombre' => $implemento['nombre'],
-            'unidad' => $implemento['unidad'],
-            'cantidad' => $cantidad
-        );
+            $this->cart_implementos->insert($implementos);
 
-        $this->cart_implementos->insert($implementos);
-
-        if($this->cart_implementos->insert($implementos) === md5($id_imp))
+            if($this->cart_implementos->insert($implementos) === md5($id_imp))
+            {
+                $data = array(
+                    'title' => 'Éxito',
+                    'text' => '¡El implemento fue asignado!',
+                    'type' => 'success',
+                );
+            }
+        }
+        else
         {
             $data = array(
-                'title' => 'Éxito',
-                'text' => '¡El implemento fue asignado!',
-                'type' => 'success',
+                'title' => 'Error',
+                'text' => '¡No has asignado ningún implemento!',
+                'type' => 'error',
             );
         }
         echo json_encode($data);

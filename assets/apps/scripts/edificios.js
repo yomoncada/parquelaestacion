@@ -1,14 +1,33 @@
 var save_method;
-var edificios;
+var edificios_activos;
+var edificios_inactivos;
 
 $(document).ready(function (){
-	edificios = $('#edificios').DataTable({ 
+	edificios_activos = $('#edificios_activos').DataTable({ 
 		"processing": true,
 		"serverSide": true,
 		"order": [],
 
 		"ajax":{
-			"url": "http://localhost/parque/index.php/edificio/list_edificios",
+			"url": "http://localhost/parque/index.php/edificio/list_edificios_activos",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
+	edificios_inactivos = $('#edificios_inactivos').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/edificio/list_edificios_inactivos",
 			"type": "POST"
 		},
 
@@ -176,7 +195,7 @@ function save_edificio(){
 					text: message,
 					type: "success"
 				}); 
-				reload_edificio();
+				reload_edificios();
 			}
 			else{
 				if(data.inputerror)
@@ -208,10 +227,10 @@ function save_edificio(){
 	});
 }
 
-function delete_edificio(id_edi){  
+function activate_edificio(id_edi){  
 	swal({
 		title: "Advertencia",
-		text: "¿Deseas eliminar este edificio?",
+		text: "¿Deseas activar este edificio?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#f8ac59",
@@ -219,13 +238,13 @@ function delete_edificio(id_edi){
 		cancelButtonText: "No"
 	}).then(function (){
 		$.ajax({
-			url : "http://localhost/parque/index.php/edificio/delete_edificio/" + id_edi,
+			url : "http://localhost/parque/index.php/edificio/activate_edificio/" + id_edi,
 			type: "POST",
 			dataType: "JSON",
 			success: function (data)
 			{
 				$('#edificio-modal').modal('hide');
-				reload_edificio();
+				reload_edificios();
 			},
 			error: function (jqXHR, textStatus, errorThrown)
 			{
@@ -236,16 +255,55 @@ function delete_edificio(id_edi){
 				});
 			}
 		});
-		swal("Éxito", "¡El edificio fue eliminado!", "success");
+		swal("Éxito", "¡El edificio fue activado!", "success");
 	}, function (dismiss){
 	    // dismiss can be 'cancel', 'overlay',
 	    // 'close', and 'timer'
 	    if(dismiss === 'cancel'){
-	    	swal("Aviso", "¡La eliminación fue cancelada!", "info");
+	    	swal("Aviso", "¡La activación fue cancelada!", "info");
+	    }
+	})
+}
+
+function desactivate_edificio(id_edi){  
+	swal({
+		title: "Advertencia",
+		text: "¿Deseas desactivar este edificio?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#f8ac59",
+		confirmButtonText: "Sí",
+		cancelButtonText: "No"
+	}).then(function (){
+		$.ajax({
+			url : "http://localhost/parque/index.php/edificio/desactivate_edificio/" + id_edi,
+			type: "POST",
+			dataType: "JSON",
+			success: function (data)
+			{
+				$('#edificio-modal').modal('hide');
+				reload_edificios();
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				swal({
+					title: "Error",
+					text: "¡Ha ocurrido un error!",
+					type: "error"
+				});
+			}
+		});
+		swal("Éxito", "¡El edificio fue desactivado!", "success");
+	}, function (dismiss){
+	    // dismiss can be 'cancel', 'overlay',
+	    // 'close', and 'timer'
+	    if(dismiss === 'cancel'){
+	    	swal("Aviso", "¡La desactivado fue cancelada!", "info");
 	    }
 	})
 }
 
 function reload_edificios(){
-	edificios.ajax.reload(null,false);
+	edificios_activos.ajax.reload(null,false);
+	edificios_inactivos.ajax.reload(null,false);
 }

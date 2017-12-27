@@ -300,7 +300,7 @@ SET AUTOCOMMIT = 1; '. PHP_EOL;
         }
         else {
           if(isset($this->conn->error_list[0]['error'])) $this->setSqlError($this->conn->error_list[0]['error']);
-          else $this->setSqlError('Unable to execute the SQL query');
+          else $this->setSqlError('Los datos ingresados son incorrectos');
         }
       }
     }

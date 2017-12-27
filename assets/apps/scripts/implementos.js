@@ -1,15 +1,34 @@
 var save_method;
-var implementos;
+var implementos_activos;
+var implementos_inactivos;
 
 $(document).ready(function ()
 {
-    implementos = $('#implementos').DataTable({ 
+    implementos_activos = $('#implementos_activos').DataTable({ 
         "processing": true,
         "serverSide": true,
         "order": [],
 
         "ajax":{
-            "url": "http://localhost/parque/index.php/implemento/list_implementos",
+            "url": "http://localhost/parque/index.php/implemento/list_implementos_activos",
+            "type": "POST"
+        },
+
+        "columnDefs": [
+        { 
+            "targets": [ -1 ],
+            "orderable": false,
+        },
+        ],
+    });
+
+    implementos_inactivos = $('#implementos_inactivos').DataTable({ 
+        "processing": true,
+        "serverSide": true,
+        "order": [],
+
+        "ajax":{
+            "url": "http://localhost/parque/index.php/implemento/list_implementos_inactivos",
             "type": "POST"
         },
 
@@ -314,10 +333,10 @@ function save_implemento(){
     });
 }
 
-function delete_implemento(id_imp){  
+function activate_implemento(id_imp){  
     swal({
         title: "Advertencia",
-        text: "¿Deseas eliminar este implemento?",
+        text: "¿Deseas activar este implemento?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#f8ac59",
@@ -325,7 +344,7 @@ function delete_implemento(id_imp){
         cancelButtonText: "No"
     }).then(function (){
         $.ajax({
-            url : "http://localhost/parque/index.php/implemento/delete_implemento/" + id_imp,
+            url : "http://localhost/parque/index.php/implemento/activate_implemento/" + id_imp,
             type: "POST",
             dataType: "JSON",
             success: function (data){
@@ -340,14 +359,49 @@ function delete_implemento(id_imp){
                 });
             }
         });
-        swal("Éxito", "¡El implemento fue eliminado!", "success");
+        swal("Éxito", "¡El implemento fue activado!", "success");
     }, function (dismiss){
         if(dismiss === 'cancel'){
-            swal("Aviso", "¡La eliminación fue cancelada!", "info");
+            swal("Aviso", "¡La activación fue cancelada!", "info");
+        }
+    })
+}
+
+function desactivate_implemento(id_imp){  
+    swal({
+        title: "Advertencia",
+        text: "¿Deseas desactvar este implemento?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#f8ac59",
+        confirmButtonText: "Sí",
+        cancelButtonText: "No"
+    }).then(function (){
+        $.ajax({
+            url : "http://localhost/parque/index.php/implemento/desactivate_implemento/" + id_imp,
+            type: "POST",
+            dataType: "JSON",
+            success: function (data){
+                $('#implemento-modal').modal('hide');
+                reload_implementos();
+            },
+            error: function (jqXHR, textStatus, errorThrown){
+                swal({
+                    title: "Error",
+                    text: "¡Ha ocurrido un error!",
+                    type: "error"
+                });
+            }
+        });
+        swal("Éxito", "¡El implemento fue desactivado!", "success");
+    }, function (dismiss){
+        if(dismiss === 'cancel'){
+            swal("Aviso", "¡La desactivación fue cancelada!", "info");
         }
     })
 }
 
 function reload_implementos(){
-    implementos.ajax.reload(null,false);
+    implementos_activos.ajax.reload(null,false);
+    implementos_inactivos.ajax.reload(null,false);
 }

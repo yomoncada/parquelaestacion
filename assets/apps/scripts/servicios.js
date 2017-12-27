@@ -16,13 +16,49 @@ $(document).ready(function (){
 	count_implementos();
 	count_invitados();
 
-	servicios = $('#servicios').DataTable({ 
+	servicios_pendientes = $('#servicios_pendientes').DataTable({ 
 		"processing": true,
 		"serverSide": true,
 		"order": [],
 
 		"ajax":{
-			"url": "http://localhost/parque/index.php/servicio/list_servicios",
+			"url": "http://localhost/parque/index.php/servicio/list_servicios_pendientes",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
+	servicios_en_progresos = $('#servicios_en_progresos').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/servicio/list_servicios_en_progresos",
+			"type": "POST"
+		},
+
+		"columnDefs": [
+		{ 
+			"targets": [ -1 ],
+			"orderable": false,
+		},
+		],
+	});
+
+	servicios_finalizados = $('#servicios_finalizados').DataTable({ 
+		"processing": true,
+		"serverSide": true,
+		"order": [],
+
+		"ajax":{
+			"url": "http://localhost/parque/index.php/servicio/list_servicios_finalizados",
 			"type": "POST"
 		},
 
@@ -305,6 +341,216 @@ function update(id_ser){
             	swal({
 	                title: "Éxito",
 	                text: "¡Servicio actualizado!.",
+	                type: "success"
+	            });
+
+            	count_beneficiarios();
+            	count_cabanas();
+            	count_canchas();
+            	count_empleados();
+				count_implementos();
+				count_invitados();
+				reload_beneficiarios();
+				reload_cabanas();
+				reload_canchas();
+				reload_empleados();
+				reload_implementos();
+				reload_beneficiarios_asignados();
+				reload_cabanas_asignadas();
+				reload_canchas_asignadas();
+				reload_empleados_asignados();
+				reload_implementos_asignados();
+				reload_invitados_asignados();
+
+				$('#servicio_form')[0].reset();
+				location.href ="http://localhost/parque/index.php/servicio";
+            }
+            else
+            {
+            	if(data.reason == "carros")
+                {
+	            	data.message = "¡No has asignado ningún elemento!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "beneficiarios")
+	            {
+	            	data.message = "¡No has asignado ningún beneficiario!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "servicio")
+	            {
+	            	data.message = "¡No has asignado ninguna cabañas y/o canchas deportiva!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "implementos")
+	            {
+	            	data.message = "!No has asignado ningún implemento¡";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "empleados")
+	            {
+	            	data.message = "¡No has asignado ningún empleado!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "invitados")
+	            {
+	            	data.message = "¡No has asignado ningún invitado!";
+	            	swalx = 1;
+	            }
+
+	            if(swalx == 1){
+	            	swal({
+		                title: "Error",
+		                text: data.message,
+		                type: "error"
+		            });
+	            }
+
+                if(data.inputerror){
+	                for(var i = 0; i < data.inputerror.length; i++){
+	                    $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error');
+	                    $('.'+data.inputerror[i]).text(data.error_string[i]);
+	                    $('.'+data.inputerror[i]).css('color','red');
+	            	}
+	            }
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown){
+            swal({
+                title: "Error",
+                text: "¡Ha ocurrido un error!",
+                type: "error"
+            });
+        }
+    });
+}
+
+function update(id_ser){
+    $('.form-group').removeClass('has-error');
+    $('.help-block').empty();
+
+    var swalx;
+
+    $.ajax({
+        url : "http://localhost/parque/index.php/servicio/update/" + id_ser,
+        type: "POST",
+        data: $('#servicio_form').serialize(),
+        dataType: "JSON",
+        success: function (data){
+            if(data.status == true){
+            	swal({
+	                title: "Éxito",
+	                text: "¡Servicio actualizado!.",
+	                type: "success"
+	            });
+
+            	count_beneficiarios();
+            	count_cabanas();
+            	count_canchas();
+            	count_empleados();
+				count_implementos();
+				count_invitados();
+				reload_beneficiarios();
+				reload_cabanas();
+				reload_canchas();
+				reload_empleados();
+				reload_implementos();
+				reload_beneficiarios_asignados();
+				reload_cabanas_asignadas();
+				reload_canchas_asignadas();
+				reload_empleados_asignados();
+				reload_implementos_asignados();
+				reload_invitados_asignados();
+
+				$('#servicio_form')[0].reset();
+				location.href ="http://localhost/parque/index.php/servicio";
+            }
+            else
+            {
+            	if(data.reason == "carros")
+                {
+	            	data.message = "¡No has asignado ningún elemento!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "beneficiarios")
+	            {
+	            	data.message = "¡No has asignado ningún beneficiario!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "servicio")
+	            {
+	            	data.message = "¡No has asignado ninguna cabañas y/o canchas deportiva!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "implementos")
+	            {
+	            	data.message = "!No has asignado ningún implemento¡";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "empleados")
+	            {
+	            	data.message = "¡No has asignado ningún empleado!";
+	            	swalx = 1;
+	            }
+
+	            if(data.reason == "invitados")
+	            {
+	            	data.message = "¡No has asignado ningún invitado!";
+	            	swalx = 1;
+	            }
+
+	            if(swalx == 1){
+	            	swal({
+		                title: "Error",
+		                text: data.message,
+		                type: "error"
+		            });
+	            }
+
+                if(data.inputerror){
+	                for(var i = 0; i < data.inputerror.length; i++){
+	                    $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error');
+	                    $('.'+data.inputerror[i]).text(data.error_string[i]);
+	                    $('.'+data.inputerror[i]).css('color','red');
+	            	}
+	            }
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown){
+            swal({
+                title: "Error",
+                text: "¡Ha ocurrido un error!",
+                type: "error"
+            });
+        }
+    });
+}
+
+function end(id_ser){
+    $('.form-group').removeClass('has-error');
+    $('.help-block').empty();
+
+    var swalx;
+
+    $.ajax({
+        url : "http://localhost/parque/index.php/servicio/end/" + id_ser,
+        type: "POST",
+        data: $('#servicio_form').serialize(),
+        dataType: "JSON",
+        success: function (data){
+            if(data.status == true){
+            	swal({
+	                title: "Éxito",
+	                text: "¡Servicio finalizado!.",
 	                type: "success"
 	            });
 
@@ -752,11 +998,11 @@ function assign_implemento(id_imp, stock){
 	  	type: 'question',
 	  	input: 'range',
 	  	inputAttributes: {
-		    min: 1,
+		    min: 0,
 		    max: stock,
 		    step: 1
 	 	},
-		inputValue: 1,
+		inputValue: 0,
 	  	showCancelButton: true,
 	}).then(function (result){
 	  	$.ajax({
