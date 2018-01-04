@@ -9,6 +9,8 @@ class Reforestacion extends CI_Controller
         $this->load->model('actividad_model','actividad');
         $this->load->model('area_model','area');
         $this->load->model('bitacora_model','bitacora');
+        $this->load->model('categoria_model','categoria');
+        $this->load->model('cargo_model','cargo');
         $this->load->model('reforestacion_model','reforestacion');
         $this->load->model('empleado_model','empleado');
         $this->load->model('especie_model','especie');
@@ -138,7 +140,7 @@ class Reforestacion extends CI_Controller
 
     public function index()
     {
-        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('cen_access') == 1)
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('ref_access') == 1)
         {
             $this->cart_empleados->destroy();
             $this->cart_areas->destroy();
@@ -174,7 +176,7 @@ class Reforestacion extends CI_Controller
 
     public function create()
     {
-        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('cen_access') == 1)
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('ref_access') == 1)
         {
             if($this->session->userdata('proceso') != "reforestacion")
             {
@@ -195,6 +197,8 @@ class Reforestacion extends CI_Controller
 
             $data = array(
                 'total_ref' => $this->reforestacion->get_numero(),
+                'categorias' => $this->categoria->get_all(),
+                'cargos' => $this->cargo->get_all(),
                 'controller' => 'reforestacion'
             );
 
@@ -213,7 +217,7 @@ class Reforestacion extends CI_Controller
 
     public function control($id_ref = NULL)
     {
-        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('cen_access') == 1)
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('ref_access') == 1)
         {
             if($this->session->userdata('proceso') != "reforestacion_control" || $id_ref != $this->session->userdata('numero'))
             {
@@ -239,6 +243,8 @@ class Reforestacion extends CI_Controller
             $data = array(
                 'reforestacion'   =>    $this->reforestacion->get_reforestacion($id_ref),
                 'empleados' => $this->reforestacion->get_empleados($id_ref),
+                'categorias' => $this->categoria->get_all(),
+                'cargos' => $this->cargo->get_all(),
                 'controller' => 'reforestacion'
             );
 
@@ -310,21 +316,21 @@ class Reforestacion extends CI_Controller
             }
             else if($reforestacion['estado'] == 'Finalizado')
             {
-                $especies_reforestadas = $this->reforestacion->get_especies($id_ref);
+                $especies_censadas = $this->reforestacion->get_especies($id_ref);
 
-                if($especies_reforestadas == TRUE)
+                if($especies_censadas == TRUE)
                 {
                     if ($cart_especies_censadas = $this->cart_especies_censadas->contents() == NULL)
                     {
-                        foreach ($especies_reforestadas as $especie_reforestada):
-                            $especiess_reforestadas = array(
-                                'id' => $especie_reforestada->especie,
-                                'codigo' => $especie_reforestada->codigo,
-                                'nombre' => $especie_reforestada->nom_cmn,
-                                'cantidad' => $especie_reforestada->poblacion
+                        foreach ($especies_censadas as $especie_censada):
+                            $especiess_censadas = array(
+                                'id' => $especie_censada->especie,
+                                'codigo' => $especie_censada->codigo,
+                                'nombre' => $especie_censada->nom_cmn,
+                                'cantidad' => $especie_censada->poblacion
                             );
 
-                            $this->cart_especies_censadas->insert($especiess_reforestadas);
+                            $this->cart_especies_censadas->insert($especiess_censadas);
                       endforeach;
                     }
                 }
@@ -379,8 +385,10 @@ class Reforestacion extends CI_Controller
                     if ($cart_actividades_realizadas = $this->cart_actividades_realizadas->contents() == NULL)
                     {
                         foreach ($actividades_realizadas as $actividad_realizada):
+                            $id = rand(0,99999);
                             $actividadess_realizadas = array(
-                                'id' => $actividad_realizada->actividad,
+                                'id' => $id,
+                                'actividad' => $actividad_realizada->actividad,
                                 'accion' => $actividad_realizada->accion,
                                 'encargado' => $actividad_realizada->encargado,
                                 'cantidad' => 1
@@ -431,6 +439,13 @@ class Reforestacion extends CI_Controller
                     endforeach;
                 endif;
 
+                if ($this->cart_empleados->contents() != NULL):
+                    foreach ($this->cart_empleados->contents() as $empleado):
+                        $id_emp = $empleado['id'];
+                      $this->reforestacion->discount_empleados($id_emp);
+                    endforeach;
+                endif;
+
                 if ($this->cart_areas->contents() != NULL):
                     foreach ($this->cart_areas->contents() as $area):
                         $areas = array(
@@ -463,6 +478,20 @@ class Reforestacion extends CI_Controller
                         );    
 
                         $this->reforestacion->set_implementos($implementos);
+                    endforeach;
+                endif;
+
+                if ($this->cart_implementos->contents() != NULL):
+                    foreach ($this->cart_implementos->contents() as $implemento):
+                        $id_imp = $implemento['id'];
+                        $cantidad = $implemento['cantidad'];
+                        $implemento_act = $this->reforestacion->get_implemento_by_id($id_imp);
+                        if($implemento_act != false)
+                        {
+                            $actual = $implemento_act->stock;
+                            $descuento = $actual - $cantidad;
+                        }    
+                      $this->reforestacion->discount_implementos($id_imp,$descuento);
                     endforeach;
                 endif;
 
@@ -543,6 +572,31 @@ class Reforestacion extends CI_Controller
             );
             
             $this->reforestacion->update(array('id_ref' => $id_ref), $reforestacion);
+
+            $empleados = $this->reforestacion->get_empleados($id_ref);
+
+            if($empleados == TRUE)
+            {
+                foreach ($empleados as $empleado):
+                    $this->reforestacion->increment_empleados($empleado->empleado);
+                endforeach;
+            }
+
+            $implementos = $this->reforestacion->get_implementos($id_ref);
+
+            if($implementos == TRUE)
+            {
+                foreach ($implementos as $implemento):
+                    $implemento_act = $this->reforestacion->get_implemento_by_id($implemento->implemento);
+                    if($implemento_act == TRUE)
+                    {
+                        $actual = $implemento_act->stock;
+                        $incremento = $actual + $implemento->cantidad;
+                    }    
+                    $this->reforestacion->increment_implementos($implemento->implemento,$incremento);
+                endforeach;
+            }
+
             $this->reforestacion->delete_empleados($id_ref);
             $this->reforestacion->delete_areas($id_ref);
             $this->reforestacion->delete_especies($id_ref);
@@ -677,42 +731,18 @@ class Reforestacion extends CI_Controller
         {
             $reforestacion = array(
                 'usuario' => $this->session->userdata('id_usuario'),
+                'observacion' => $this->input->post('observacion'),
                 'estado' => 'Finalizado'
             );
             
             $this->reforestacion->update(array('id_ref' => $id_ref), $reforestacion);
-            $this->reforestacion->delete_empleados($id_ref);
-            $this->reforestacion->delete_areas($id_ref);
             $this->reforestacion->delete_especies($id_ref);
-            $this->reforestacion->delete_implementos($id_ref);
             $this->reforestacion->delete_actividades($id_ref);
-
-            if ($this->cart_empleados->contents() != NULL):
-                foreach ($this->cart_empleados->contents() as $empleado):
-                    $empleados = array(
-                        'reforestacion'     => $id_ref,
-                        'empleado'   => $empleado['id']
-                    );    
-
-                    $this->reforestacion->set_empleados($empleados);
-                endforeach;
-            endif;
 
             if ($this->cart_empleados->contents() != NULL):
                 foreach ($this->cart_empleados->contents() as $empleado):
                     $id_emp = $empleado['id'];
                   $this->reforestacion->increment_empleados($id_emp);
-                endforeach;
-            endif;
-
-            if ($this->cart_areas->contents() != NULL):
-                foreach ($this->cart_areas->contents() as $area):
-                    $areas = array(
-                        'reforestacion'     => $id_ref,
-                        'id_are'   => $area['id']
-                    );    
-
-                    $this->reforestacion->set_areas($areas);
                 endforeach;
             endif;
 
@@ -728,30 +758,17 @@ class Reforestacion extends CI_Controller
                 endforeach;
             endif;
 
-            if ($this->cart_especie_censadas->contents() != NULL):
-                foreach ($this->cart_especie_censadas->contents() as $especie_censada):
+            if ($this->cart_especies_censadas->contents() != NULL):
+                foreach ($this->cart_especies_censadas->contents() as $especie_censada):
                     $id_esp = $especie_censada['id'];
                     $cantidad = $especie_censada['cantidad'];
-                    $especie_censada_act = $this->reforestacion->get_especie_censada_by_id($id_esp);
-                    if($especie_censada_act != false)
+                    $especie_act = $this->reforestacion->get_especie_by_id($id_esp);
+                    if($especie_act != false)
                     {
-                        $actual = $especie_censada_act->stock;
-                        $cantidad = $actual + $cantidad;
+                        $actual = $especie_act->poblacion;
+                        $incremento = $actual + $cantidad;
                     }    
-                  $this->reforestacion->increment_especies_censadas($id_esp,$cantidad);
-                endforeach;
-            endif;
-
-            if ($this->cart_implementos->contents() != NULL):
-                foreach ($this->cart_implementos->contents() as $implemento):
-                    $implementos = array(
-                        'reforestacion'     => $id_ref,
-                        'implemento'   => $implemento['id'],
-                        'cantidad'   => $implemento['cantidad'],
-                        'unidad'   => $implemento['unidad']
-                    );    
-
-                    $this->reforestacion->set_implementos($implementos);
+                  $this->reforestacion->increment_especies($id_esp,$incremento);
                 endforeach;
             endif;
 
@@ -773,7 +790,7 @@ class Reforestacion extends CI_Controller
                 foreach ($this->cart_actividades_realizadas->contents() as $actividad):
                     $actividades = array(
                         'reforestacion'     => $id_ref,
-                        'actividad'   => $actividad['id'],
+                        'actividad'   => $actividad['actividad'],
                         'encargado' => $actividad['encargado']
                     );    
 
@@ -853,24 +870,6 @@ class Reforestacion extends CI_Controller
             "data" => $data
         );
         echo json_encode($output);
-    }
-
-    public function select_empleados_asignados()
-    {
-        $data = array(
-            'empleados' =>   array(
-                                    'Luciano Moncada' =>   array(
-                                                                'cédula' => 27402258,
-                                                                'edad' => 20
-                                                            ),
-                                    'Yonathan Moncada' =>   array(
-                                                                'cédula' => 27402258,
-                                                                'edad' => 20
-                                                            )
-                           )
-        );
-
-        echo json_encode($data);
     }
 
     public function assign_empleado($id_emp)
@@ -1122,7 +1121,7 @@ class Reforestacion extends CI_Controller
             $row[] = $especie['nombre'];
             if($reforestacion['estado'] == 'En progreso')
             {
-                $row[] ='<a class="btn btn-link" href="javascript:void(0)" title="Asignar" onclick="assign_especie_reforestada('."'".$especie['id']."'".')">
+                $row[] ='<a class="btn btn-link" href="javascript:void(0)" title="Asignar" onclick="assign_especie_censada('."'".$especie['id']."'".')">
                             <i class="icon-plus"></i>
                         </a>';
             }
@@ -1261,7 +1260,7 @@ class Reforestacion extends CI_Controller
             $row[] = $especie['codigo'];
             $row[] = $especie['nombre'];
             $row[] = $especie['cantidad'];
-            $row[] ='<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="deny_especie_reforestada('."'".$especie['rowid']."'".')">
+            $row[] ='<a class="btn btn-link" href="javascript:void(0)" title="Eliminar" onclick="deny_especie_censada('."'".$especie['rowid']."'".')">
                         <i class="icon-trash"></i>
                     </a>';
             $data[] = $row;
@@ -1277,7 +1276,7 @@ class Reforestacion extends CI_Controller
         echo json_encode($output);
     }
 
-    public function assign_especie_reforestada($id_esp)
+    public function assign_especie_censada($id_esp)
     {
         $cantidad = $this->input->get('cantidad');
 
@@ -1344,7 +1343,7 @@ class Reforestacion extends CI_Controller
         echo json_encode($data);
     }
 
-    public function deny_especie_reforestada($rowid)
+    public function deny_especie_censada($rowid)
     {
         if ($rowid==="all")
         {
@@ -1695,8 +1694,10 @@ class Reforestacion extends CI_Controller
         if($this->input->post('empleado_actividad') != '')
         {
             $actividad = $this->actividad->get_by_id($id_act);
+            $id = rand(0,99999);
             $actividades = array(
-                'id' => $id_act,
+                'id' => $id,
+                'actividad' => $id_act,
                 'accion' => $actividad['accion'],
                 'encargado' => $id_emp,
                 'cantidad' => 1
@@ -1706,7 +1707,7 @@ class Reforestacion extends CI_Controller
 
             foreach($this->cart_actividades_realizadas->contents() as $carrito)
             {
-                if($carrito['id'] == $id_act)
+                if($carrito['actividad'] == $id_act && $carrito['encargado'] == $id_emp)
                 {
                     $repeat++;
                 }
@@ -1716,7 +1717,7 @@ class Reforestacion extends CI_Controller
             {
                 $this->cart_actividades_realizadas->insert($actividades);
 
-                if($this->cart_actividades_realizadas->insert($actividades) === md5($id_act))
+                if($this->cart_actividades_realizadas->insert($actividades) === md5($id))
                 {
                     $data = array(
                         'title' => 'Éxito',
@@ -1729,7 +1730,7 @@ class Reforestacion extends CI_Controller
             {
                 $data = array(
                     'title' => 'Error',
-                    'text' => '¡No puedes asignar la misma actividad!',
+                    'text' => '¡No puedes asignar la misma actividad al mismo empleado!',
                     'type' => 'error',
                 );
             }

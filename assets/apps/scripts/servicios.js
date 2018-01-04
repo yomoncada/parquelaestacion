@@ -1271,6 +1271,7 @@ function assign_invitado(){
 						text: data.text,
 						type: data.type
 					});
+					$('#invitado-modal').modal('hide');
 	            }
 			}
 		},

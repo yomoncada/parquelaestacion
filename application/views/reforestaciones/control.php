@@ -36,22 +36,46 @@
                                 <h1 class="uppercase">N° <?echo $reforestacion['id_ref'];?></h1>
                             </div>
                         </div>
-                        <div class="col-sm-8 col-xs-12">
-                            <div class="row">
-                                <div class="col-sm-4 col-xs-12">
-                                    <h2 class="invoice-title uppercase font-green-turquoise">Responsable</h2>
-                                    <p class="invoice-desc"><?echo $reforestacion['usuario'];?></p>
-                                </div>
-                                <div class="col-sm-4 col-xs-12">
-                                    <h2 class="invoice-title uppercase font-green-turquoise">Última Modificación</h2>
-                                    <p class="invoice-desc"><?echo $reforestacion['fecha_act'];?></p>
-                                </div>
-                                <div class="col-sm-4 col-xs-12">
-                                    <h2 class="invoice-title uppercase font-green-turquoise">Estado</h2>
-                                    <p class="invoice-desc"><?echo $reforestacion['estado'];?></p>
+                        <?if($reforestacion['estado'] == 'Pendiente'){?>
+                            <div class="col-xs-8">
+                                <div class="row">
+                                    <div class="col-sm-4 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Responsable</h2>
+                                        <p class="invoice-desc"><?echo $reforestacion['usuario'];?></p>
+                                    </div>
+                                    <div class="col-sm-4 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Fecha y Hora de Procesamiento</h2>
+                                        <p class="invoice-desc"><?echo $reforestacion['fecha_act'];?></p>
+                                    </div>
+                                    <div class="col-sm-4 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Estado</h2>
+                                        <p class="invoice-desc"><?echo $reforestacion['estado'];?></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?}?>
+                        <?if($reforestacion['estado'] == 'En progreso' || $reforestacion['estado'] == 'Finalizado'){?>
+                            <div class="col-xs-8">
+                                <div class="row">
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Responsable</h2>
+                                        <p class="invoice-desc"><?echo $reforestacion['usuario'];?></p>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Fecha Asig.</h2>
+                                        <p class="invoice-desc"><?echo $reforestacion['fecha_asig'];?></p>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Hora Asig.</h2>
+                                        <p class="invoice-desc"><?echo $reforestacion['hora_asig'];?></p>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Estado</h2>
+                                        <p class="invoice-desc"><?echo $reforestacion['estado'];?></p>
+                                    </div>
+                                </div>
+                            </div>
+                        <?}?>
                     </div>
                 </div>
                 <div class="row">
@@ -150,7 +174,7 @@
                                                     <h3 id="count_especies" class="mt-head-date"> 0 </h3>
                                                 <?}
                                                 else{?>
-                                                    <div class="mt-head-desc" style="margin-top: 1em;"> Especies Reforestadas</div>
+                                                    <div class="mt-head-desc" style="margin-top: 1em;"> Especies Censadas</div>
                                                     <h3 id="count_especies_censadas" class="mt-head-date"> 0 </h3>
                                                 <?}?>
                                             </div>
@@ -320,8 +344,14 @@
                         <div class="portlet light bordered flip-scroll animated fadeIn">
                             <div class="portlet-title">
                                 <div class="caption font-dark">
-                                    <i class="icon-note"></i>
-                                    <span class="caption-subject bold uppercase">Planificación</span>
+                                    <?if($reforestacion['estado'] == "Pendiente"){?>
+                                        <i class="icon-note"></i>
+                                        <span class="caption-subject bold uppercase">Planificación</span>
+                                    <?}?>
+                                    <?if($reforestacion['estado'] == "En progreso" || $reforestacion['estado'] == "Finalizado"){?>
+                                        <i class="icon-eye"></i>
+                                        <span class="caption-subject bold uppercase">Declaración de Observaciones</span>
+                                    <?}?>
                                 </div>
                             </div>
                             <div class="portlet-body form">
@@ -353,31 +383,20 @@
                                             <span class="help-block hora"></span>
                                         </div>
                                     <?}?>
-                                    <?if($reforestacion['estado'] == "En progreso" || $reforestacion['estado'] == "Finalizado")
+                                    <?if($reforestacion['estado'] == "En progreso")
                                     {?>
                                         <div class="form-group">
-                                            <label class="control-label">Fecha</label>
-                                            <div class="input-group date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-icon-only green-turquoise" type="button" disabled>
-                                                        <i class="icon-calendar"></i>
-                                                    </button>
-                                                </span>
-                                                <input type="text" name="fecha" value="<?echo $reforestacion['fecha_asig'];?>" class="form-control" disabled>
-                                            </div>
-                                            <span class="help-block fecha"></span>
+                                            <label>Observación</label>
+                                            <textarea class="form-control" rows="6" name="observacion"></textarea>
+                                            <span class="help-block"></span>
                                         </div>
+                                    <?}?>
+                                    <?if($reforestacion['estado'] == "Finalizado")
+                                    {?>
                                         <div class="form-group">
-                                            <label class="control-label">Hora</label>
-                                            <div class="input-group">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-icon-only green-turquoise" type="button" disabled>
-                                                        <i class="icon-clock"></i>
-                                                    </button>
-                                                </span>
-                                                <input type="text" name="hora" value="<?echo $reforestacion['hora_asig'];?>" class="form-control timepicker timepicker-no-seconds" disabled>
-                                            </div>
-                                            <span class="help-block hora"></span>
+                                            <label>Observación</label>
+                                            <textarea class="form-control" rows="6" readonly=""><?echo $reforestacion['observacion'];?></textarea>
+                                            <span class="help-block"></span>
                                         </div>
                                     <?}?>
                                     <div class="form-actions" style="text-align: right;">
@@ -386,7 +405,7 @@
                                                 <?if($reforestacion['estado'] == 'Pendiente')
                                                 {?>
                                                     <a href="<? echo site_url('reforestacion'); ?>" class="btn btn-default"> Cancelar </a>
-                                                    <button id="btnSave_ref" type="button" class="btn green-turquoise" onclick="update(<?echo $reforestacion['id_ref'];?>)" style="margin-left:0.35em;"> Actualizar </button>
+                                                    <button id="btnSave_cen" type="button" class="btn green-turquoise" onclick="update(<?echo $reforestacion['id_ref'];?>)" style="margin-left:0.35em;"> Actualizar </button>
                                                 <?}
                                                 if($reforestacion['estado'] == "En progreso")
                                                 {?>
@@ -931,11 +950,11 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                                 <div class="caption font-dark">
                                     <i class="icon-list font-dark"></i>
-                                    <span class="caption-subject bold uppercase">Listado de Especies Reforestadas</span>
+                                    <span class="caption-subject bold uppercase">Listado de Especies Censadas</span>
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="especies_reforestadas" class="table table-hover table-bordered small">
+                                <table id="especies_censadas" class="table table-hover table-bordered small">
                                     <thead>
                                         <tr>
                                             <th>#</th>

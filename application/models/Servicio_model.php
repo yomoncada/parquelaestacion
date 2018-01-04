@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Servicio_model extends CI_Model {
 
 	var $table = 'servicios';
-	var $column_order = array('ser.id_ser', 'ser.fecha_act', 'usu.usuario', 'ser.fecha_asig', 'ser.hora_asig', 'ser.estado');
-	var $column_search = array('ser.id_ser', 'ser.fecha_act', 'usu.usuario', 'ser.fecha_asig', 'ser.hora_asig', 'ser.estado');
+	var $column_order = array('ser.id_ser', 'ser.fecha_act', 'usu.usuario', 'ser.fecha_asig', 'ser.hora_asig', 'ser.observacion', 'ser.estado');
+	var $column_search = array('ser.id_ser', 'ser.fecha_act', 'usu.usuario', 'ser.fecha_asig', 'ser.hora_asig', 'ser.observacion', 'ser.estado');
 	var $order = array('ser.id_ser' => 'asc');
 
 	public function __construct()
@@ -15,7 +15,7 @@ class Servicio_model extends CI_Model {
 
 	private function _get_datatables_query_pendientes()
 	{
-		$this->db->select('ser.id_ser, ser.fecha_act, usu.usuario, ser.fecha_asig, ser.hora_asig, ser.estado');
+		$this->db->select('ser.id_ser, ser.fecha_act, usu.usuario, ser.fecha_asig, ser.hora_asig, ser.observacion, ser.estado');
     	$this->db->from('servicios ser');
 	    $this->db->join('usuarios usu','ser.usuario = usu.id_usu');
 	    $this->db->where('ser.estado','Pendiente');
@@ -56,7 +56,7 @@ class Servicio_model extends CI_Model {
 
 	private function _get_datatables_query_en_progresos()
 	{
-		$this->db->select('ser.id_ser, ser.fecha_act, usu.usuario, ser.fecha_asig, ser.hora_asig, ser.estado');
+		$this->db->select('ser.id_ser, ser.fecha_act, usu.usuario, ser.fecha_asig, ser.hora_asig, ser.observacion, ser.estado');
     	$this->db->from('servicios ser');
 	    $this->db->join('usuarios usu','ser.usuario = usu.id_usu');
 	    $this->db->where('ser.estado','En Progreso');
@@ -97,7 +97,7 @@ class Servicio_model extends CI_Model {
 
 	private function _get_datatables_query_finalizados()
 	{
-		$this->db->select('ser.id_ser, ser.fecha_act, usu.usuario, ser.fecha_asig, ser.hora_asig, ser.estado');
+		$this->db->select('ser.id_ser, ser.fecha_act, usu.usuario, ser.fecha_asig, ser.hora_asig, ser.observacion, ser.estado');
     	$this->db->from('servicios ser');
 	    $this->db->join('usuarios usu','ser.usuario = usu.id_usu');
 	    $this->db->where('ser.estado','Finalizado');
@@ -197,7 +197,7 @@ class Servicio_model extends CI_Model {
 
 	public function get_all()
 	{
-      	$this->db->select('ser.id_ser, ser.fecha_act, usu.usuario, ser.fecha_asig, ser.hora_asig, ser.estado');
+      	$this->db->select('ser.id_ser, ser.fecha_act, usu.usuario, ser.fecha_asig, ser.hora_asig, ser.observacion, ser.estado');
     	$this->db->from('servicios ser');
 	    $this->db->join('usuarios usu','ser.usuario = usu.id_usu');
       	$this->db->order_by('ser.id_ser','DESC');
@@ -207,7 +207,7 @@ class Servicio_model extends CI_Model {
 
     public function get_servicio($id_ser)
 	{
-    	$this->db->select('ser.id_ser, ser.fecha_act, usu.usuario, ser.fecha_asig, ser.hora_asig, ser.estado');
+    	$this->db->select('ser.id_ser, ser.fecha_act, usu.usuario, ser.fecha_asig, ser.hora_asig, ser.observacion, ser.estado');
 	    $this->db->from('servicios ser');
 	    $this->db->join('usuarios usu','ser.usuario = usu.id_usu');
 	    $this->db->where('ser.id_ser',$id_ser);
@@ -271,9 +271,8 @@ class Servicio_model extends CI_Model {
 
 	public function get_invitados($id_ser)
 	{
-		$this->db->select('invser.empleado, inv.cedula, inv.nombre');
-	    $this->db->from('empleados_servicio invser');
-	    $this->db->join('empleados inv','invser.empleado = inv.id_emp');
+		$this->db->select('invser.servicio, invser.cedula, invser.nombre');
+	    $this->db->from('invitados_servicio invser');
 	    $this->db->where('invser.servicio',$id_ser);
 	    $query = $this->db->get();
 	    return $query->result();

@@ -19,6 +19,10 @@ class Cabana_model extends CI_Model {
     	$this->db->from('cabanas cab');
 	    $this->db->join('areas are','cab.area = are.id_are');
 		$this->db->where('cab.estado','Activa');
+		if($this->session->userdata('proceso') === "servicio" || $this->session->userdata('proceso') === "servicio_control")
+		{
+			$this->db->where('disponibilidad','Desocupada');
+		}
 
 		$i = 0;
 

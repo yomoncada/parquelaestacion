@@ -19,7 +19,10 @@ class Cancha_model extends CI_Model {
     	$this->db->from('canchas can');
 	    $this->db->join('areas are','can.area = are.id_are');
 		$this->db->where('can.estado','Activa');
-
+		if($this->session->userdata('proceso') === "servicio" || $this->session->userdata('proceso') === "servicio_control")
+		{
+			$this->db->where('disponibilidad','Desocupada');
+		}
 		$i = 0;
 
 		foreach ($this->column_search as $item)

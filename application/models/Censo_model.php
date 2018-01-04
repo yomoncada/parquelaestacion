@@ -15,7 +15,7 @@ class Censo_model extends CI_Model {
 
 	private function _get_datatables_query_pendientes()
 	{
-		$this->db->select('cen.id_cen, cen.fecha_act, usu.usuario, cen.fecha_asig, cen.hora_asig, cen.estado');
+		$this->db->select('cen.id_cen, cen.fecha_act, usu.usuario, cen.fecha_asig, cen.hora_asig, cen.observacion, cen.estado');
     	$this->db->from('censos cen');
 	    $this->db->join('usuarios usu','cen.usuario = usu.id_usu');
 	    $this->db->where('cen.estado','Pendiente');
@@ -56,7 +56,7 @@ class Censo_model extends CI_Model {
 
 	private function _get_datatables_query_en_progresos()
 	{
-		$this->db->select('cen.id_cen, cen.fecha_act, usu.usuario, cen.fecha_asig, cen.hora_asig, cen.estado');
+		$this->db->select('cen.id_cen, cen.fecha_act, usu.usuario, cen.fecha_asig, cen.hora_asig, cen.observacion, cen.estado');
     	$this->db->from('censos cen');
 	    $this->db->join('usuarios usu','cen.usuario = usu.id_usu');
 	    $this->db->where('cen.estado','En progreso');
@@ -97,7 +97,7 @@ class Censo_model extends CI_Model {
 
 	private function _get_datatables_query_finalizados()
 	{
-		$this->db->select('cen.id_cen, cen.fecha_act, usu.usuario, cen.fecha_asig, cen.hora_asig, cen.estado');
+		$this->db->select('cen.id_cen, cen.fecha_act, usu.usuario, cen.fecha_asig, cen.hora_asig, cen.observacion, cen.estado');
     	$this->db->from('censos cen');
 	    $this->db->join('usuarios usu','cen.usuario = usu.id_usu');
 	    $this->db->where('cen.estado','Finalizado');
@@ -197,7 +197,7 @@ class Censo_model extends CI_Model {
 
 	public function get_all()
 	{
-      	$this->db->select('cen.id_cen, cen.fecha_act, usu.usuario, cen.fecha_asig, cen.hora_asig, cen.estado');
+      	$this->db->select('cen.id_cen, cen.fecha_act, usu.usuario, cen.fecha_asig, cen.hora_asig, cen.observacion, cen.estado');
     	$this->db->from('censos cen');
 	    $this->db->join('usuarios usu','cen.usuario = usu.id_usu');
       	$this->db->order_by('cen.id_cen','DESC');
@@ -207,7 +207,7 @@ class Censo_model extends CI_Model {
 
     public function get_censo($id_cen)
 	{
-    	$this->db->select('cen.id_cen, cen.fecha_act, usu.usuario, cen.fecha_asig, cen.hora_asig, cen.estado');
+    	$this->db->select('cen.id_cen, cen.fecha_act, usu.usuario, cen.fecha_asig, cen.hora_asig, cen.observacion, cen.estado');
 	    $this->db->from('censos cen');
 	    $this->db->join('usuarios usu','cen.usuario = usu.id_usu');
 	    $this->db->where('cen.id_cen',$id_cen);
@@ -326,7 +326,7 @@ class Censo_model extends CI_Model {
     	$this->db->update('empleados');
   	}
 
-  	public function increment_especies_censadas($id_esp, $cantidad)
+  	public function increment_especies($id_esp, $cantidad)
   	{
    		$this->db->set('poblacion', $cantidad);
     	$this->db->where('id_esp', $id_esp);

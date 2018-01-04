@@ -447,6 +447,13 @@ class Servicio extends CI_Controller
                     }
                 }
 
+                if ($this->cart_empleados->contents() != NULL):
+                    foreach ($this->cart_empleados->contents() as $empleado):
+                        $id_emp = $empleado['id'];
+                      $this->servicio->discount_empleados($id_emp);
+                    endforeach;
+                endif;
+
                 if ($this->cart_implementos->contents() != NULL){
                     foreach ($this->cart_implementos->contents() as $implemento){
                         $implementos = array(
@@ -459,6 +466,20 @@ class Servicio extends CI_Controller
                         $this->servicio->set_implementos($implementos);
                     }
                 }
+
+                if ($this->cart_implementos->contents() != NULL):
+                    foreach ($this->cart_implementos->contents() as $implemento):
+                        $id_imp = $implemento['id'];
+                        $cantidad = $implemento['cantidad'];
+                        $implemento_act = $this->servicio->get_implemento_by_id($id_imp);
+                        if($implemento_act != false)
+                        {
+                            $actual = $implemento_act->stock;
+                            $descuento = $actual - $cantidad;
+                        }    
+                      $this->servicio->discount_implementos($id_imp,$descuento);
+                    endforeach;
+                endif;
 
                 if ($this->cart_invitados->contents() != NULL){
                     foreach ($this->cart_invitados->contents() as $invitado){
@@ -539,12 +560,54 @@ class Servicio extends CI_Controller
             
             $this->servicio->update(array('id_ser' => $id_ser), $servicio);
 
-            $this->cart_beneficiarios->destroy();
-            $this->cart_cabanas->destroy();
-            $this->cart_canchas->destroy();
-            $this->cart_empleados->destroy();
-            $this->cart_implementos->destroy();
-            $this->cart_invitados->destroy();
+            $cabanas = $this->servicio->get_cabanas($id_ser);
+
+            if($cabanas == TRUE)
+            {
+                foreach ($cabanas as $cabana):
+                    $this->servicio->increment_cabanas($cabana->cabana);
+                endforeach;
+            }
+
+            $canchas = $this->servicio->get_canchas($id_ser);
+
+            if($canchas == TRUE)
+            {
+                foreach ($canchas as $cancha):
+                    $this->servicio->increment_canchas($cancha->cancha);
+                endforeach;
+            }
+
+            $empleados = $this->servicio->get_empleados($id_ser);
+
+            if($empleados == TRUE)
+            {
+                foreach ($empleados as $empleado):
+                    $this->servicio->increment_empleados($empleado->empleado);
+                endforeach;
+            }
+
+            $implementos = $this->servicio->get_implementos($id_ser);
+
+            if($implementos == TRUE)
+            {
+                foreach ($implementos as $implemento):
+                    $implemento_act = $this->servicio->get_implemento_by_id($implemento->implemento);
+                    if($implemento_act == TRUE)
+                    {
+                        $actual = $implemento_act->stock;
+                        $incremento = $actual + $implemento->cantidad;
+                    }    
+                    $this->servicio->increment_implementos($implemento->implemento,$incremento);
+                endforeach;
+            }
+
+            $this->servicio->delete_beneficiarios($id_ser);
+            $this->servicio->delete_cabanas($id_ser);
+            $this->servicio->delete_canchas($id_ser);
+            $this->servicio->delete_empleados($id_ser);
+            $this->servicio->delete_implementos($id_ser);
+            $this->servicio->delete_invitados($id_ser);
 
             if ($this->cart_beneficiarios->contents() != NULL){
                 foreach ($this->cart_beneficiarios->contents() as $beneficiario){
@@ -582,7 +645,7 @@ class Servicio extends CI_Controller
                         'cancha'   => $cancha['id']
                     );    
 
-                    $this->servicio->set_cabanas($canchas);
+                    $this->servicio->set_canchas($canchas);
                 }
             }
 
@@ -641,6 +704,7 @@ class Servicio extends CI_Controller
             if ($this->cart_invitados->contents() != NULL){
                 foreach ($this->cart_invitados->contents() as $invitado){
                     $invitados = array(
+                        'servicio'     => $id_ser,
                         'cedula'    => $invitado['cedula'],
                         'nombre'    => $invitado['nombre']
                     );
@@ -697,130 +761,52 @@ class Servicio extends CI_Controller
     {
         if($this->cart_beneficiarios->contents() != NULL && $this->cart_cabanas->contents() != NULL && $this->cart_canchas->contents() == NULL && $this->cart_implementos->contents() != NULL && $this->cart_empleados->contents() != NULL && $this->cart_invitados->contents() != NULL || $this->cart_beneficiarios->contents() != NULL && $this->cart_cabanas->contents() == NULL && $this->cart_canchas->contents() != NULL && $this->cart_implementos->contents() != NULL && $this->cart_empleados->contents() != NULL && $this->cart_invitados->contents() != NULL || $this->cart_beneficiarios->contents() != NULL && $this->cart_cabanas->contents() != NULL && $this->cart_canchas->contents() != NULL && $this->cart_implementos->contents() != NULL && $this->cart_empleados->contents() != NULL && $this->cart_invitados->contents() != NULL)
         {
-            $this->_validate();
-                        
             $servicio = array(
                 'usuario' => $this->session->userdata('id_usuario'),
-                'fecha_asig' => $this->input->post('fecha'),
-                'hora_asig' => $this->input->post('hora'),
+                'observacion' => $this->input->post('observacion'),
                 'estado' => 'Finalizado'
             );
             
             $this->servicio->update(array('id_ser' => $id_ser), $servicio);
 
-            $this->cart_beneficiarios->destroy();
-            $this->cart_cabanas->destroy();
-            $this->cart_canchas->destroy();
-            $this->cart_empleados->destroy();
-            $this->cart_implementos->destroy();
-            $this->cart_invitados->destroy();
-
-            if ($this->cart_beneficiarios->contents() != NULL){
-                foreach ($this->cart_beneficiarios->contents() as $beneficiario){
-                    $beneficiarios = array(
-                        'servicio'     => $id_ser,
-                        'beneficiario'   => $beneficiario['id']
-                    );    
-
-                    $this->servicio->set_beneficiarios($beneficiarios);
-                }
-            }
-
-            if ($this->cart_cabanas->contents() != NULL){
-                foreach ($this->cart_cabanas->contents() as $cabana){
-                    $cabanas = array(
-                        'servicio'     => $id_ser,
-                        'cabana'   => $cabana['id']
-                    );    
-
-                    $this->servicio->set_cabanas($cabanas);
-                }
-            }
-
             if ($this->cart_cabanas->contents() != NULL):
                 foreach ($this->cart_cabanas->contents() as $cabana):
                     $id_cab = $cabana['id'];
-                  $this->censo->increment_cabanas($id_cab);
+                  $this->servicio->increment_cabanas($id_cab);
                 endforeach;
             endif;
-
-            if ($this->cart_canchas->contents() != NULL){
-                foreach ($this->cart_canchas->contents() as $cancha){
-                    $canchas = array(
-                        'servicio'     => $id_ser,
-                        'cancha'   => $cancha['id']
-                    );    
-
-                    $this->servicio->set_cabanas($canchas);
-                }
-            }
 
             if ($this->cart_canchas->contents() != NULL):
                 foreach ($this->cart_canchas->contents() as $cancha):
                     $id_can = $cancha['id'];
-                  $this->censo->increment_canchas($id_can);
+                  $this->servicio->increment_canchas($id_can);
                 endforeach;
             endif;
-
-            if ($this->cart_empleados->contents() != NULL){
-                foreach ($this->cart_empleados->contents() as $empleado){
-                    $empleados = array(
-                        'servicio'     => $id_ser,
-                        'empleado'   => $empleado['id']
-                    );    
-
-                    $this->servicio->set_empleados($empleados);
-                }
-            }
 
             if ($this->cart_empleados->contents() != NULL):
                 foreach ($this->cart_empleados->contents() as $empleado):
                     $id_emp = $empleado['id'];
-                  $this->censo->increment_empleados($id_emp);
+                  $this->servicio->increment_empleados($id_emp);
                 endforeach;
             endif;
-
-            if ($this->cart_implementos->contents() != NULL){
-                foreach ($this->cart_implementos->contents() as $implemento){
-                    $implementos = array(
-                        'servicio'     => $id_ser,
-                        'implemento'   => $implemento['id'],
-                        'cantidad'   => $implemento['cantidad'],
-                        'unidad'   => $implemento['unidad']
-                    );    
-
-                    $this->servicio->set_implementos($implementos);
-                }
-            }
 
             if ($this->cart_implementos->contents() != NULL):
                 foreach ($this->cart_implementos->contents() as $implemento):
                     $id_imp = $implemento['id'];
                     $cantidad = $implemento['cantidad'];
-                    $implemento_act = $this->censo->get_implemento_by_id($id_imp);
+                    $implemento_act = $this->servicio->get_implemento_by_id($id_imp);
                     if($implemento_act != false)
                     {
                         $actual = $implemento_act->stock;
                         $incremento = $actual + $cantidad;
                     }    
-                  $this->censo->increment_implementos($id_imp,$incremento);
+                  $this->servicio->increment_implementos($id_imp,$incremento);
                 endforeach;
             endif;
 
-            if ($this->cart_invitados->contents() != NULL){
-                foreach ($this->cart_invitados->contents() as $invitado){
-                    $invitados = array(
-                        'cedula'    => $invitado['cedula'],
-                        'nombre'    => $invitado['nombre']
-                    );
-
-                    $this->servicio->set_invitados($invitados);
-                }
-            }
-
             $bitacora = array(
                 'tipo' => 'servicio',
-                'movimiento' => 'Se ha actualizado el estado del servicio '.$id_ser.'.',
+                'movimiento' => 'Se ha finalizado el servicio número '.$id_ser.'.',
                 'usuario' => $this->session->userdata('id_usuario')
             );      
 
@@ -1568,14 +1554,39 @@ class Servicio extends CI_Controller
                 'cantidad' => 1
             );
 
-            $this->cart_invitados->insert($invitados);
+            $repeat = 0;
 
-            $data = array(
-                'title' => 'Éxito',
-                'text' => '¡El invitado fue asignado!',
-                'type' => 'success',
-                'status' => TRUE
-            );
+            foreach($this->cart_invitados->contents() as $carrito)
+            {
+                if($carrito['cedula'] == $this->input->post('cedula'))
+                {
+                    $repeat++;
+                }
+            }
+
+            if($repeat == 0)
+            {
+                $this->cart_invitados->insert($invitados);
+
+                if($this->cart_invitados->insert($invitados) === md5($id))
+                {
+                    $data = array(
+                        'title' => 'Éxito',
+                        'text' => '¡El invitado fue asignado!',
+                        'type' => 'success',
+                        'status' => TRUE
+                    );
+                }
+            }
+            else
+            {
+                $data = array(
+                    'title' => 'Error',
+                    'text' => '¡No puedes asignar al mismo invitado!',
+                    'type' => 'error',
+                    'swalx' => TRUE
+                );
+            }
         }
         else
         {

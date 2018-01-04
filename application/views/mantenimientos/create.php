@@ -737,7 +737,7 @@
                                 </div>
                             </div>
                             <div class="modal-body">
-                                <table id="edificios_asignadas" class="table table-hover table-bordered small">
+                                <table id="edificios_asignados" class="table table-hover table-bordered small">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -1037,9 +1037,7 @@
                                         <label>Tipo <span class="required">*</span></label>
                                         <select class="form-control" name="tipo">
                                             <option value="">--- Elige un categoría ---</option>
-                                            <option>Censo</option>
                                             <option>Mantenimiento</option>
-                                            <option>Reforestación</option>
                                         </select>
                                     </div>
                                 </form>

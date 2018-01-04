@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 27, 2017 at 07:42 PM
+-- Generation Time: Jan 03, 2018 at 11:31 PM
 -- Server version: 5.7.10-log
 -- PHP Version: 5.6.18
 
@@ -360,7 +360,57 @@ INSERT INTO `bitacoras` (`id_bit`, `tipo`, `movimiento`, `usuario`, `tiempo`) VA
 (166, 'servicio', 'Se ha actualizado el estado del servicio 1.', 1, '2017-12-27 19:27:28'),
 (167, 'servicio', 'Se ha registrado un servicio.', 1, '2017-12-27 19:29:11'),
 (168, 'servicio', 'Se ha actualizado el estado del servicio 1.', 1, '2017-12-27 19:38:56'),
-(169, 'Usuario', 'Ha salido del sistema.', 1, '2017-12-27 19:42:43');
+(169, 'Usuario', 'Ha salido del sistema.', 1, '2017-12-27 19:42:43'),
+(170, 'Usuario', 'Ha ingresado al sistema.', 1, '2017-12-31 18:42:44'),
+(171, 'Censo', 'Se ha registrado el censo número 1.', 1, '2017-12-31 18:45:53'),
+(172, 'Censo', 'Se ha registrado el censo número 2.', 1, '2017-12-31 18:51:07'),
+(173, 'Censo', 'Se ha actualizado el estado del censo número 2.', 1, '2017-12-31 18:57:12'),
+(174, 'Censo', 'Se ha actualizado el estado del censo número 2.', 1, '2017-12-31 19:00:22'),
+(175, 'Censo', 'Se ha actualizado el estado del censo número 2.', 1, '2017-12-31 19:03:24'),
+(176, 'Censo', 'Se ha finalizado el censo número 2.', 1, '2017-12-31 19:25:00'),
+(177, 'Censo', 'Se ha actualizado el estado del censo número 1.', 1, '2017-12-31 19:32:54'),
+(178, 'Censo', 'Se ha actualizado el estado del censo número 1.', 1, '2017-12-31 19:33:30'),
+(179, 'Censo', 'Se ha registrado el censo número 3.', 1, '2017-12-31 19:36:46'),
+(180, 'Censo', 'Se ha actualizado el estado del censo número 3.', 1, '2017-12-31 19:37:35'),
+(181, 'Usuario', 'Ha ingresado al sistema.', 1, '2017-12-31 23:56:21'),
+(182, 'Censo', 'Se ha registrado el censo número 4.', 1, '2017-12-31 23:57:12'),
+(183, 'Censo', 'Se ha actualizado el estado del censo número 4.', 1, '2017-12-31 23:57:36'),
+(184, 'Censo', 'Se ha registrado el censo número 1.', 1, '2018-01-01 00:02:04'),
+(185, 'Censo', 'Se ha actualizado el estado del censo número 1.', 1, '2018-01-01 00:02:26'),
+(186, 'Censo', 'Se ha finalizado el censo número 1.', 1, '2018-01-01 00:11:19'),
+(187, 'Usuario', 'Ha ingresado al sistema.', 1, '2018-01-01 00:14:30'),
+(188, 'Censo', 'Se ha registrado el censo número 1.', 1, '2018-01-01 00:15:43'),
+(189, 'Censo', 'Se ha actualizado el estado del censo número 1.', 1, '2018-01-01 00:15:52'),
+(190, 'Censo', 'Se ha finalizado el censo número 1.', 1, '2018-01-01 00:16:42'),
+(191, 'Usuario', 'Ha ingresado al sistema.', 1, '2018-01-02 12:51:47'),
+(192, 'Usuario', 'Ha ingresado al sistema.', 1, '2018-01-02 21:00:36'),
+(193, 'reforestacion', 'Se ha registrado el reforestacion número 1.', 1, '2018-01-02 21:13:20'),
+(194, 'reforestacion', 'Se ha actualizado el estado del reforestacion número 1.', 1, '2018-01-02 21:14:17'),
+(195, 'Usuario', 'Ha ingresado al sistema.', 1, '2018-01-03 18:17:21'),
+(196, 'reforestacion', 'Se ha actualizado el estado del reforestacion número 1.', 1, '2018-01-03 18:26:01'),
+(197, 'reforestacion', 'Se ha finalizado el reforestacion número 1.', 1, '2018-01-03 18:26:31'),
+(198, 'mantenimiento', 'Se ha registrado un mantenimiento.', 1, '2018-01-03 19:31:48'),
+(199, 'mantenimiento', 'Se ha registrado un mantenimiento.', 1, '2018-01-03 19:36:34'),
+(200, 'mantenimiento', 'Se ha actualizado el estado del mantenimiento 1.', 1, '2018-01-03 19:37:31'),
+(201, 'mantenimiento', 'Se ha finalizado el mantenimiento número 1.', 1, '2018-01-03 19:45:17'),
+(202, 'servicio', 'Se ha registrado un servicio.', 1, '2018-01-03 19:49:45'),
+(203, 'mantenimiento', 'Se ha registrado un mantenimiento.', 1, '2018-01-03 20:05:40'),
+(204, 'Usuario', 'Ha salido del sistema.', 1, '2018-01-03 20:13:08'),
+(205, 'Usuario', 'Ha ingresado al sistema.', 1, '2018-01-03 20:13:22'),
+(206, 'Usuario', 'Ha ingresado al sistema.', 1, '2018-01-03 20:34:27'),
+(207, 'servicio', 'Se ha registrado un servicio.', 1, '2018-01-03 21:03:26'),
+(208, 'servicio', 'Se ha actualizado el estado del servicio 1.', 1, '2018-01-03 21:13:29'),
+(209, 'servicio', 'Se ha finalizado el servicio número 1.', 1, '2018-01-03 21:21:00'),
+(210, 'servicio', 'Se ha registrado un servicio.', 1, '2018-01-03 21:24:06'),
+(211, 'servicio', 'Se ha actualizado el estado del servicio 1.', 1, '2018-01-03 21:27:24'),
+(212, 'servicio', 'Se ha finalizado el servicio número 1.', 1, '2018-01-03 21:29:26'),
+(213, 'servicio', 'Se ha registrado un servicio.', 1, '2018-01-03 21:45:32'),
+(214, 'servicio', 'Se ha actualizado el estado del servicio 2.', 1, '2018-01-03 21:50:16'),
+(215, 'servicio', 'Se ha registrado un servicio.', 1, '2018-01-03 22:57:14'),
+(216, 'servicio', 'Se ha actualizado el estado del servicio 1.', 1, '2018-01-03 22:57:42'),
+(217, 'servicio', 'Se ha finalizado el servicio número 1.', 1, '2018-01-03 22:57:55'),
+(218, 'mantenimiento', 'Se ha registrado un mantenimiento.', 1, '2018-01-03 23:14:58'),
+(219, 'Usuario', 'Ha salido del sistema.', 1, '2018-01-03 23:31:37');
 
 -- --------------------------------------------------------
 
@@ -382,16 +432,15 @@ CREATE TABLE `cabanas` (
 --
 
 INSERT INTO `cabanas` (`id_cab`, `numero`, `area`, `capacidad`, `disponibilidad`, `estado`) VALUES
-(1, '1', 1, 50, 'Ocupada', 'Activa'),
-(2, '2', 2, 20, 'Ocupada', 'Activa'),
+(1, '1', 1, 50, 'Desocupada', 'Activa'),
+(2, '2', 2, 20, 'Desocupada', 'Activa'),
 (3, '3', 1, 20, 'Desocupada', 'Activa'),
 (4, '4', 1, 25, 'Desocupada', 'Activa'),
 (5, '5', 2, 20, 'Desocupada', 'Activa'),
 (6, '6', 3, 25, 'Desocupada', 'Activa'),
 (7, '7', 3, 50, 'Desocupada', 'Activa'),
-(8, '9', 4, 25, 'Desocupada', 'Activa'),
-(9, '10', 1, 25, 'Desocupada', 'Activa'),
-(10, '8', 1, 50, 'Desocupada', 'Activa');
+(8, '8', 4, 25, 'Desocupada', 'Activa'),
+(9, '9', 1, 25, 'Desocupada', 'Activa');
 
 -- --------------------------------------------------------
 
@@ -425,9 +474,9 @@ CREATE TABLE `canchas` (
 --
 
 INSERT INTO `canchas` (`id_can`, `numero`, `nombre`, `area`, `capacidad`, `disponibilidad`, `estado`) VALUES
-(1, '1', 'Cancha de Fútbol', 1, 25, 'Ocupada', 'Activa'),
-(2, '2', 'Cancha de Volleyball', 2, 25, 'Ocupada', 'Activa'),
-(3, '3', 'Cancha de Tennis', 2, 25, 'Ocupada', 'Activa'),
+(1, '1', 'Cancha de Fútbol', 1, 25, 'Desocupada', 'Activa'),
+(2, '2', 'Cancha de Volleyball', 2, 25, 'Desocupada', 'Activa'),
+(3, '3', 'Cancha de Tennis', 2, 25, 'Desocupada', 'Activa'),
 (4, '4', 'Cancha de Basketball', 1, 20, 'Desocupada', 'Activa');
 
 -- --------------------------------------------------------
@@ -501,7 +550,8 @@ CREATE TABLE `censos` (
   `usuario` int(4) NOT NULL,
   `fecha_asig` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
   `hora_asig` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `estado` enum('Pendiente','En progreso','','Finalizado') COLLATE utf8_spanish_ci NOT NULL
+  `observacion` varchar(320) COLLATE utf8_spanish_ci NOT NULL,
+  `estado` enum('Pendiente','En progreso','Finalizado') COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -522,7 +572,7 @@ CREATE TABLE `ci_sessions` (
 --
 
 INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
-('52dlnjo39de4v816m5c422nkcj5pvu97', '::1', 1514403763, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531343430333736333b746f6b656e7c733a34303a2239663735633363643461363935663837343938363437363864326461623466386334386138323765223b);
+('sum072fko4phbvn74e11bedj14tgmcji', '::1', 1515022297, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531353032323239373b746f6b656e7c733a34303a2230316532396238363138353130343838616665633132646364663465333637633563623933303763223b);
 
 -- --------------------------------------------------------
 
@@ -709,14 +759,14 @@ CREATE TABLE `especies` (
 INSERT INTO `especies` (`id_esp`, `codigo`, `nom_cmn`, `nom_cntfc`, `flia`, `tipo`, `poblacion`, `riesgo`, `extincion`, `estado`) VALUES
 (1, 'AA03', 'Apamate', 'Tebebuia Rosea', 'Bignoniaceae', 'Flora', 50, 10, 3, 'Activa'),
 (2, 'AA04', 'Cachicamo', 'Dasypus N. Novencintus', 'Dasipódidos', 'Fauna', 1, 2, 0, 'Activa'),
-(3, 'AA05', 'Ardilla', 'Sciurus Aestuans', 'Sciuridae', 'Fauna', 10, 5, 0, 'Activa'),
+(3, 'AA05', 'Ardilla', 'Sciurus Aestuans', 'Sciuridae', 'Fauna', 2, 5, 0, 'Activa'),
 (4, 'AA06', 'Perico', 'Melopsittacus Undulatus', 'Psittacidae', 'Fauna', 25, 5, 0, 'Activa'),
 (5, 'AA07', 'Oso Perezoso', 'Bodypus Variegatus', 'Bradypodidae', 'Fauna', 1, 10, 0, 'Activa'),
 (6, 'AA08', 'Murciélago', 'Pipistrellus', 'Verspertilionidae', 'Fauna', 1, 5, 0, 'Activa'),
-(7, 'AA10', 'Bambú', 'Bambusa Arundinacea', 'Poaceae', 'Flora', 10, 5, 0, 'Activa'),
+(7, 'AA10', 'Bambú', 'Bambusa Arundinacea', 'Poaceae', 'Flora', 20, 5, 0, 'Activa'),
 (8, 'AB01', 'Guayaba', 'Psidium Guajava', 'Myrtaceae', 'Flora', 5, 10, 0, 'Activa'),
 (9, 'AB02', 'Mango', 'Mangifera Indica', 'Sapindaceae', 'Flora', 3, 5, 0, 'Activa'),
-(10, 'AB03', 'Uvero', 'Coccoloba caracasana', 'Polygonaceae', 'Flora', 5, 5, 0, 'Activa');
+(10, 'AB03', 'Uvero', 'Coccoloba caracasana', 'Polygonaceae', 'Flora', 18, 5, 0, 'Activa');
 
 -- --------------------------------------------------------
 
@@ -870,7 +920,8 @@ CREATE TABLE `mantenimientos` (
   `usuario` int(4) NOT NULL,
   `fecha_asig` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
   `hora_asig` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `estado` enum('Pendiente','En progreso','','Finalizado') COLLATE utf8_spanish_ci NOT NULL
+  `observacion` varchar(320) COLLATE utf8_spanish_ci NOT NULL,
+  `estado` enum('Pendiente','En progreso','Finalizado') COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -927,7 +978,8 @@ CREATE TABLE `reforestaciones` (
   `usuario` int(4) NOT NULL,
   `fecha_asig` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
   `hora_asig` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `estado` enum('Pendiente','En progreso','','Finalizado') COLLATE utf8_spanish_ci NOT NULL
+  `observacion` varchar(320) COLLATE utf8_spanish_ci NOT NULL,
+  `estado` enum('Pendiente','En progreso','Finalizado') COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -942,7 +994,8 @@ CREATE TABLE `servicios` (
   `usuario` int(4) NOT NULL,
   `fecha_asig` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
   `hora_asig` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
-  `estado` enum('Pendiente','En progreso','','Finalizado') COLLATE utf8_spanish_ci NOT NULL
+  `observacion` varchar(320) COLLATE utf8_spanish_ci NOT NULL,
+  `estado` enum('Pendiente','En progreso','Finalizado') COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -1304,7 +1357,7 @@ ALTER TABLE `beneficiarios`
 -- AUTO_INCREMENT for table `bitacoras`
 --
 ALTER TABLE `bitacoras`
-  MODIFY `id_bit` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
+  MODIFY `id_bit` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=220;
 --
 -- AUTO_INCREMENT for table `cabanas`
 --

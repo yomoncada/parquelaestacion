@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -36,22 +36,46 @@
                                 <h1 class="uppercase">N° <?echo $mantenimiento['id_man'];?></h1>
                             </div>
                         </div>
-                        <div class="col-sm-8 col-xs-12">
-                            <div class="row">
-                                <div class="col-sm-4 col-xs-12">
-                                    <h2 class="invoice-title uppercase font-green-turquoise">Responsable</h2>
-                                    <p class="invoice-desc"><?echo $mantenimiento['usuario'];?></p>
-                                </div>
-                                <div class="col-sm-4 col-xs-12">
-                                    <h2 class="invoice-title uppercase font-green-turquoise">Última Modificación</h2>
-                                    <p class="invoice-desc"><?echo $mantenimiento['fecha_act'];?></p>
-                                </div>
-                                <div class="col-sm-4 col-xs-12">
-                                    <h2 class="invoice-title uppercase font-green-turquoise">Estado</h2>
-                                    <p class="invoice-desc"><?echo $mantenimiento['estado'];?></p>
+                        <?if($mantenimiento['estado'] == 'Pendiente'){?>
+                            <div class="col-xs-8">
+                                <div class="row">
+                                    <div class="col-sm-4 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Responsable</h2>
+                                        <p class="invoice-desc"><?echo $mantenimiento['usuario'];?></p>
+                                    </div>
+                                    <div class="col-sm-4 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Fecha y Hora de Procesamiento</h2>
+                                        <p class="invoice-desc"><?echo $mantenimiento['fecha_act'];?></p>
+                                    </div>
+                                    <div class="col-sm-4 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Estado</h2>
+                                        <p class="invoice-desc"><?echo $mantenimiento['estado'];?></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?}?>
+                        <?if($mantenimiento['estado'] == 'En progreso' || $mantenimiento['estado'] == 'Finalizado'){?>
+                            <div class="col-xs-8">
+                                <div class="row">
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Responsable</h2>
+                                        <p class="invoice-desc"><?echo $mantenimiento['usuario'];?></p>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Fecha Asig.</h2>
+                                        <p class="invoice-desc"><?echo $mantenimiento['fecha_asig'];?></p>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Hora Asig.</h2>
+                                        <p class="invoice-desc"><?echo $mantenimiento['hora_asig'];?></p>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Estado</h2>
+                                        <p class="invoice-desc"><?echo $mantenimiento['estado'];?></p>
+                                    </div>
+                                </div>
+                            </div>
+                        <?}?>
                     </div>
                 </div>
                 <div class="row">
@@ -78,8 +102,8 @@
                                             <div class="mt-body-actions-icons">
                                                 <div class="btn-group btn-group btn-group-justified">
                                                 <?if($mantenimiento['estado'] == 'Pendiente')
-                                            	{?>
-                                            		<a data-toggle="modal" href="#lista_empleados" class="btn btn-link" title="Agregar">
+                                                {?>
+                                                    <a data-toggle="modal" href="#lista_empleados" class="btn btn-link" title="Agregar">
                                                         <span class="mt-icon">
                                                             <i class="icon-plus"></i>
                                                         </span>
@@ -91,7 +115,7 @@
                                                         </span>
                                                     </a>
                                                 <?if($mantenimiento['estado'] == 'Pendiente')
-                                            	{?>
+                                                {?>
                                                     <a href="javascript:;" class="btn btn-link" onclick="clear_empleados()" title="Reiniciar">
                                                         <span class="mt-icon">
                                                             <i class="icon-reload"></i>
@@ -114,7 +138,7 @@
                                             <div class="mt-body-actions-icons">
                                                 <div class="btn-group btn-group btn-group-justified">
                                                 <?if($mantenimiento['estado'] == 'Pendiente')
-                                            	{?>
+                                                {?>
                                                     <a data-toggle="modal" href="#lista_areas" class="btn btn-link" title="Agregar">
                                                         <span class="mt-icon">
                                                             <i class="icon-plus"></i>
@@ -127,7 +151,7 @@
                                                         </span>
                                                     </a>
                                                 <?if($mantenimiento['estado'] == 'Pendiente')
-                                            	{?>
+                                                {?>
                                                     <a href="javascript:;" class="btn btn-link" onclick="clear_areas()" title="Reiniciar">
                                                         <span class="mt-icon">
                                                             <i class="icon-reload"></i>
@@ -150,8 +174,8 @@
                                             <div class="mt-body-actions-icons">
                                                 <div class="btn-group btn-group btn-group-justified">
                                                 <?if($mantenimiento['estado'] == 'Pendiente')
-                                            	{?>
-                                            		<a data-toggle="modal" href="#lista_edificios" class="btn btn-link" title="Agregar">
+                                                {?>
+                                                    <a data-toggle="modal" href="#lista_edificios" class="btn btn-link" title="Agregar">
                                                         <span class="mt-icon">
                                                             <i class="icon-plus"></i>
                                                         </span>
@@ -193,11 +217,11 @@
                                                         </span>
                                                     </a>
                                                 <?}?>
-                                                    <a data-toggle="modal" href="#lista_implementos_asignados" class="btn btn-link" title="Listar">
-                                                        <span class="mt-icon">
-                                                            <i class="icon-list"></i>
-                                                        </span>
-                                                    </a>
+                                                <a data-toggle="modal" href="#lista_implementos_asignados" class="btn btn-link" title="Listar">
+                                                    <span class="mt-icon">
+                                                        <i class="icon-list"></i>
+                                                    </span>
+                                                </a>
                                                 <?if($mantenimiento['estado'] == 'Pendiente')
                                                 {?>
                                                     <a href="javascript:;" class="btn btn-link" onclick="clear_implementos()" title="Reiniciar">
@@ -295,8 +319,14 @@
                         <div class="portlet light bordered flip-scroll animated fadeIn">
                             <div class="portlet-title">
                                 <div class="caption font-dark">
-                                    <i class="icon-note"></i>
-                                    <span class="caption-subject bold uppercase">Planificación</span>
+                                    <?if($mantenimiento['estado'] == "Pendiente"){?>
+                                        <i class="icon-note"></i>
+                                        <span class="caption-subject bold uppercase">Planificación</span>
+                                    <?}?>
+                                    <?if($mantenimiento['estado'] == "En progreso" || $mantenimiento['estado'] == "Finalizado"){?>
+                                        <i class="icon-eye"></i>
+                                        <span class="caption-subject bold uppercase">Declaración de Observaciones</span>
+                                    <?}?>
                                 </div>
                             </div>
                             <div class="portlet-body form">
@@ -328,31 +358,20 @@
                                             <span class="help-block hora"></span>
                                         </div>
                                     <?}?>
-                                    <?if($mantenimiento['estado'] == "En progreso" || $mantenimiento['estado'] == "Finalizado")
+                                    <?if($mantenimiento['estado'] == "En progreso")
                                     {?>
                                         <div class="form-group">
-                                            <label class="control-label">Fecha</label>
-                                            <div class="input-group date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-icon-only green-turquoise" type="button" disabled>
-                                                        <i class="icon-calendar"></i>
-                                                    </button>
-                                                </span>
-                                                <input type="text" name="fecha" value="<?echo $mantenimiento['fecha_asig'];?>" class="form-control" disabled>
-                                            </div>
-                                            <span class="help-block fecha"></span>
+                                            <label>Observación</label>
+                                            <textarea class="form-control" rows="6" name="observacion"></textarea>
+                                            <span class="help-block"></span>
                                         </div>
+                                    <?}?>
+                                    <?if($mantenimiento['estado'] == "Finalizado")
+                                    {?>
                                         <div class="form-group">
-                                            <label class="control-label">Hora</label>
-                                            <div class="input-group">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-icon-only green-turquoise" type="button" disabled>
-                                                        <i class="icon-clock"></i>
-                                                    </button>
-                                                </span>
-                                                <input type="text" name="hora" value="<?echo $mantenimiento['hora_asig'];?>" class="form-control timepicker timepicker-no-seconds" disabled>
-                                            </div>
-                                            <span class="help-block hora"></span>
+                                            <label>Observación</label>
+                                            <textarea class="form-control" rows="6" readonly=""><?echo $mantenimiento['observacion'];?></textarea>
+                                            <span class="help-block"></span>
                                         </div>
                                     <?}?>
                                     <div class="form-actions" style="text-align: right;">
@@ -361,7 +380,7 @@
                                                 <?if($mantenimiento['estado'] == 'Pendiente')
                                                 {?>
                                                     <a href="<? echo site_url('mantenimiento'); ?>" class="btn btn-default"> Cancelar </a>
-                                                    <button id="btnSave_man" type="button" class="btn green-turquoise" onclick="update(<?echo $mantenimiento['id_man'];?>)" style="margin-left:0.35em;"> Actualizar </button>
+                                                    <button id="btnSave_cen" type="button" class="btn green-turquoise" onclick="update(<?echo $mantenimiento['id_man'];?>)" style="margin-left:0.35em;"> Actualizar </button>
                                                 <?}
                                                 if($mantenimiento['estado'] == "En progreso")
                                                 {?>
@@ -545,7 +564,7 @@
                                             <th>Nombre</th>
                                             <?if($mantenimiento['estado'] == 'Pendiente')
                                             {?>
-                                            	<th>Acciones</th>
+                                                <th>Acciones</th>
                                             <?}?>
                                         </tr>
                                     </thead>
@@ -567,7 +586,7 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
                                 <div class="caption font-dark">
                                     <i class="icon-list font-dark"></i>
-                                    <span class="caption-subject bold uppercase">Listado de Areas</span>
+                                    <span class="caption-subject bold uppercase">Listado de areas</span>
                                     <div class="btn-group">
                                         <a href="#" onclick="add_area()" class="btn-link" style="padding: 0em 1em;" title="Agregar">
                                             <i class="icon-plus"></i>
@@ -695,7 +714,7 @@
                                             <th>Nombre</th>
                                             <?if($mantenimiento['estado'] == 'Pendiente')
                                             {?>
-                                            	<th>Acciones</th>
+                                                <th>Acciones</th>
                                             <?}?>
                                         </tr>
                                     </thead>
@@ -853,7 +872,7 @@
                                             <th>Nombre</th>
                                             <?if($mantenimiento['estado'] == 'Pendiente')
                                             {?>
-                                            	<th>Acciones</th>
+                                                <th>Acciones</th>
                                             <?}?>
                                         </tr>
                                     </thead>
@@ -1039,7 +1058,7 @@
                                             <th>Unidad</th>
                                             <?if($mantenimiento['estado'] == 'Pendiente')
                                             {?>
-                                            	<th>Acciones</th>
+                                                <th>Acciones</th>
                                             <?}?>
                                         </tr>
                                     </thead>
@@ -1122,6 +1141,45 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"> Cancelar </button>
                                 <button type="button" class="btn green-turquoise" data-dismiss="modal"> Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal2 fade" id="actividad-modal" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                                <div class="caption font-dark">
+                                    <i id="icon" class="icon-plus font-dark"></i>
+                                    <span class="caption-subject bold uppercase actividad-modal-title">Título</span>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                                <form action="#" id="actividad_form">
+                                    <input type="hidden" value="" name="id_act" autocomplete="off"/>
+                                    <div class="form-group">
+                                        <span class="required"> * (Campos Requeridos) </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Acción <span class="required">*</span></label>
+                                        <input type="text" id="accion_act" class="form-control" name="accion" placeholder="Ingresa una acción" title="Ej: Colocar bombillo" autocomplete="off" onkeyup="search_actividad()" required>
+                                        <span class="help-block"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tipo <span class="required">*</span></label>
+                                        <select class="form-control" name="tipo">
+                                            <option value="">--- Elige un categoría ---</option>
+                                            <option>mantenimiento</option>
+                                            <option>Mantenimiento</option>
+                                            <option>Reforestación</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="btnSave_act" onclick="save_actividad()" class="btn green-turquoise">Guardar</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                             </div>
                         </div>
                     </div>

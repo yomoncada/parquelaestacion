@@ -342,27 +342,9 @@
                                     <?if($servicio['estado'] == "En progreso" || $servicio['estado'] == "Finalizado")
                                     {?>
                                         <div class="form-group">
-                                            <label class="control-label">Fecha</label>
-                                            <div class="input-group date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-icon-only green-turquoise" type="button" disabled>
-                                                        <i class="icon-calendar"></i>
-                                                    </button>
-                                                </span>
-                                                <input type="text" name="fecha" value="<?echo $servicio['fecha_asig'];?>" class="form-control" disabled>
-                                            </div>
-                                        </div>
-                                        <span class="help-block"> </span>
-                                        <div class="form-group">
-                                            <label class="control-label">Hora</label>
-                                            <div class="input-group">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-icon-only green-turquoise" type="button" disabled>
-                                                        <i class="icon-clock"></i>
-                                                    </button>
-                                                </span>
-                                                <input type="text" name="hora" value="<?echo $servicio['hora_asig'];?>" class="form-control timepicker timepicker-no-seconds" disabled>
-                                            </div>
+                                            <label>Observación</label>
+                                            <textarea class="form-control" rows="6" name="observacion"><?echo $servicio['observacion'];?></textarea>
+                                            <span class="help-block"></span>
                                         </div>
                                     <?}?>
                                     <div class="form-actions" style="text-align: right;">
@@ -903,6 +885,7 @@
                                                             <tr>
                                                                 <th>#</th>
                                                                 <th>Número</th>
+                                                                <th>Nombre</th>
                                                                 <th>Área</th>
                                                                 <th>Capacidad</th>
                                                                 <th>Acciones</th>
@@ -922,6 +905,7 @@
                                                             <tr>
                                                                 <th>#</th>
                                                                 <th>Número</th>
+                                                                <th>Nombre</th>
                                                                 <th>Área</th>
                                                                 <th>Capacidad</th>
                                                                 <th>Acciones</th>

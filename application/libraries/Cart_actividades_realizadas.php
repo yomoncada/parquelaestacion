@@ -146,7 +146,7 @@ class Cart_Actividades_Realizadas {
 		// --------------------------------------------------------------------
 
 		// Does the $actividades_realizadas array contain an id, quantity, price, and accion?  These are required
-		if ( ! isset($actividades_realizadas['id'], $actividades_realizadas['cantidad'], $actividades_realizadas['encargado'], $actividades_realizadas['accion']))
+		if ( ! isset($actividades_realizadas['id'], $actividades_realizadas['actividad'], $actividades_realizadas['cantidad'], $actividades_realizadas['encargado'], $actividades_realizadas['accion']))
 		{
 			log_message('error', 'The cart array must contain a product ID, quantity, and accion.');
 			return FALSE;

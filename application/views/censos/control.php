@@ -36,22 +36,46 @@
                                 <h1 class="uppercase">N° <?echo $censo['id_cen'];?></h1>
                             </div>
                         </div>
-                        <div class="col-sm-8 col-xs-12">
-                            <div class="row">
-                                <div class="col-sm-4 col-xs-12">
-                                    <h2 class="invoice-title uppercase font-green-turquoise">Responsable</h2>
-                                    <p class="invoice-desc"><?echo $censo['usuario'];?></p>
-                                </div>
-                                <div class="col-sm-4 col-xs-12">
-                                    <h2 class="invoice-title uppercase font-green-turquoise">Última Modificación</h2>
-                                    <p class="invoice-desc"><?echo $censo['fecha_act'];?></p>
-                                </div>
-                                <div class="col-sm-4 col-xs-12">
-                                    <h2 class="invoice-title uppercase font-green-turquoise">Estado</h2>
-                                    <p class="invoice-desc"><?echo $censo['estado'];?></p>
+                        <?if($censo['estado'] == 'Pendiente'){?>
+                            <div class="col-xs-8">
+                                <div class="row">
+                                    <div class="col-sm-4 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Responsable</h2>
+                                        <p class="invoice-desc"><?echo $censo['usuario'];?></p>
+                                    </div>
+                                    <div class="col-sm-4 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Fecha y Hora de Procesamiento</h2>
+                                        <p class="invoice-desc"><?echo $censo['fecha_act'];?></p>
+                                    </div>
+                                    <div class="col-sm-4 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Estado</h2>
+                                        <p class="invoice-desc"><?echo $censo['estado'];?></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        <?}?>
+                        <?if($censo['estado'] == 'En progreso' || $censo['estado'] == 'Finalizado'){?>
+                            <div class="col-xs-8">
+                                <div class="row">
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Responsable</h2>
+                                        <p class="invoice-desc"><?echo $censo['usuario'];?></p>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Fecha Asig.</h2>
+                                        <p class="invoice-desc"><?echo $censo['fecha_asig'];?></p>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Hora Asig.</h2>
+                                        <p class="invoice-desc"><?echo $censo['hora_asig'];?></p>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12">
+                                        <h2 class="invoice-title uppercase font-green-turquoise">Estado</h2>
+                                        <p class="invoice-desc"><?echo $censo['estado'];?></p>
+                                    </div>
+                                </div>
+                            </div>
+                        <?}?>
                     </div>
                 </div>
                 <div class="row">
@@ -320,8 +344,14 @@
                         <div class="portlet light bordered flip-scroll animated fadeIn">
                             <div class="portlet-title">
                                 <div class="caption font-dark">
-                                    <i class="icon-note"></i>
-                                    <span class="caption-subject bold uppercase">Planificación</span>
+                                    <?if($censo['estado'] == "Pendiente"){?>
+                                        <i class="icon-note"></i>
+                                        <span class="caption-subject bold uppercase">Planificación</span>
+                                    <?}?>
+                                    <?if($censo['estado'] == "En progreso" || $censo['estado'] == "Finalizado"){?>
+                                        <i class="icon-eye"></i>
+                                        <span class="caption-subject bold uppercase">Declaración de Observaciones</span>
+                                    <?}?>
                                 </div>
                             </div>
                             <div class="portlet-body form">
@@ -353,31 +383,20 @@
                                             <span class="help-block hora"></span>
                                         </div>
                                     <?}?>
-                                    <?if($censo['estado'] == "En progreso" || $censo['estado'] == "Finalizado")
+                                    <?if($censo['estado'] == "En progreso")
                                     {?>
                                         <div class="form-group">
-                                            <label class="control-label">Fecha</label>
-                                            <div class="input-group date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-icon-only green-turquoise" type="button" disabled>
-                                                        <i class="icon-calendar"></i>
-                                                    </button>
-                                                </span>
-                                                <input type="text" name="fecha" value="<?echo $censo['fecha_asig'];?>" class="form-control" disabled>
-                                            </div>
-                                            <span class="help-block fecha"></span>
+                                            <label>Observación</label>
+                                            <textarea class="form-control" rows="6" name="observacion"></textarea>
+                                            <span class="help-block"></span>
                                         </div>
+                                    <?}?>
+                                    <?if($censo['estado'] == "Finalizado")
+                                    {?>
                                         <div class="form-group">
-                                            <label class="control-label">Hora</label>
-                                            <div class="input-group">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-icon-only green-turquoise" type="button" disabled>
-                                                        <i class="icon-clock"></i>
-                                                    </button>
-                                                </span>
-                                                <input type="text" name="hora" value="<?echo $censo['hora_asig'];?>" class="form-control timepicker timepicker-no-seconds" disabled>
-                                            </div>
-                                            <span class="help-block hora"></span>
+                                            <label>Observación</label>
+                                            <textarea class="form-control" rows="6" readonly=""><?echo $censo['observacion'];?></textarea>
+                                            <span class="help-block"></span>
                                         </div>
                                     <?}?>
                                     <div class="form-actions" style="text-align: right;">

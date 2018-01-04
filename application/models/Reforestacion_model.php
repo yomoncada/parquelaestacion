@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Reforestacion_model extends CI_Model {
+class reforestacion_model extends CI_Model {
 
 	var $table = 'reforestaciones';
 	var $column_order = array('ref.id_ref', 'ref.fecha_act', 'usu.usuario', 'ref.fecha_asig', 'ref.hora_asig', 'ref.estado');
@@ -15,7 +15,7 @@ class Reforestacion_model extends CI_Model {
 
 	private function _get_datatables_query_pendientes()
 	{
-		$this->db->select('ref.id_ref, ref.fecha_act, usu.usuario, ref.fecha_asig, ref.hora_asig, ref.estado');
+		$this->db->select('ref.id_ref, ref.fecha_act, usu.usuario, ref.fecha_asig, ref.hora_asig, ref.observacion, ref.estado');
     	$this->db->from('reforestaciones ref');
 	    $this->db->join('usuarios usu','ref.usuario = usu.id_usu');
 	    $this->db->where('ref.estado','Pendiente');
@@ -56,10 +56,10 @@ class Reforestacion_model extends CI_Model {
 
 	private function _get_datatables_query_en_progresos()
 	{
-		$this->db->select('ref.id_ref, ref.fecha_act, usu.usuario, ref.fecha_asig, ref.hora_asig, ref.estado');
+		$this->db->select('ref.id_ref, ref.fecha_act, usu.usuario, ref.fecha_asig, ref.hora_asig, ref.observacion, ref.estado');
     	$this->db->from('reforestaciones ref');
 	    $this->db->join('usuarios usu','ref.usuario = usu.id_usu');
-	    $this->db->where('ref.estado','En Progreso');
+	    $this->db->where('ref.estado','En progreso');
 
 		$i = 0;
 
@@ -97,7 +97,7 @@ class Reforestacion_model extends CI_Model {
 
 	private function _get_datatables_query_finalizados()
 	{
-		$this->db->select('ref.id_ref, ref.fecha_act, usu.usuario, ref.fecha_asig, ref.hora_asig, ref.estado');
+		$this->db->select('ref.id_ref, ref.fecha_act, usu.usuario, ref.fecha_asig, ref.hora_asig, ref.observacion, ref.estado');
     	$this->db->from('reforestaciones ref');
 	    $this->db->join('usuarios usu','ref.usuario = usu.id_usu');
 	    $this->db->where('ref.estado','Finalizado');
@@ -197,7 +197,7 @@ class Reforestacion_model extends CI_Model {
 
 	public function get_all()
 	{
-      	$this->db->select('ref.id_ref, ref.fecha_act, usu.usuario, ref.fecha_asig, ref.hora_asig, ref.estado');
+      	$this->db->select('ref.id_ref, ref.fecha_act, usu.usuario, ref.fecha_asig, ref.hora_asig, ref.observacion, ref.estado');
     	$this->db->from('reforestaciones ref');
 	    $this->db->join('usuarios usu','ref.usuario = usu.id_usu');
       	$this->db->order_by('ref.id_ref','DESC');
@@ -207,7 +207,7 @@ class Reforestacion_model extends CI_Model {
 
     public function get_reforestacion($id_ref)
 	{
-    	$this->db->select('ref.id_ref, ref.fecha_act, usu.usuario, ref.fecha_asig, ref.hora_asig, ref.estado');
+    	$this->db->select('ref.id_ref, ref.fecha_act, usu.usuario, ref.fecha_asig, ref.hora_asig, ref.observacion, ref.estado');
 	    $this->db->from('reforestaciones ref');
 	    $this->db->join('usuarios usu','ref.usuario = usu.id_usu');
 	    $this->db->where('ref.id_ref',$id_ref);
@@ -237,7 +237,7 @@ class Reforestacion_model extends CI_Model {
 
 	public function get_especies($id_ref)
 	{
-		$this->db->select('espref.especie, espref.poblacion, esp.codigo, esp.nom_cmn');
+		$this->db->select('espref.especie, esp.codigo, esp.nom_cmn, espref.poblacion');
 	    $this->db->from('especies_reforestacion espref');
 	    $this->db->join('especies esp','espref.especie = esp.id_esp');
 	    $this->db->where('espref.reforestacion',$id_ref);
@@ -253,10 +253,6 @@ class Reforestacion_model extends CI_Model {
 	    $this->db->where('impref.reforestacion',$id_ref);
 	    $query = $this->db->get();
 	    return $query->result();
-		/*$this->db->from('implementos_reforestacion');
-		$this->db->where('reforestacion',$id_ref);
-		$query = $this->db->get();
-		return $query->result();*/
 	}
 
 	public function get_actividades($id_ref)
@@ -309,6 +305,15 @@ class Reforestacion_model extends CI_Model {
     	return $query->row();
   	}
 
+  	public function get_especie_by_id($id_esp)
+  	{
+    	$this->db->from('especies');
+    	$this->db->where('id_esp',$id_esp);
+    	$query = $this->db->get();
+
+    	return $query->row();
+  	}
+
   	public function discount_empleados($id_emp)
   	{
    		$this->db->set('disponibilidad', 'Ocupado');
@@ -330,7 +335,7 @@ class Reforestacion_model extends CI_Model {
     	$this->db->update('empleados');
   	}
 
-  	public function increment_especies_censadas($id_esp, $cantidad)
+  	public function increment_especies($id_esp, $cantidad)
   	{
    		$this->db->set('poblacion', $cantidad);
     	$this->db->where('id_esp', $id_esp);

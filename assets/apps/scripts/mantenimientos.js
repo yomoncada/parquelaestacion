@@ -789,7 +789,7 @@ function assign_edificio(id_edi){
 function deny_edificio(rowid){  
 	swal({
 		title: "Advertencia",
-		text: "¿Deseas denegar esta área?",
+		text: "¿Deseas denegar este edificio?",
 		type: "warning",
 		showCancelButton: true,
 		confirmButtonColor: "#f8ac59",
@@ -817,7 +817,7 @@ function deny_edificio(rowid){
 				});
 			}
 		});
-		swal("Éxito", "¡La edificio fue denegada!", "success");
+		swal("Éxito", "¡El fue denegado!", "success");
 	}, function (dismiss){
         // dismiss can be 'cancel', 'overlay',
         // 'close', and 'timer'

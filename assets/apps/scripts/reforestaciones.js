@@ -124,7 +124,7 @@ $(document).ready(function (){
 		],
 	});
 
-	especies_reforestadas = $('#especies_reforestadas').DataTable({ 
+	especies_censadas = $('#especies_censadas').DataTable({ 
 		"processing": true,
 		"serverSide": true,
 		"order": [],
@@ -327,22 +327,22 @@ function process(){
     });
 }
 
-function control(id_ref){
+function control(id_cen){
 	$.ajax({
 		success: function (data){
-			location.href ="http://localhost/parque/index.php/reforestacion/control/" + id_ref;
+			location.href ="http://localhost/parque/index.php/reforestacion/control/" + id_cen;
 		}
 	});
 }  
 
-function update(id_ref){
+function update(id_cen){
     $('.form-group').removeClass('has-error');
     $('.help-block').empty();
 
     var swalx;
 
     $.ajax({
-        url : "http://localhost/parque/index.php/reforestacion/update/" + id_ref,
+        url : "http://localhost/parque/index.php/reforestacion/update/" + id_cen,
         type: "POST",
         data: $('#reforestacion_form').serialize(),
         dataType: "JSON",
@@ -439,14 +439,14 @@ function update(id_ref){
 }
 
 
-function end(id_ref){
+function end(id_cen){
     $('.form-group').removeClass('has-error');
     $('.help-block').empty();
 
     var swalx;
 
     $.ajax({
-        url : "http://localhost/parque/index.php/reforestacion/end/" + id_ref,
+        url : "http://localhost/parque/index.php/reforestacion/end/" + id_cen,
         type: "POST",
         data: $('#reforestacion_form').serialize(),
         dataType: "JSON",
@@ -896,16 +896,16 @@ function count_especies_censadas(){
 		}
 	});
 }
-function assign_especie_reforestada(id_esp){
+function assign_especie_censada(id_esp){
 	swal({
-	  	title: '¿Cuántas especies se reforestaron?',
+	  	title: '¿Cuántas especies se censaron?',
 	  	type: 'question',
 	  	input: 'number',
 		inputValue: 0,
 	  	showCancelButton: true,
 	}).then(function (result){
 	  	$.ajax({
-			url : "http://localhost/parque/index.php/reforestacion/assign_especie_reforestada/" + id_esp,
+			url : "http://localhost/parque/index.php/reforestacion/assign_especie_censada/" + id_esp,
 			type: "GET",
 			data: {'cantidad':result},
 			dataType: "JSON",
@@ -929,7 +929,7 @@ function assign_especie_reforestada(id_esp){
 	})
 }
 
-function deny_especie_reforestada(rowid){  
+function deny_especie_censada(rowid){  
 	swal({
 		title: "Advertencia",
 		text: "¿Deseas denegar esta especie?",
@@ -940,7 +940,7 @@ function deny_especie_reforestada(rowid){
 		cancelButtonText: "No"
 	}).then(function (){
 		$.ajax({
-			url : "http://localhost/parque/index.php/reforestacion/deny_especie_reforestada/" + rowid,
+			url : "http://localhost/parque/index.php/reforestacion/deny_especie_censada/" + rowid,
 			type: "GET",
 			dataType: "JSON",
 			success: function (data){
@@ -995,7 +995,7 @@ function clear_especies_censadas(){
 }
 
 function reload_especies_censadas(){
-	especies_reforestadas.ajax.reload(null,false);
+	especies_censadas.ajax.reload(null,false);
 }
 
 function count_implementos(){

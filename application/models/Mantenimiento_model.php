@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Mantenimiento_model extends CI_Model {
 
 	var $table = 'mantenimientos';
-	var $column_order = array('man.id_man', 'man.fecha_act', 'usu.usuario', 'man.fecha_asig', 'man.hora_asig', 'man.estado');
-	var $column_search = array('man.id_man', 'man.fecha_act', 'usu.usuario', 'man.fecha_asig', 'man.hora_asig', 'man.estado');
+	var $column_order = array('man.id_man', 'man.fecha_act', 'usu.usuario', 'man.fecha_asig', 'man.hora_asig', 'man.observacion', 'man.estado');
+	var $column_search = array('man.id_man', 'man.fecha_act', 'usu.usuario', 'man.fecha_asig', 'man.hora_asig', 'man.observacion', 'man.estado');
 	var $order = array('man.id_man' => 'asc');
 
 	public function __construct()
@@ -15,7 +15,7 @@ class Mantenimiento_model extends CI_Model {
 
 	private function _get_datatables_query_pendientes()
 	{
-		$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.estado');
+		$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.observacion, man.estado');
     	$this->db->from('mantenimientos man');
 	    $this->db->join('usuarios usu','man.usuario = usu.id_usu');
 	    $this->db->where('man.estado','Pendiente');
@@ -56,7 +56,7 @@ class Mantenimiento_model extends CI_Model {
 
 	private function _get_datatables_query_en_progresos()
 	{
-		$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.estado');
+		$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.observacion, man.estado');
     	$this->db->from('mantenimientos man');
 	    $this->db->join('usuarios usu','man.usuario = usu.id_usu');
 	    $this->db->where('man.estado','En Progreso');
@@ -97,7 +97,7 @@ class Mantenimiento_model extends CI_Model {
 
 	private function _get_datatables_query_finalizados()
 	{
-		$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.estado');
+		$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.observacion, man.estado');
     	$this->db->from('mantenimientos man');
 	    $this->db->join('usuarios usu','man.usuario = usu.id_usu');
 	    $this->db->where('man.estado','Finalizado');
@@ -197,7 +197,7 @@ class Mantenimiento_model extends CI_Model {
 
 	public function get_all()
 	{
-      	$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.estado');
+      	$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.observacion, man.estado');
     	$this->db->from('mantenimientos man');
 	    $this->db->join('usuarios usu','man.usuario = usu.id_usu');
       	$this->db->order_by('man.id_man','DESC');
@@ -207,7 +207,7 @@ class Mantenimiento_model extends CI_Model {
 
     public function get_mantenimiento($id_man)
 	{
-    	$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.estado');
+    	$this->db->select('man.id_man, man.fecha_act, usu.usuario, man.fecha_asig, man.hora_asig, man.observacion, man.estado');
 	    $this->db->from('mantenimientos man');
 	    $this->db->join('usuarios usu','man.usuario = usu.id_usu');
 	    $this->db->where('man.id_man',$id_man);

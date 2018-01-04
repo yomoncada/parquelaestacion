@@ -8,9 +8,11 @@ class Mantenimiento extends CI_Controller
 		parent::__construct();
         $this->load->model('actividad_model','actividad');
         $this->load->model('area_model','area');
+        $this->load->model('categoria_model','categoria');
         $this->load->model('bitacora_model','bitacora');
         $this->load->model('mantenimiento_model','mantenimiento');
         $this->load->model('empleado_model','empleado');
+        $this->load->model('cargo_model','cargo');
         $this->load->model('edificio_model','edificio');
         $this->load->model('implemento_model','implemento');
         $this->load->library('cart_actividades');
@@ -194,6 +196,9 @@ class Mantenimiento extends CI_Controller
 
             $data = array(
                 'total_man' => $this->mantenimiento->get_numero(),
+                'areas' => $this->area->get_all(),
+                'categorias' => $this->categoria->get_all(),
+                'cargos' => $this->cargo->get_all(),
                 'controller' => 'mantenimiento'
             );
 
@@ -237,6 +242,9 @@ class Mantenimiento extends CI_Controller
             $data = array(
                 'mantenimiento'   =>    $this->mantenimiento->get_mantenimiento($id_man),
                 'empleados' => $this->mantenimiento->get_empleados($id_man),
+                'areas' => $this->area->get_all(),
+                'categorias' => $this->categoria->get_all(),
+                'cargos' => $this->cargo->get_all(),
                 'controller' => 'mantenimiento'
             );
             
@@ -353,8 +361,10 @@ class Mantenimiento extends CI_Controller
                     if ($cart_actividades_realizadas = $this->cart_actividades_realizadas->contents() == NULL)
                     {
                         foreach ($actividades_realizadas as $actividad_realizada):
+                            $id = rand(0,99999);
                             $actividadess_realizadas = array(
-                                'id' => $actividad_realizada->actividad,
+                                'id' => $id,
+                                'actividad' => $actividad_realizada->actividad,
                                 'accion' => $actividad_realizada->accion,
                                 'encargado' => $actividad_realizada->encargado,
                                 'cantidad' => 1
@@ -365,7 +375,7 @@ class Mantenimiento extends CI_Controller
                     }
                 }
             }
-
+            
             $this->load->view('templates/links');
             $this->load->view('templates/header');
             $this->load->view('templates/sidebar');
@@ -404,6 +414,13 @@ class Mantenimiento extends CI_Controller
                     endforeach;
                 endif;
 
+                if ($this->cart_empleados->contents() != NULL):
+                    foreach ($this->cart_empleados->contents() as $empleado):
+                        $id_emp = $empleado['id'];
+                      $this->mantenimiento->discount_empleados($id_emp);
+                    endforeach;
+                endif;
+
                 if ($this->cart_areas->contents() != NULL):
                     foreach ($this->cart_areas->contents() as $area):
                         $areas = array(
@@ -436,6 +453,20 @@ class Mantenimiento extends CI_Controller
                         );    
 
                         $this->mantenimiento->set_implementos($implementos);
+                    endforeach;
+                endif;
+
+                if ($this->cart_implementos->contents() != NULL):
+                    foreach ($this->cart_implementos->contents() as $implemento):
+                        $id_imp = $implemento['id'];
+                        $cantidad = $implemento['cantidad'];
+                        $implemento_act = $this->mantenimiento->get_implemento_by_id($id_imp);
+                        if($implemento_act != false)
+                        {
+                            $actual = $implemento_act->stock;
+                            $descuento = $actual - $cantidad;
+                        }    
+                      $this->mantenimiento->discount_implementos($id_imp,$descuento);
                     endforeach;
                 endif;
 
@@ -516,6 +547,30 @@ class Mantenimiento extends CI_Controller
             );
             
             $this->mantenimiento->update(array('id_man' => $id_man), $mantenimiento);
+
+            $empleados = $this->mantenimiento->get_empleados($id_man);
+
+            if($empleados == TRUE)
+            {
+                foreach ($empleados as $empleado):
+                    $this->mantenimiento->increment_empleados($empleado->empleado);
+                endforeach;
+            }
+
+            $implementos = $this->mantenimiento->get_implementos($id_man);
+
+            if($implementos == TRUE)
+            {
+                foreach ($implementos as $implemento):
+                    $implemento_act = $this->mantenimiento->get_implemento_by_id($implemento->implemento);
+                    if($implemento_act == TRUE)
+                    {
+                        $actual = $implemento_act->stock;
+                        $incremento = $actual + $implemento->cantidad;
+                    }    
+                    $this->mantenimiento->increment_implementos($implemento->implemento,$incremento);
+                endforeach;
+            }
 
             $this->mantenimiento->delete_empleados($id_man);
             $this->mantenimiento->delete_areas($id_man);
@@ -651,65 +706,17 @@ class Mantenimiento extends CI_Controller
         {
             $mantenimiento = array(
                 'usuario' => $this->session->userdata('id_usuario'),
+                'observacion' => $this->input->post('observacion'),
                 'estado' => 'Finalizado'
             );
             
             $this->mantenimiento->update(array('id_man' => $id_man), $mantenimiento);
-            $this->mantenimiento->delete_empleados($id_man);
-            $this->mantenimiento->delete_areas($id_man);
-            $this->mantenimiento->delete_edificios($id_man);
-            $this->mantenimiento->delete_implementos($id_man);
             $this->mantenimiento->delete_actividades($id_man);
-
-            if ($this->cart_empleados->contents() != NULL):
-                foreach ($this->cart_empleados->contents() as $empleado):
-                    $empleados = array(
-                        'mantenimiento'     => $id_man,
-                        'empleado'   => $empleado['id']
-                    );    
-
-                    $this->mantenimiento->set_empleados($empleados);
-                endforeach;
-            endif;
 
             if ($this->cart_empleados->contents() != NULL):
                 foreach ($this->cart_empleados->contents() as $empleado):
                     $id_emp = $empleado['id'];
                   $this->mantenimiento->increment_empleados($id_emp);
-                endforeach;
-            endif;
-
-            if ($this->cart_areas->contents() != NULL):
-                foreach ($this->cart_areas->contents() as $area):
-                    $areas = array(
-                        'mantenimiento'     => $id_man,
-                        'id_are'   => $area['id']
-                    );    
-                    $this->mantenimiento->set_areas($areas);
-                endforeach;
-            endif;
-
-            if ($this->cart_edificios->contents() != NULL):
-                foreach ($this->cart_edificios->contents() as $edificio):
-                    $edificios = array(
-                        'mantenimiento'     => $id_man,
-                        'edificio'   => $edificio['id']
-                    );    
-
-                    $this->mantenimiento->set_edificios($edificios);
-                endforeach;
-            endif;
-
-            if ($this->cart_implementos->contents() != NULL):
-                foreach ($this->cart_implementos->contents() as $implemento):
-                    $implementos = array(
-                        'mantenimiento'     => $id_man,
-                        'implemento'   => $implemento['id'],
-                        'cantidad'   => $implemento['cantidad'],
-                        'unidad'   => $implemento['unidad']
-                    );    
-
-                    $this->mantenimiento->set_implementos($implementos);
                 endforeach;
             endif;
 
@@ -731,7 +738,7 @@ class Mantenimiento extends CI_Controller
                 foreach ($this->cart_actividades_realizadas->contents() as $actividad):
                     $actividades = array(
                         'mantenimiento'     => $id_man,
-                        'actividad'   => $actividad['id'],
+                        'actividad'   => $actividad['actividad'],
                         'encargado' => $actividad['encargado']
                     );    
 
@@ -1102,7 +1109,7 @@ class Mantenimiento extends CI_Controller
             {
                 $data = array(
                     'title' => 'Éxito',
-                    'text' => '¡La edificio fue asignada!',
+                    'text' => '¡El edificio fue asignado!',
                     'type' => 'success',
                 );
             }
@@ -1111,7 +1118,7 @@ class Mantenimiento extends CI_Controller
         {
             $data = array(
                 'title' => 'Error',
-                'text' => '¡No puedes asignar la misma edificio!',
+                'text' => '¡No puedes asignar el mismo edificio!',
                 'type' => 'error',
             );
         }
@@ -1479,8 +1486,10 @@ class Mantenimiento extends CI_Controller
         if($this->input->post('empleado_actividad') != '')
         {
             $actividad = $this->actividad->get_by_id($id_act);
+            $id = rand(0,99999);
             $actividades = array(
-                'id' => $id_act,
+                'id' => $id,
+                'actividad' => $id_act,
                 'accion' => $actividad['accion'],
                 'encargado' => $id_emp,
                 'cantidad' => 1
@@ -1490,7 +1499,7 @@ class Mantenimiento extends CI_Controller
 
             foreach($this->cart_actividades_realizadas->contents() as $carrito)
             {
-                if($carrito['id'] == $id_act)
+                if($carrito['actividad'] == $id_act && $carrito['encargado'] == $id_emp)
                 {
                     $repeat++;
                 }
@@ -1500,7 +1509,7 @@ class Mantenimiento extends CI_Controller
             {
                 $this->cart_actividades_realizadas->insert($actividades);
 
-                if($this->cart_actividades_realizadas->insert($actividades) === md5($id_act))
+                if($this->cart_actividades_realizadas->insert($actividades) === md5($id))
                 {
                     $data = array(
                         'title' => 'Éxito',
@@ -1513,7 +1522,7 @@ class Mantenimiento extends CI_Controller
             {
                 $data = array(
                     'title' => 'Error',
-                    'text' => '¡No puedes asignar la misma actividad!',
+                    'text' => '¡No puedes asignar la misma actividad al mismo empleado!',
                     'type' => 'error',
                 );
             }
