@@ -42,11 +42,8 @@ class Censo extends CI_Controller
             $row[] = $censo->fecha_act;
             $row[] = $censo->estado;
             $row[] = 
-                '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$censo->id_cen."'".')" title="Actualizar">
-                    <i class="icon-pencil"></i>
-                </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
-                    <i class="icon-printer"></i>
+                '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$censo->id_cen."'".')" title="Controlar">
+                    <i class="icon-note"></i>
                 </a>';
             $data[] = $row;
             $i++;
@@ -83,7 +80,7 @@ class Censo extends CI_Controller
                 '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$censo->id_cen."'".')" title="Controlar">
                     <i class="icon-note"></i>
                 </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                <a class="btn btn-link" href="javascript:void(0)" onclick="report('."'".$censo->id_cen."'".')" title="Imprimir">
                     <i class="icon-printer"></i>
                 </a>';
             $data[] = $row;
@@ -121,7 +118,7 @@ class Censo extends CI_Controller
                 '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$censo->id_cen."'".')" title="Ver">
                     <i class="icon-eye"></i>
                 </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                <a class="btn btn-link" href="javascript:void(0)" onclick="report('."'".$censo->id_cen."'".')" title="Imprimir">
                     <i class="icon-printer"></i>
                 </a>';
             $data[] = $row;
@@ -834,6 +831,37 @@ class Censo extends CI_Controller
                     echo json_encode(array("status" => false, "reason" => "actividades"));
                 }
             }
+        }
+    }
+
+    public function report($id_cen = NULL)
+    {
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('cen_access') == 1)
+        {
+            $session = array(
+                'proceso' => 'censo_report',
+                'numero' => $id_cen
+            );
+
+            $this->session->set_userdata($session);
+
+            $data = array(
+                'censo'   =>    $this->censo->get_censo($id_cen),
+                'empleados'   =>    $this->censo->get_empleados($id_cen),
+                'areas'   =>    $this->censo->get_areas($id_cen),
+                'especies'   =>    $this->censo->get_especies($id_cen),
+                'implementos'   =>    $this->censo->get_implementos($id_cen),
+                'actividades'   =>    $this->censo->get_actividades($id_cen),
+                'controller' => 'censo'
+            );
+
+            if (empty($data['censo']))
+            {
+                show_404();
+            }
+
+            $this->load->view('templates/links');
+            $this->load->view('censos/report',$data);
         }
     }
 

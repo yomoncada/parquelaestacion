@@ -237,7 +237,7 @@ class Servicio_model extends CI_Model {
 
 	public function get_canchas($id_ser)
 	{
-		$this->db->select('canser.cancha, can.numero, can.capacidad');
+		$this->db->select('canser.cancha, can.numero, can.nombre, can.capacidad');
 	    $this->db->from('canchas_servicio canser');
 	    $this->db->join('canchas can','canser.cancha = can.id_can');
 	    $this->db->where('canser.servicio',$id_ser);

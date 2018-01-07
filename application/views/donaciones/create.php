@@ -162,8 +162,8 @@
                         <div class="portlet light bordered flip-scroll animated fadeIn">
                             <div class="portlet-title">
                                 <div class="caption font-dark">
-                                    <i class="icon-note"></i>
-                                    <span class="caption-subject bold uppercase">Planificación</span>
+                                    <i class="icon-eye"></i>
+                                    <span class="caption-subject bold uppercase">Declaración de Observaciones</span>
                                 </div>
                             </div>
                             <div class="portlet-body form">
@@ -176,8 +176,8 @@
                                     <div class="form-actions" style="text-align: right;">
                                         <div class="row">
                                             <div class="col-xs-12">
-                                                <button type="button" class="btn btn-default"> Cancelar </button>
-                                                <button id="btnSave_don" type="button" class="btn green-turquoise" onclick="process()" style="margin-left:0.35em;"> Procesar</button>
+                                                <a href="<?echo site_url('donacion');?>" class="btn btn-default"> Cancelar </a>
+                                                <button id="btnSave_dnc" type="button" class="btn green-turquoise" onclick="process()"> Procesar</button>
                                             </div>
                                         </div>
                                     </div>

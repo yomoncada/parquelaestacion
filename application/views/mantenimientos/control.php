@@ -380,17 +380,18 @@
                                                 <?if($mantenimiento['estado'] == 'Pendiente')
                                                 {?>
                                                     <a href="<? echo site_url('mantenimiento'); ?>" class="btn btn-default"> Cancelar </a>
-                                                    <button id="btnSave_cen" type="button" class="btn green-turquoise" onclick="update(<?echo $mantenimiento['id_man'];?>)" style="margin-left:0.35em;"> Actualizar </button>
+                                                    <button id="btnSave_man" type="button" class="btn green-turquoise" onclick="update(<?echo $mantenimiento['id_man'];?>)"> Procesar </button>
                                                 <?}
                                                 if($mantenimiento['estado'] == "En progreso")
                                                 {?>
                                                     <a href="<?echo site_url('mantenimiento');?>" class="btn btn-default"> Cancelar </a>
+                                                    <a href="javascript:;" class="btn btn-default" onclick="report(<?echo $mantenimiento['id_man'];?>)"> Imprimir </a>
                                                     <a href="javascript:;" class="btn green-turquoise" onclick="end(<?echo $mantenimiento['id_man'];?>)"> Finalizar </a>
                                                 <?}?>
                                                 <?if($mantenimiento['estado'] == "Finalizado")
                                                 {?>
                                                     <a href="<?echo site_url('mantenimiento');?>" class="btn btn-default"> Regresar </a>
-                                                    <a href="javascript:;" class="btn green-turquoise"> Imprimir </a>
+                                                    <a href="javascript:;" class="btn green-turquoise" onclick="report(<?echo $mantenimiento['id_man'];?>)"> Imprimir </a>
                                                 <?}?>
                                             </div>
                                         </div>

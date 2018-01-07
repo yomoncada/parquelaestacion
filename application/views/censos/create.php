@@ -270,7 +270,7 @@
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <a href="<?echo site_url('censo');?>" class="btn btn-default"> Cancelar </a>
-                                                <button id="btnSave_cen" type="button" class="btn green-turquoise" onclick="process()" style="margin-left:0.35em;"> Procesar</button>
+                                                <button id="btnSave_cen" type="button" class="btn green-turquoise" onclick="process()"> Procesar</button>
                                             </div>
                                         </div>
                                     </div>

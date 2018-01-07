@@ -43,9 +43,6 @@ class Mantenimiento extends CI_Controller
             $row[] = 
                 '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$mantenimiento->id_man."'".')" title="Actualizar">
                     <i class="icon-pencil"></i>
-                </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
-                    <i class="icon-printer"></i>
                 </a>';
             $data[] = $row;
             $i++;
@@ -82,7 +79,7 @@ class Mantenimiento extends CI_Controller
                 '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$mantenimiento->id_man."'".')" title="Controlar">
                     <i class="icon-note"></i>
                 </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                <a class="btn btn-link" href="javascript:void(0)" onclick="report('."'".$mantenimiento->id_man."'".')" title="Imprimir">
                     <i class="icon-printer"></i>
                 </a>';
             $data[] = $row;
@@ -120,7 +117,7 @@ class Mantenimiento extends CI_Controller
                 '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$mantenimiento->id_man."'".')" title="Ver">
                     <i class="icon-eye"></i>
                 </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                <a class="btn btn-link" href="javascript:void(0)" onclick="report('."'".$mantenimiento->id_man."'".')" title="Imprimir">
                     <i class="icon-printer"></i>
                 </a>';
             $data[] = $row;
@@ -787,6 +784,37 @@ class Mantenimiento extends CI_Controller
                     echo json_encode(array("status" => false, "reason" => "actividades"));
                 }
             }
+        }
+    }
+
+    public function report($id_man = NULL)
+    {
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('man_access') == 1)
+        {
+            $session = array(
+                'proceso' => 'mantenimiento_report',
+                'numero' => $id_man
+            );
+
+            $this->session->set_userdata($session);
+
+            $data = array(
+                'mantenimiento'   =>    $this->mantenimiento->get_mantenimiento($id_man),
+                'empleados'   =>    $this->mantenimiento->get_empleados($id_man),
+                'areas'   =>    $this->mantenimiento->get_areas($id_man),
+                'edificios'   =>    $this->mantenimiento->get_edificios($id_man),
+                'implementos'   =>    $this->mantenimiento->get_implementos($id_man),
+                'actividades'   =>    $this->mantenimiento->get_actividades($id_man),
+                'controller' => 'mantenimiento'
+            );
+
+            if (empty($data['mantenimiento']))
+            {
+                show_404();
+            }
+
+            $this->load->view('templates/links');
+            $this->load->view('mantenimientos/report',$data);
         }
     }
 

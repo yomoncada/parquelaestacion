@@ -40,11 +40,8 @@ class Servicio extends CI_Controller
             $row[] = $servicio->fecha_act;
             $row[] = $servicio->estado;
             $row[] = 
-                '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$servicio->id_ser."'".')" title="Actualizar">
-                    <i class="icon-pencil"></i>
-                </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
-                    <i class="icon-printer"></i>
+                '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$servicio->id_ser."'".')" title="Controlar">
+                    <i class="icon-note"></i>
                 </a>';
             $data[] = $row;
             $i++;
@@ -81,7 +78,7 @@ class Servicio extends CI_Controller
                 '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$servicio->id_ser."'".')" title="Controlar">
                     <i class="icon-note"></i>
                 </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                <a class="btn btn-link" href="javascript:void(0)" onclick="report('."'".$servicio->id_ser."'".')" title="Imprimir">
                     <i class="icon-printer"></i>
                 </a>';
             $data[] = $row;
@@ -119,7 +116,7 @@ class Servicio extends CI_Controller
                 '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$servicio->id_ser."'".')" title="Ver">
                     <i class="icon-eye"></i>
                 </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                <a class="btn btn-link" href="javascript:void(0)" onclick="report('."'".$servicio->id_ser."'".')" title="Imprimir">
                     <i class="icon-printer"></i>
                 </a>';
             $data[] = $row;
@@ -845,6 +842,38 @@ class Servicio extends CI_Controller
                     echo json_encode(array("status" => false, "reason" => "invitados"));
                 }
             }
+        }
+    }
+
+    public function report($id_ser = NULL)
+    {
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('ser_access') == 1)
+        {
+            $session = array(
+                'proceso' => 'servicio_report',
+                'numero' => $id_ser
+            );
+
+            $this->session->set_userdata($session);
+
+            $data = array(
+                'servicio'   =>    $this->servicio->get_servicio($id_ser),
+                'beneficiarios'   =>    $this->servicio->get_beneficiarios($id_ser),
+                'empleados'   =>    $this->servicio->get_empleados($id_ser),
+                'cabanas'   =>    $this->servicio->get_cabanas($id_ser),
+                'canchas'   =>    $this->servicio->get_canchas($id_ser),
+                'implementos'   =>    $this->servicio->get_implementos($id_ser),
+                'invitados'   =>    $this->servicio->get_invitados($id_ser),
+                'controller' => 'servicio'
+            );
+
+            if (empty($data['servicio']))
+            {
+                show_404();
+            }
+
+            $this->load->view('templates/links');
+            $this->load->view('servicios/report',$data);
         }
     }
 

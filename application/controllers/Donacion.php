@@ -221,86 +221,76 @@ class Donacion extends CI_Controller
     {
         if($this->cart_donantes->contents() != NULL && $this->cart_implementos->contents() != NULL || $this->cart_donantes->contents() != NULL && $this->cart_fondos->contents() != NULL)
         {
-            $this->_validate();
+            $donacion = array(
+                'usuario' => $this->session->userdata('id_usuario'),
+                'observacion' => $this->input->post('observacion'),
+                'estado' => 'Procesada'
+            );
+            
+            $id_dnc = $this->donacion->save($donacion);
 
-            $this->form_validation->set_rules('fecha', 'fecha', 'required');
-            $this->form_validation->set_rules('hora', 'hora', 'required');
+            if ($this->cart_donantes->contents() != NULL):
+                foreach ($this->cart_donantes->contents() as $donante):
+                    $donantes = array(
+                        'donacion'     => $id_dnc,
+                        'donante'   => $donante['id']
+                    );    
 
-            if($this->form_validation->run() == TRUE)
-            {
-                $donacion = array(
-                    'usuario' => $this->session->userdata('id_usuario'),
-                    'observacion' => $this->input->post('observacion'),
-                    'fecha_asig' => $this->input->post('fecha'),
-                    'hora_asig' => $this->input->post('hora'),
-                    'estado' => 'Procesada'
-                );
-                
-                $id_dnc = $this->donacion->save($donacion);
+                    $this->donacion->set_donantes($donantes);
+                endforeach;
+            endif;
 
-                if ($this->cart_donantes->contents() != NULL):
-                    foreach ($this->cart_donantes->contents() as $donante):
-                        $donantes = array(
-                            'donacion'     => $id_dnc,
-                            'donante'   => $donante['id']
-                        );    
+            if ($this->cart_implementos->contents() != NULL):
+                foreach ($this->cart_implementos->contents() as $implemento):
+                    $implementos = array(
+                        'donacion'     => $id_dnc,
+                        'implemento'   => $implemento['id'],
+                        'cantidad'   => $implemento['cantidad'],
+                        'unidad'   => $implemento['unidad']
+                    );    
 
-                        $this->donacion->set_donantes($donantes);
-                    endforeach;
-                endif;
+                    $this->donacion->set_implementos($implementos);
+                endforeach;
+            endif;
 
-                if ($this->cart_implementos->contents() != NULL):
-                    foreach ($this->cart_implementos->contents() as $implemento):
-                        $implementos = array(
-                            'donacion'     => $id_dnc,
-                            'implemento'   => $implemento['id'],
-                            'cantidad'   => $implemento['cantidad'],
-                            'unidad'   => $implemento['unidad']
-                        );    
+            if ($this->cart_implementos->contents() != NULL):
+                foreach ($this->cart_implementos->contents() as $implemento):
+                    $id_imp = $implemento['id'];
+                    $cantidad = $implemento['cantidad'];
+                    $implemento_act = $this->donacion->get_implemento_by_id($id_imp);
+                    if($implemento_act != false)
+                    {
+                        $actual = $implemento_act->stock;
+                        $descuento = $actual + $cantidad;
+                    }    
+                  $this->donacion->increment_implementos($id_imp,$descuento);
+                endforeach;
+            endif;
 
-                        $this->donacion->set_implementos($implementos);
-                    endforeach;
-                endif;
+            if ($this->cart_fondos->contents() != NULL):
+                foreach ($this->cart_fondos->contents() as $fondo):
+                    $fondos = array(
+                        'donacion'     => $id_dnc,
+                        'cantidad'   => $fondo['cantidad'],
+                        'divisa' => $fondo['divisa']
+                    );    
 
-                if ($this->cart_implementos->contents() != NULL):
-                    foreach ($this->cart_implementos->contents() as $implemento):
-                        $id_imp = $implemento['id'];
-                        $cantidad = $implemento['cantidad'];
-                        $implemento_act = $this->donacion->get_implemento_by_id($id_imp);
-                        if($implemento_act != false)
-                        {
-                            $actual = $implemento_act->stock;
-                            $descuento = $actual + $cantidad;
-                        }    
-                      $this->donacion->increment_implementos($id_imp,$descuento);
-                    endforeach;
-                endif;
+                    $this->donacion->set_fondos($fondos);
+                endforeach;
+            endif;
 
-                if ($this->cart_fondos->contents() != NULL):
-                    foreach ($this->cart_fondos->contents() as $fondo):
-                        $fondos = array(
-                            'donacion'     => $id_dnc,
-                            'cantidad'   => $fondo['cantidad'],
-                            'divisa' => $fondo['divisa']
-                        );    
+            $bitacora = array(
+                'tipo' => 'donacion',
+                'movimiento' => 'Se ha registrado un donacion.',
+                'usuario' => $this->session->userdata('id_usuario')
+            );      
 
-                        $this->donacion->set_fondos($fondos);
-                    endforeach;
-                endif;
+            $this->bitacora->set($bitacora);
+            $this->cart_donantes->destroy();
+            $this->cart_implementos->destroy();
+            $this->cart_fondos->destroy();
 
-                $bitacora = array(
-                    'tipo' => 'donacion',
-                    'movimiento' => 'Se ha registrado un donacion.',
-                    'usuario' => $this->session->userdata('id_usuario')
-                );      
-
-                $this->bitacora->set($bitacora);
-                $this->cart_donantes->destroy();
-                $this->cart_implementos->destroy();
-                $this->cart_fondos->destroy();
-
-                echo json_encode(array("status" => true));
-            }
+            echo json_encode(array("status" => true));
         }
         else
         {
@@ -316,6 +306,35 @@ class Donacion extends CI_Controller
                     echo json_encode(array("status" => false, "reason" => "donacion"));
                 }
             }
+        }
+    }
+
+    public function report($id_dnc = NULL)
+    {
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('dnc_access') == 1)
+        {
+            $session = array(
+                'proceso' => 'donacion_report',
+                'numero' => $id_dnc
+            );
+
+            $this->session->set_userdata($session);
+
+            $data = array(
+                'donacion'   =>    $this->donacion->get_donacion($id_dnc),
+                'donantes'   =>    $this->donacion->get_donantes($id_dnc),
+                'implementos'   =>    $this->donacion->get_implementos($id_dnc),
+                'fondos'   =>    $this->donacion->get_fondos($id_dnc),
+                'controller' => 'donacion'
+            );
+
+            if (empty($data['donacion']))
+            {
+                show_404();
+            }
+
+            $this->load->view('templates/links');
+            $this->load->view('donaciones/report',$data);
         }
     }
 
@@ -693,13 +712,6 @@ class Donacion extends CI_Controller
             echo json_encode($data);
         }
     }
-
-    /*public function select_donantes_asignados()
-    {
-        $data = array();
-        $data = $this->cart_donantes->contents();
-        echo json_encode($data);
-    }*/
 
     private function _validate()
     {

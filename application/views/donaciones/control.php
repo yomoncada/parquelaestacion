@@ -82,7 +82,6 @@
                                                             <i class="icon-list"></i>
                                                         </span>
                                                     </a>
-                                                <?}?>
                                                 </div>
                                             </div>
                                         </div>
@@ -152,7 +151,7 @@
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <a href="<?echo site_url('donacion');?>" class="btn btn-default"> Regresar </a>
-                                                <a href="javascript:;" class="btn green-turquoise"> Imprimir </a>
+                                                <a href="javascript:;" class="btn green-turquoise" onclick="report(<?echo $donacion['id_dnc'];?>)"> Imprimir </a>
                                             </div>
                                         </div>
                                     </div>

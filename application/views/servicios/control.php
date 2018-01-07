@@ -353,17 +353,18 @@
                                                 <?if($servicio['estado'] == 'Pendiente')
                                                 {?>
                                                     <a href="<? echo site_url('servicio'); ?>" class="btn btn-default"> Cancelar </a>
-                                                    <button id="btnSave_ser" type="button" class="btn green-turquoise" onclick="update(<?echo $servicio['id_ser'];?>)" style="margin-left:0.35em;"> Actualizar</button>
+                                                    <button id="btnSave_cen" type="button" class="btn green-turquoise" onclick="update(<?echo $servicio['id_ser'];?>)"> Procesar </button>
                                                 <?}
                                                 if($servicio['estado'] == "En progreso")
                                                 {?>
                                                     <a href="<?echo site_url('servicio');?>" class="btn btn-default"> Regresar </a>
+                                                    <a href="javascript:;" class="btn btn-default" onclick="report(<?echo $servicio['id_ser'];?>)"> Imprimir </a>
                                                     <a href="javascript:;" class="btn green-turquoise" onclick="end(<?echo $servicio['id_ser'];?>)"> Finalizar </a>
                                                 <?}?>
                                                 <?if($servicio['estado'] == "Finalizado")
                                                 {?>
                                                     <a href="<?echo site_url('servicio');?>" class="btn btn-default"> Regresar </a>
-                                                    <a href="javascript:;" class="btn green-turquoise"> Imprimir </a>
+                                                    <a href="javascript:;" class="btn green-turquoise" onclick="report(<?echo $servicio['id_ser'];?>)"> Imprimir </a>
                                                 <?}?>
                                             </div>
                                         </div>

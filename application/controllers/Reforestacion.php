@@ -42,11 +42,8 @@ class Reforestacion extends CI_Controller
             $row[] = $reforestacion->fecha_act;
             $row[] = $reforestacion->estado;
             $row[] = 
-                '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$reforestacion->id_ref."'".')" title="Actualizar">
-                    <i class="icon-pencil"></i>
-                </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
-                    <i class="icon-printer"></i>
+                '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$reforestacion->id_ref."'".')" title="Controlar">
+                    <i class="icon-note"></i>
                 </a>';
             $data[] = $row;
             $i++;
@@ -83,7 +80,7 @@ class Reforestacion extends CI_Controller
                 '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$reforestacion->id_ref."'".')" title="Controlar">
                     <i class="icon-note"></i>
                 </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                <a class="btn btn-link" href="javascript:void(0)" onclick="report('."'".$reforestacion->id_ref."'".')" title="Imprimir">
                     <i class="icon-printer"></i>
                 </a>';
             $data[] = $row;
@@ -121,7 +118,7 @@ class Reforestacion extends CI_Controller
                 '<a class="btn btn-link" href="javascript:void(0)" onclick="control('."'".$reforestacion->id_ref."'".')" title="Ver">
                     <i class="icon-eye"></i>
                 </a>
-                <a class="btn btn-link" href="javascript:void(0)" title="Imprimir">
+                <a class="btn btn-link" href="javascript:void(0)" onclick="report('."'".$reforestacion->id_ref."'".')" title="Imprimir">
                     <i class="icon-printer"></i>
                 </a>';
             $data[] = $row;
@@ -840,6 +837,37 @@ class Reforestacion extends CI_Controller
                     echo json_encode(array("status" => false, "reason" => "actividades"));
                 }
             }
+        }
+    }
+
+    public function report($id_man = NULL)
+    {
+        if($this->session->userdata('is_logued_in') === TRUE && $this->session->userdata('ref_access') == 1)
+        {
+            $session = array(
+                'proceso' => 'reforestacion_report',
+                'numero' => $id_man
+            );
+
+            $this->session->set_userdata($session);
+
+            $data = array(
+                'reforestacion'   =>    $this->reforestacion->get_reforestacion($id_man),
+                'empleados'   =>    $this->reforestacion->get_empleados($id_man),
+                'areas'   =>    $this->reforestacion->get_areas($id_man),
+                'especies'   =>    $this->reforestacion->get_especies($id_man),
+                'implementos'   =>    $this->reforestacion->get_implementos($id_man),
+                'actividades'   =>    $this->reforestacion->get_actividades($id_man),
+                'controller' => 'reforestacion'
+            );
+
+            if (empty($data['reforestacion']))
+            {
+                show_404();
+            }
+
+            $this->load->view('templates/links');
+            $this->load->view('reforestaciones/report',$data);
         }
     }
 

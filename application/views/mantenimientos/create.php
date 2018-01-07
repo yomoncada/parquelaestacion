@@ -269,8 +269,8 @@
                                     <div class="form-actions" style="text-align: right;">
                                         <div class="row">
                                             <div class="col-xs-12">
-                                                <button type="button" class="btn btn-default"> Cancelar </button>
-                                                <button id="btnSave_man" type="button" class="btn green-turquoise" onclick="process('')" style="margin-left:0.35em;"> Procesar</button>
+                                                <a href="<?echo site_url('mantenimiento');?>" class="btn btn-default"> Cancelar </a>
+                                                <button id="btnSave_man" type="button" class="btn green-turquoise" onclick="process('')""> Procesar</button>
                                             </div>
                                         </div>
                                     </div>

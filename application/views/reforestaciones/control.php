@@ -405,17 +405,18 @@
                                                 <?if($reforestacion['estado'] == 'Pendiente')
                                                 {?>
                                                     <a href="<? echo site_url('reforestacion'); ?>" class="btn btn-default"> Cancelar </a>
-                                                    <button id="btnSave_cen" type="button" class="btn green-turquoise" onclick="update(<?echo $reforestacion['id_ref'];?>)" style="margin-left:0.35em;"> Actualizar </button>
+                                                    <button id="btnSave_cen" type="button" class="btn green-turquoise" onclick="update(<?echo $reforestacion['id_ref'];?>)"> Procesar </button>
                                                 <?}
                                                 if($reforestacion['estado'] == "En progreso")
                                                 {?>
                                                     <a href="<?echo site_url('reforestacion');?>" class="btn btn-default"> Cancelar </a>
+                                                    <a href="javascript:;" class="btn btn-default" onclick="report(<?echo $reforestacion['id_ref'];?>)"> Imprimir </a>
                                                     <a href="javascript:;" class="btn green-turquoise" onclick="end(<?echo $reforestacion['id_ref'];?>)"> Finalizar </a>
                                                 <?}?>
                                                 <?if($reforestacion['estado'] == "Finalizado")
                                                 {?>
                                                     <a href="<?echo site_url('reforestacion');?>" class="btn btn-default"> Regresar </a>
-                                                    <a href="javascript:;" class="btn green-turquoise"> Imprimir </a>
+                                                    <a href="javascript:;" class="btn green-turquoise" onclick="report(<?echo $reforestacion['id_ref'];?>)"> Imprimir </a>
                                                 <?}?>
                                             </div>
                                         </div>
